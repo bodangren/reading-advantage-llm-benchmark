@@ -1,7 +1,7 @@
 # Implementation Plan
 
 ## Phase 1: Define Schemas
-- [ ] Task: Create TypeScript types and Zod schemas for benchmark data structures.
+- [x] Task: Create TypeScript types and Zod schemas for benchmark data structures. 17f2576
     - [ ] Create `lib/schemas.ts`.
     - [ ] Define `TaskSchema` (id, title, difficulty, description, rubric, version).
     - [ ] Define `RunSchema` (id, model, harness, benchmark_version, score).
