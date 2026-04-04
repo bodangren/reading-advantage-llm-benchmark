@@ -1,7 +1,7 @@
 # Implementation Plan
 
 ## Phase 1: Task Catalog UI
-- [ ] Task: Create the main Tasks listing page.
+- [~] Task: Create the main Tasks listing page.
     - [ ] Create `app/tasks/page.tsx`.
     - [ ] Fetch tasks using the data pipeline.
     - [ ] Render a grid of `TaskCard` components utilizing shadcn/ui.
