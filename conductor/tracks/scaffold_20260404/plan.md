@@ -9,9 +9,9 @@
     - [x] Add basic JSON mock data for tasks and leaderboard.
 - [x] Task: Conductor - User Manual Verification 'Setup and Architecture' (Protocol in workflow.md)
 
-## Phase 2: Core Layout Implementation
+## Phase 2: Core Layout Implementation [checkpoint: 0fb1710]
 - [x] Task: Implement main application shell (Header, Navigation, Footer). 2f21527
     - [x] Create `Header.tsx` with logo and dark mode toggle.
     - [x] Create `Footer.tsx` with benchmark metadata.
     - [x] Apply to `app/layout.tsx`.
-- [~] Task: Conductor - User Manual Verification 'Core Layout Implementation' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Core Layout Implementation' (Protocol in workflow.md)
