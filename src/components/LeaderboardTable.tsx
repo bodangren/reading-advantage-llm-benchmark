@@ -1,0 +1,154 @@
+"use client";
+
+import { useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { LeaderboardEntry } from "@/lib/schemas";
+import { Badge } from "@/components/ui/badge";
+import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+interface LeaderboardTableProps {
+  data: LeaderboardEntry[];
+}
+
+type SortKey = keyof LeaderboardEntry;
+
+export function LeaderboardTable({ data }: LeaderboardTableProps) {
+  const [sortConfig, setSortConfig] = useState<{
+    key: SortKey;
+    direction: "asc" | "desc" | null;
+  }>({
+    key: "score",
+    direction: "desc",
+  });
+
+  const sortedData = [...data].sort((a, b) => {
+    if (!sortConfig.direction) return 0;
+
+    const aValue = a[sortConfig.key];
+    const bValue = b[sortConfig.key];
+
+    if (aValue === undefined) return 1;
+    if (bValue === undefined) return -1;
+
+    if (aValue < bValue) {
+      return sortConfig.direction === "asc" ? -1 : 1;
+    }
+    if (aValue > bValue) {
+      return sortConfig.direction === "asc" ? 1 : -1;
+    }
+    return 0;
+  });
+
+  const handleSort = (key: SortKey) => {
+    let direction: "asc" | "desc" | null = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    } else if (sortConfig.key === key && sortConfig.direction === "desc") {
+      direction = null;
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const SortIcon = ({ columnKey }: { columnKey: SortKey }) => {
+    if (sortConfig.key !== columnKey || !sortConfig.direction) {
+      return <ChevronsUpDown className="ml-2 h-4 w-4" />;
+    }
+    return sortConfig.direction === "asc" ? (
+      <ChevronUp className="ml-2 h-4 w-4" />
+    ) : (
+      <ChevronDown className="ml-2 h-4 w-4" />
+    );
+  };
+
+  return (
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[80px]">Rank</TableHead>
+            <TableHead
+              className="cursor-pointer hover:bg-muted/50"
+              onClick={() => handleSort("model")}
+            >
+              <div className="flex items-center">
+                Model
+                <SortIcon columnKey="model" />
+              </div>
+            </TableHead>
+            <TableHead
+              className="cursor-pointer hover:bg-muted/50"
+              onClick={() => handleSort("provider")}
+            >
+              <div className="flex items-center">
+                Provider
+                <SortIcon columnKey="provider" />
+              </div>
+            </TableHead>
+            <TableHead
+              className="cursor-pointer hover:bg-muted/50"
+              onClick={() => handleSort("harness")}
+            >
+              <div className="flex items-center">
+                Harness
+                <SortIcon columnKey="harness" />
+              </div>
+            </TableHead>
+            <TableHead
+              className="cursor-pointer hover:bg-muted/50 text-right"
+              onClick={() => handleSort("score")}
+            >
+              <div className="flex items-center justify-end">
+                Score
+                <SortIcon columnKey="score" />
+              </div>
+            </TableHead>
+            <TableHead
+              className="cursor-pointer hover:bg-muted/50 text-right"
+              onClick={() => handleSort("date")}
+            >
+              <div className="flex items-center justify-end">
+                Date
+                <SortIcon columnKey="date" />
+              </div>
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {sortedData.map((entry, index) => (
+            <TableRow key={`${entry.model}-${entry.harness}-${index}`}>
+              <TableCell className="font-medium">
+                {index + 1}
+              </TableCell>
+              <TableCell className="font-semibold">{entry.model}</TableCell>
+              <TableCell>{entry.provider || "-"}</TableCell>
+              <TableCell>
+                <Badge variant="outline">{entry.harness || "-"}</Badge>
+              </TableCell>
+              <TableCell className="text-right font-mono">
+                {(entry.score * 100).toFixed(1)}%
+              </TableCell>
+              <TableCell className="text-right text-muted-foreground text-sm">
+                {entry.date || "-"}
+              </TableCell>
+            </TableRow>
+          ))}
+          {sortedData.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={6} className="h-24 text-center">
+                No results.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}
