@@ -14,7 +14,7 @@ export function Header() {
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center space-x-2">
             <span className="font-bold sm:inline-block text-xl tracking-tight">
-              BLB
+              RALB
             </span>
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">

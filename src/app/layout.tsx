@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Brownfield LLM Benchmark (BLB)",
+  title: "Reading Advantage LLM Benchmark (RALB)",
   description: "A benchmark platform that evaluates large language models (LLMs) and agent systems on their ability to perform real-world feature integration tasks in an existing production codebase.",
 };
 
