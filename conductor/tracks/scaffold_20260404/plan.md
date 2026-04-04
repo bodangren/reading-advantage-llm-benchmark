@@ -4,10 +4,10 @@
 - [x] Task: Initialize Next.js project with App Router, TypeScript, Tailwind, and shadcn/ui. 7754a3a
     - [x] Run `npx create-next-app@latest` with appropriate flags.
     - [x] Configure `components.json` for shadcn/ui.
-- [~] Task: Setup baseline directory structure for components, lib, and static data.
-    - [ ] Create `data/`, `components/ui/`, `components/layout/`.
-    - [ ] Add basic JSON mock data for tasks and leaderboard.
-- [ ] Task: Conductor - User Manual Verification 'Setup and Architecture' (Protocol in workflow.md)
+- [x] Task: Setup baseline directory structure for components, lib, and static data. 9259f4f
+    - [x] Create `data/`, `components/ui/`, `components/layout/`.
+    - [x] Add basic JSON mock data for tasks and leaderboard.
+- [~] Task: Conductor - User Manual Verification 'Setup and Architecture' (Protocol in workflow.md)
 
 ## Phase 2: Core Layout Implementation
 - [ ] Task: Implement main application shell (Header, Navigation, Footer).
