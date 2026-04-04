@@ -1,11 +1,11 @@
 # Implementation Plan
 
-## Phase 1: Leaderboard Component
+## Phase 1: Leaderboard Component [checkpoint: d209865]
 - [x] Task: Develop the Leaderboard Table using shadcn/ui data tables. (cec28e1)
     - [x] Create `components/LeaderboardTable.tsx`.
     - [x] Define table columns for Rank, Model, Provider, Harness, Score, and Date.
     - [x] Add basic client-side sorting functionality.
-- [ ] Task: Conductor - User Manual Verification 'Leaderboard Component' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Leaderboard Component' (Protocol in workflow.md) (d209865)
 
 ## Phase 2: Leaderboard Pages
 - [ ] Task: Implement the dedicated Leaderboard page.
