@@ -8,10 +8,10 @@
     - [x] Define `LeaderboardSchema`.
 - [x] Task: Conductor - User Manual Verification 'Define Schemas' (Protocol in workflow.md)
 
-## Phase 2: Build Data Pipeline
+## Phase 2: Build Data Pipeline [checkpoint: 940661d]
 - [x] Task: Implement file reading and parsing utilities. 64648ba
     - [x] Create `lib/data.ts`.
     - [x] Implement `getTasks()`, `getTaskById(id)`, `getRuns()`, `getRunById(id)`, and `getLeaderboard()`.
     - [x] Ensure validation against Zod schemas.
 - [x] Task: Create comprehensive mock data files in `data/tasks/`, `data/runs/`, and `data/leaderboard/`. 9de0857
-- [ ] Task: Conductor - User Manual Verification 'Build Data Pipeline' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Build Data Pipeline' (Protocol in workflow.md)
