@@ -10,8 +10,8 @@
 - [x] Task: Conductor - User Manual Verification 'Setup and Architecture' (Protocol in workflow.md)
 
 ## Phase 2: Core Layout Implementation
-- [~] Task: Implement main application shell (Header, Navigation, Footer).
-    - [ ] Create `Header.tsx` with logo and dark mode toggle.
-    - [ ] Create `Footer.tsx` with benchmark metadata.
-    - [ ] Apply to `app/layout.tsx`.
-- [ ] Task: Conductor - User Manual Verification 'Core Layout Implementation' (Protocol in workflow.md)
+- [x] Task: Implement main application shell (Header, Navigation, Footer). 2f21527
+    - [x] Create `Header.tsx` with logo and dark mode toggle.
+    - [x] Create `Footer.tsx` with benchmark metadata.
+    - [x] Apply to `app/layout.tsx`.
+- [~] Task: Conductor - User Manual Verification 'Core Layout Implementation' (Protocol in workflow.md)
