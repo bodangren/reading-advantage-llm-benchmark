@@ -5,9 +5,9 @@
     - [x] Create `app/tasks/page.tsx`.
     - [x] Fetch tasks using the data pipeline.
     - [x] Render a grid of `TaskCard` components utilizing shadcn/ui.
-- [~] Task: Create the Task Detail dynamic route.
-    - [ ] Create `app/tasks/[id]/page.tsx` and implement `generateStaticParams`.
-    - [ ] Render the task description, difficulty, and grading rubric.
+- [x] Task: Create the Task Detail dynamic route. 91dcd9d
+    - [x] Create `app/tasks/[id]/page.tsx` and implement `generateStaticParams`.
+    - [x] Render the task description, difficulty, and grading rubric.
 - [ ] Task: Conductor - User Manual Verification 'Task Catalog UI' (Protocol in workflow.md)
 
 ## Phase 2: Run Detail UI
