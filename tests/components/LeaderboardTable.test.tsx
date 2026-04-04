@@ -10,15 +10,22 @@ describe('LeaderboardTable Component', () => {
       model: 'GPT-4o',
       provider: 'OpenAI',
       harness: 'track-a',
-      score: 0.95,
+      score: 95,
       date: '2026-04-01',
     },
     {
       model: 'Claude 3.5 Sonnet',
       provider: 'Anthropic',
       harness: 'track-a',
-      score: 0.96,
+      score: 96,
       date: '2026-04-02',
+    },
+    {
+      model: 'Llama 3',
+      provider: 'Meta',
+      harness: 'track-a',
+      score: 94,
+      date: '2026-04-03',
     },
   ];
 
@@ -41,6 +48,7 @@ describe('LeaderboardTable Component', () => {
     // First row is header, second row is highest score (Claude 3.5 Sonnet)
     expect(rows[1].textContent).toContain('Claude 3.5 Sonnet');
     expect(rows[2].textContent).toContain('GPT-4o');
+    expect(rows[3].textContent).toContain('Llama 3');
   });
 
   it('changes sort when clicking header', () => {
@@ -48,17 +56,19 @@ describe('LeaderboardTable Component', () => {
     
     const modelHeader = screen.getByText('Model');
     
-    // Click once: sort by model asc (Claude 3.5 Sonnet comes before GPT-4o)
+    // Click once: sort by model asc (Claude 3.5 Sonnet comes first)
     fireEvent.click(modelHeader);
     let rows = screen.getAllByRole('row');
     expect(rows[1].textContent).toContain('Claude 3.5 Sonnet');
     expect(rows[2].textContent).toContain('GPT-4o');
+    expect(rows[3].textContent).toContain('Llama 3');
 
-    // Click again: sort by model desc (GPT-4o comes before Claude 3.5 Sonnet)
+    // Click again: sort by model desc (Llama 3 comes first)
     fireEvent.click(modelHeader);
     rows = screen.getAllByRole('row');
-    expect(rows[1].textContent).toContain('GPT-4o');
-    expect(rows[2].textContent).toContain('Claude 3.5 Sonnet');
+    expect(rows[1].textContent).toContain('Llama 3');
+    expect(rows[2].textContent).toContain('GPT-4o');
+    expect(rows[3].textContent).toContain('Claude 3.5 Sonnet');
   });
 
   it('renders "No results" when data is empty', () => {

@@ -133,7 +133,7 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
                 <Badge variant="outline">{entry.harness || "-"}</Badge>
               </TableCell>
               <TableCell className="text-right font-mono">
-                {(entry.score * 100).toFixed(1)}%
+                {entry.score <= 1 ? (entry.score * 100).toFixed(1) : entry.score.toFixed(1)}%
               </TableCell>
               <TableCell className="text-right text-muted-foreground text-sm">
                 {entry.date || "-"}
