@@ -1,8 +1,8 @@
 # Implementation Plan
 
 ## Phase 1: Setup and Architecture
-- [ ] Task: Initialize Next.js project with App Router, TypeScript, Tailwind, and shadcn/ui.
-    - [ ] Run `npx create-next-app@latest` with appropriate flags.
+- [~] Task: Initialize Next.js project with App Router, TypeScript, Tailwind, and shadcn/ui.
+    - [~] Run `npx create-next-app@latest` with appropriate flags.
     - [ ] Configure `components.json` for shadcn/ui.
 - [ ] Task: Setup baseline directory structure for components, lib, and static data.
     - [ ] Create `data/`, `components/ui/`, `components/layout/`.
