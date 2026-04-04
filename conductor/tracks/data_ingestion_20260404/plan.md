@@ -13,5 +13,5 @@
     - [x] Create `lib/data.ts`.
     - [x] Implement `getTasks()`, `getTaskById(id)`, `getRuns()`, `getRunById(id)`, and `getLeaderboard()`.
     - [x] Ensure validation against Zod schemas.
-- [ ] Task: Create comprehensive mock data files in `data/tasks/`, `data/runs/`, and `data/leaderboard/`.
+- [x] Task: Create comprehensive mock data files in `data/tasks/`, `data/runs/`, and `data/leaderboard/`. 9de0857
 - [ ] Task: Conductor - User Manual Verification 'Build Data Pipeline' (Protocol in workflow.md)
