@@ -1,0 +1,16 @@
+[
+  {
+    "id": "task_import_game_v1",
+    "title": "Import Game",
+    "difficulty": "medium",
+    "description": "Import a game, register it, connect vocabulary pipeline, and persist state.",
+    "rubric": [
+      "Functional correctness (40)",
+      "Integration quality (25)",
+      "Regression safety (20)",
+      "Minimality (10)",
+      "Process quality (5)"
+    ],
+    "version": "1.0"
+  }
+]

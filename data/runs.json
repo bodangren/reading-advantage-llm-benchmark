@@ -1,0 +1,9 @@
+[
+  {
+    "id": "run_001",
+    "model": "gpt-5.4",
+    "harness": "opencode@1.2",
+    "benchmark_version": "1.0",
+    "score": 82
+  }
+]
