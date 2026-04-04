@@ -9,9 +9,9 @@
 - [x] Task: Conductor - User Manual Verification 'Define Schemas' (Protocol in workflow.md)
 
 ## Phase 2: Build Data Pipeline
-- [ ] Task: Implement file reading and parsing utilities.
-    - [ ] Create `lib/data.ts`.
-    - [ ] Implement `getTasks()`, `getTaskById(id)`, `getRuns()`, `getRunById(id)`, and `getLeaderboard()`.
-    - [ ] Ensure validation against Zod schemas.
+- [x] Task: Implement file reading and parsing utilities. 64648ba
+    - [x] Create `lib/data.ts`.
+    - [x] Implement `getTasks()`, `getTaskById(id)`, `getRuns()`, `getRunById(id)`, and `getLeaderboard()`.
+    - [x] Ensure validation against Zod schemas.
 - [ ] Task: Create comprehensive mock data files in `data/tasks/`, `data/runs/`, and `data/leaderboard/`.
 - [ ] Task: Conductor - User Manual Verification 'Build Data Pipeline' (Protocol in workflow.md)
