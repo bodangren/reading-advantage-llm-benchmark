@@ -11,8 +11,8 @@
 - [x] Task: Conductor - User Manual Verification 'Task Catalog UI' (Protocol in workflow.md) 4291e59
 
 ## Phase 2: Run Detail UI
-- [~] Task: Create the Run Detail dynamic route.
-    - [ ] Create `app/runs/[id]/page.tsx` and implement `generateStaticParams`.
-    - [ ] Fetch run details and display the score breakdown.
-    - [ ] Create a simple UI to display diff summaries or files changed.
+- [x] Task: Create the Run Detail dynamic route. 3c09d12
+    - [x] Create `app/runs/[id]/page.tsx` and implement `generateStaticParams`.
+    - [x] Fetch run details and display the score breakdown.
+    - [x] Create a simple UI to display diff summaries or files changed.
 - [ ] Task: Conductor - User Manual Verification 'Run Detail UI' (Protocol in workflow.md)
