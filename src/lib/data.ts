@@ -5,22 +5,28 @@ import { z } from 'zod';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 
-async function readJsonFile<T>(filename: string, schema: z.ZodSchema<T>): Promise<T[]> {
+async function readJsonDirectory<T>(dirName: string, schema: z.ZodSchema<T>): Promise<T[]> {
   try {
-    const filePath = path.join(DATA_DIR, filename);
-    const content = await fs.readFile(filePath, 'utf-8');
-    const parsed = JSON.parse(content);
+    const dirPath = path.join(DATA_DIR, dirName);
+    const files = await fs.readdir(dirPath);
     
-    if (!Array.isArray(parsed)) {
-      return [];
-    }
-
-    // Filter out invalid items
     const validItems: T[] = [];
-    for (const item of parsed) {
-      const result = schema.safeParse(item);
-      if (result.success) {
-        validItems.push(result.data);
+
+    for (const file of files) {
+      if (file.endsWith('.json')) {
+        const filePath = path.join(dirPath, file);
+        const content = await fs.readFile(filePath, 'utf-8');
+        const parsed = JSON.parse(content);
+        
+        // Handle both single objects and arrays of objects
+        const items = Array.isArray(parsed) ? parsed : (parsed.entries ? parsed.entries : [parsed]);
+
+        for (const item of items) {
+          const result = schema.safeParse(item);
+          if (result.success) {
+            validItems.push(result.data);
+          }
+        }
       }
     }
     
@@ -31,7 +37,7 @@ async function readJsonFile<T>(filename: string, schema: z.ZodSchema<T>): Promis
 }
 
 export async function getTasks(): Promise<Task[]> {
-  return readJsonFile('tasks.json', TaskSchema);
+  return readJsonDirectory('tasks', TaskSchema);
 }
 
 export async function getTaskById(id: string): Promise<Task | undefined> {
@@ -40,7 +46,7 @@ export async function getTaskById(id: string): Promise<Task | undefined> {
 }
 
 export async function getRuns(): Promise<Run[]> {
-  return readJsonFile('runs.json', RunSchema);
+  return readJsonDirectory('runs', RunSchema);
 }
 
 export async function getRunById(id: string): Promise<Run | undefined> {
@@ -49,5 +55,5 @@ export async function getRunById(id: string): Promise<Run | undefined> {
 }
 
 export async function getLeaderboard(): Promise<LeaderboardEntry[]> {
-  return readJsonFile('leaderboard.json', LeaderboardSchema);
+  return readJsonDirectory('leaderboard', LeaderboardSchema);
 }

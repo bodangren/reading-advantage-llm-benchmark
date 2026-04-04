@@ -5,7 +5,7 @@ export const TaskSchema = z.object({
   title: z.string(),
   difficulty: z.string(),
   description: z.string(),
-  rubric: z.string(),
+  rubric: z.array(z.string()),
   version: z.string(),
 });
 
@@ -19,8 +19,11 @@ export const RunSchema = z.object({
 
 export const LeaderboardSchema = z.object({
   model: z.string(),
-  averageScore: z.number(),
-  totalRuns: z.number(),
+  provider: z.string().optional(),
+  harness: z.string().optional(),
+  score: z.number(),
+  subscores: z.record(z.string(), z.number()).optional(),
+  date: z.string().optional(),
 });
 
 export type Task = z.infer<typeof TaskSchema>;

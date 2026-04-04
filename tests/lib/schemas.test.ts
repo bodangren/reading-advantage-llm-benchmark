@@ -9,7 +9,7 @@ describe('Zod Schemas', () => {
         title: 'Task 1',
         difficulty: 'easy',
         description: 'A test task',
-        rubric: 'Pass if it works',
+        rubric: ['Pass if it works', 'Fails if it crashes'],
         version: '1.0.0',
       };
       const result = TaskSchema.safeParse(validTask);
@@ -53,13 +53,16 @@ describe('Zod Schemas', () => {
 
   describe('LeaderboardSchema', () => {
     it('should validate a valid leaderboard entry', () => {
-      // Assuming a leaderboard entry ties a model to its overall score or rank.
       const validEntry = {
         model: 'gemini-pro',
-        averageScore: 0.85,
-        totalRuns: 100,
+        provider: 'Google',
+        harness: 'opencode',
+        score: 0.85,
+        subscores: { functional: 10 },
+        date: '2026-04-04'
       };
       const result = LeaderboardSchema.safeParse(validEntry);
+      if (!result.success) console.log(result.error);
       expect(result.success).toBe(true);
     });
   });
