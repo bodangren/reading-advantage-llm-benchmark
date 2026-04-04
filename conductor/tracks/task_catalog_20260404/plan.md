@@ -1,10 +1,10 @@
 # Implementation Plan
 
 ## Phase 1: Task Catalog UI
-- [~] Task: Create the main Tasks listing page.
-    - [ ] Create `app/tasks/page.tsx`.
-    - [ ] Fetch tasks using the data pipeline.
-    - [ ] Render a grid of `TaskCard` components utilizing shadcn/ui.
+- [x] Task: Create the main Tasks listing page. 059a778
+    - [x] Create `app/tasks/page.tsx`.
+    - [x] Fetch tasks using the data pipeline.
+    - [x] Render a grid of `TaskCard` components utilizing shadcn/ui.
 - [ ] Task: Create the Task Detail dynamic route.
     - [ ] Create `app/tasks/[id]/page.tsx` and implement `generateStaticParams`.
     - [ ] Render the task description, difficulty, and grading rubric.
