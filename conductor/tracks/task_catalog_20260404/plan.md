@@ -10,9 +10,9 @@
     - [x] Render the task description, difficulty, and grading rubric.
 - [x] Task: Conductor - User Manual Verification 'Task Catalog UI' (Protocol in workflow.md) 4291e59
 
-## Phase 2: Run Detail UI
+## Phase 2: Run Detail UI [checkpoint: 3f8cf25]
 - [x] Task: Create the Run Detail dynamic route. 3c09d12
     - [x] Create `app/runs/[id]/page.tsx` and implement `generateStaticParams`.
     - [x] Fetch run details and display the score breakdown.
     - [x] Create a simple UI to display diff summaries or files changed.
-- [ ] Task: Conductor - User Manual Verification 'Run Detail UI' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Run Detail UI' (Protocol in workflow.md) 3f8cf25
