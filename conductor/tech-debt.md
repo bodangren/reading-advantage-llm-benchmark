@@ -8,4 +8,4 @@
 
 | Date | Track | Item | Severity | Status | Notes |
 |------|-------|------|----------|--------|-------|
-| 2026-01-01 | example_track | Example: Hardcoded timeout value | Low | Resolved | Replaced with config value in v1.2 |
+| 2026-04-09 | leaderboard_20260404 | SortIcon component defined inside render | Medium | Open | Causes react-hooks/static-components lint error |

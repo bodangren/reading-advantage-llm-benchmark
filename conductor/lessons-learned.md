@@ -4,21 +4,15 @@
 > Remove or condense entries that are no longer relevant to near-term planning.
 
 ## Architecture & Design
-<!-- Decisions made that future tracks should be aware of -->
 
-- (YYYY-MM-DD, track_id) Example: Chose X over Y because of Z constraint
+- (2026-04-09, leaderboard_20260404) Tabs components need React context for state coordination - independent useState in each subcomponent doesn't share state
 
 ## Recurring Gotchas
-<!-- Problems encountered repeatedly; save future tracks from the same pain -->
 
-- (YYYY-MM-DD, track_id) Example: Always check for null before accessing config values
+- (2026-04-09, leaderboard_20260404) SortIcon defined inside component render causes lint error "Cannot create components during render" - move to separate function outside render
 
 ## Patterns That Worked Well
-<!-- Approaches worth repeating -->
 
-- (YYYY-MM-DD, track_id) Example: Writing acceptance criteria before implementation caught scope creep early
+- (2026-04-09, leaderboard_20260404) TDD: writing tests before implementation caught tab state coordination issues early
 
 ## Planning Improvements
-<!-- Notes on where estimates were wrong and why -->
-
-- (YYYY-MM-DD, track_id) Example: Underestimated integration testing time by 2x
