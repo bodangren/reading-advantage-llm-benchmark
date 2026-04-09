@@ -12,9 +12,12 @@ export const TaskSchema = z.object({
 export const RunSchema = z.object({
   id: z.string(),
   model: z.string(),
+  provider: z.string().optional(),
   harness: z.string(),
   benchmark_version: z.string(),
   score: z.number(),
+  subscores: z.record(z.string(), z.number()).optional(),
+  date: z.string().optional(),
 });
 
 export const LeaderboardSchema = z.object({

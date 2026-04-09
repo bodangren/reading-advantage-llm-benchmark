@@ -1,0 +1,11 @@
+{
+  "track_id": "run_detail_page_20260408",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-04-08T12:00:00Z",
+  "updated_at": "2026-04-08T12:00:00Z",
+  "description": "Build the /runs/[id] page: score breakdown by dimension, diff summary, test result table, and artifact download links.",
+  "estimated_tasks": 7,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}
