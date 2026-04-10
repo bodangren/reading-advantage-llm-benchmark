@@ -12,13 +12,25 @@ import {
 import { LeaderboardEntry } from "@/lib/schemas";
 import { Badge } from "@/components/ui/badge";
 import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface LeaderboardTableProps {
   data: LeaderboardEntry[];
 }
 
 type SortKey = keyof LeaderboardEntry;
+
+type SortDirection = "asc" | "desc" | null;
+
+interface SortIconProps {
+  columnKey: SortKey;
+  sortKey: SortKey;
+  direction: SortDirection;
+}
+
+function SortIcon({ columnKey, sortKey, direction }: SortIconProps) {
+  const Icon = sortKey !== columnKey || !direction ? ChevronsUpDown : direction === "asc" ? ChevronUp : ChevronDown;
+  return <Icon className="ml-2 h-4 w-4" />;
+}
 
 export function LeaderboardTable({ data }: LeaderboardTableProps) {
   const [sortConfig, setSortConfig] = useState<{
@@ -57,17 +69,6 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
     setSortConfig({ key, direction });
   };
 
-  const SortIcon = ({ columnKey }: { columnKey: SortKey }) => {
-    if (sortConfig.key !== columnKey || !sortConfig.direction) {
-      return <ChevronsUpDown className="ml-2 h-4 w-4" />;
-    }
-    return sortConfig.direction === "asc" ? (
-      <ChevronUp className="ml-2 h-4 w-4" />
-    ) : (
-      <ChevronDown className="ml-2 h-4 w-4" />
-    );
-  };
-
   return (
     <div className="rounded-md border">
       <Table>
@@ -80,7 +81,7 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
             >
               <div className="flex items-center">
                 Model
-                <SortIcon columnKey="model" />
+                <SortIcon columnKey="model" sortKey={sortConfig.key} direction={sortConfig.direction} />
               </div>
             </TableHead>
             <TableHead
@@ -89,7 +90,7 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
             >
               <div className="flex items-center">
                 Provider
-                <SortIcon columnKey="provider" />
+                <SortIcon columnKey="provider" sortKey={sortConfig.key} direction={sortConfig.direction} />
               </div>
             </TableHead>
             <TableHead
@@ -98,7 +99,7 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
             >
               <div className="flex items-center">
                 Harness
-                <SortIcon columnKey="harness" />
+                <SortIcon columnKey="harness" sortKey={sortConfig.key} direction={sortConfig.direction} />
               </div>
             </TableHead>
             <TableHead
@@ -107,7 +108,7 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
             >
               <div className="flex items-center justify-end">
                 Score
-                <SortIcon columnKey="score" />
+                <SortIcon columnKey="score" sortKey={sortConfig.key} direction={sortConfig.direction} />
               </div>
             </TableHead>
             <TableHead
@@ -116,7 +117,7 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
             >
               <div className="flex items-center justify-end">
                 Date
-                <SortIcon columnKey="date" />
+                <SortIcon columnKey="date" sortKey={sortConfig.key} direction={sortConfig.direction} />
               </div>
             </TableHead>
           </TableRow>

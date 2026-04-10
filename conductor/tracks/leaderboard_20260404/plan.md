@@ -15,3 +15,9 @@
     - [x] Update `app/page.tsx` to feature the top 5 models.
     - [x] Add an introduction to the BLB framework.
 - [x] Task: Conductor - User Manual Verification 'Leaderboard Pages' (Protocol in workflow.md) (6f9afe5)
+
+## Phase 3: SortIcon Lint Fix
+- [x] Task: Move SortIcon component outside render
+    - [x] Extract SortIcon to separate function outside component
+    - [x] Update LeaderboardTable.tsx to use extracted component
+- [x] Task: Verify lint passes
