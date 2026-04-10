@@ -1,9 +1,9 @@
 # Implementation Plan
 
 ## Phase 1: Methodology Content
-- [ ] Task: Create the Methodology page.
-    - [ ] Create `app/methodology/page.tsx` (or `.mdx` if configured).
-    - [ ] Structure content covering Benchmark Philosophy, Harness Standardization, and the Scoring Engine.
+- [x] Task: Create the Methodology page. (3e96f60)
+    - [x] Create `app/methodology/page.tsx` (or `.mdx` if configured).
+    - [x] Structure content covering Benchmark Philosophy, Harness Standardization, and the Scoring Engine.
 - [ ] Task: Conductor - User Manual Verification 'Methodology Content' (Protocol in workflow.md)
 
 ## Phase 2: Global UX Polish
