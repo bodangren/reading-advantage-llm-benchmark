@@ -9,3 +9,4 @@
 | Date | Track | Item | Severity | Status | Notes |
 |------|-------|------|----------|--------|-------|
 | 2026-04-09 | leaderboard_20260404 | SortIcon component defined inside render | Medium | Open | Causes react-hooks/static-components lint error |
+| 2026-04-10 | leaderboard_20260404 | Same SortIcon lint errors persist at verification | Medium | Open | Phase 2 checkpoint - tech-debt item still unresolved |

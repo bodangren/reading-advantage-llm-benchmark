@@ -14,4 +14,4 @@
 - [x] Task: Implement the homepage leaderboard preview.
     - [x] Update `app/page.tsx` to feature the top 5 models.
     - [x] Add an introduction to the BLB framework.
-- [ ] Task: Conductor - User Manual Verification 'Leaderboard Pages' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Leaderboard Pages' (Protocol in workflow.md)
