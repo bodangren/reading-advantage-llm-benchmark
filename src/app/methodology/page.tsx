@@ -1,23 +1,6 @@
-import Link from "next/link";
-
 export default async function MethodologyPage() {
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-black">
-      <header className="border-b bg-white dark:bg-zinc-950">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <h1 className="text-xl font-bold">Reading Advantage LLM Benchmark</h1>
-          <nav className="flex gap-6">
-            <Link href="/leaderboard" className="text-sm font-medium hover:text-primary">
-              Leaderboard
-            </Link>
-            <Link href="/tasks" className="text-sm font-medium hover:text-primary">
-              Tasks
-            </Link>
-          </nav>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-4 py-16 max-w-4xl">
+    <main className="container mx-auto px-4 py-16 max-w-4xl">
         <div className="flex flex-col space-y-4 mb-10">
           <h1 className="text-4xl font-bold tracking-tight">Methodology</h1>
           <p className="text-xl text-muted-foreground">
@@ -142,7 +125,6 @@ export default async function MethodologyPage() {
             </div>
           </section>
         </div>
-      </main>
-    </div>
+    </main>
   );
 }

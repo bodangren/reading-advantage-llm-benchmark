@@ -10,6 +10,7 @@
 ## Recurring Gotchas
 
 - (2026-04-09, leaderboard_20260404) SortIcon defined inside component render causes lint error "Cannot create components during render" - **FIXED** by extracting to separate function with proper props passing
+- (2026-04-11, methodology_20260404) Pages with inline `<header>` elements duplicate the shared Header from layout - **FIXED** by removing inline header and relying on layout's shared Header component
 
 ## Patterns That Worked Well
 
