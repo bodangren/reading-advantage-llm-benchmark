@@ -18,7 +18,7 @@ describe('Task Detail Page', () => {
   });
 
   it('should call getTasks in generateStaticParams', async () => {
-    const mockTasks = [{ id: '1' }, { id: '2' }] as any;
+    const mockTasks = [{ id: '1', title: 'Task 1', difficulty: 'easy', description: 'Desc', rubric: [], version: '1.0' }, { id: '2', title: 'Task 2', difficulty: 'easy', description: 'Desc', rubric: [], version: '1.0' }] as Awaited<ReturnType<typeof data.getTasks>>;
     vi.mocked(data.getTasks).mockResolvedValueOnce(mockTasks);
 
     const params = await generateStaticParams();

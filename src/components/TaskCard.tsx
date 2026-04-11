@@ -13,7 +13,7 @@ export function TaskCard({ task }: TaskCardProps) {
     <Card className="flex flex-col h-full">
       <CardHeader>
         <div className="flex items-center justify-between mb-2">
-          <Badge variant={task.difficulty === 'hard' ? 'destructive' : task.difficulty === 'medium' ? 'warning' : 'secondary' as any}>
+          <Badge variant={task.difficulty === 'hard' ? 'destructive' : task.difficulty === 'medium' ? 'warning' : 'secondary'}>
             {task.difficulty}
           </Badge>
           <span className="text-xs text-muted-foreground">v{task.version}</span>

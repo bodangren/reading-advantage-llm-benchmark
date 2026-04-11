@@ -26,7 +26,7 @@ export default async function TaskDetailPage({ params }: TaskPageProps) {
     <div className="container mx-auto py-12">
       <div className="flex items-center space-x-4 mb-8">
         <h1 className="text-4xl font-bold tracking-tight">{task.title}</h1>
-        <Badge variant={task.difficulty === 'hard' ? 'destructive' : task.difficulty === 'medium' ? 'warning' : 'secondary' as any}>
+        <Badge variant={task.difficulty === 'hard' ? 'destructive' : task.difficulty === 'medium' ? 'warning' : 'secondary'}>
           {task.difficulty}
         </Badge>
         <span className="text-muted-foreground">v{task.version}</span>

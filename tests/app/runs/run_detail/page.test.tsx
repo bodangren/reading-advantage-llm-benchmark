@@ -10,7 +10,7 @@ vi.mock('@/lib/data', () => ({
 describe('Run Detail Page', () => {
   it('should call getRunById and return rendered run details', async () => {
     const mockRun = { id: '1', model: 'gemini-pro', harness: 'opencode', benchmark_version: '1.0', score: 0.9 };
-    vi.mocked(data.getRunById).mockResolvedValueOnce(mockRun as any);
+    vi.mocked(data.getRunById).mockResolvedValueOnce(mockRun as ReturnType<typeof data.getRunById> extends Promise<infer T> ? T : never);
 
     const page = await RunDetailPage({ params: Promise.resolve({ id: '1' }) });
     expect(page).toBeDefined();
@@ -18,7 +18,7 @@ describe('Run Detail Page', () => {
   });
 
   it('should call getRuns in generateStaticParams', async () => {
-    const mockRuns = [{ id: '1' }, { id: '2' }] as any;
+    const mockRuns = [{ id: '1', model: 'test', harness: 'test', benchmark_version: '1.0', score: 0.9 }, { id: '2', model: 'test', harness: 'test', benchmark_version: '1.0', score: 0.8 }] as Awaited<ReturnType<typeof data.getRuns>>;
     vi.mocked(data.getRuns).mockResolvedValueOnce(mockRuns);
 
     const params = await generateStaticParams();

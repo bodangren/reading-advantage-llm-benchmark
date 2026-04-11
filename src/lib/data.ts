@@ -31,7 +31,7 @@ async function readJsonDirectory<T>(dirName: string, schema: z.ZodSchema<T>): Pr
     }
     
     return validItems;
-  } catch (error) {
+  } catch {
     return [];
   }
 }
