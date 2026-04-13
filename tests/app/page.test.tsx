@@ -20,9 +20,9 @@ vi.mock('@/lib/data', () => {
 });
 
 describe('HomePage', () => {
-  it('renders the page title', async () => {
+  it('renders the page heading', async () => {
     render(await HomePage());
-    expect(screen.getByText('Reading Advantage LLM Benchmark')).toBeDefined();
+    expect(screen.getByText('Measuring LLM Reading Comprehension')).toBeDefined();
   });
 
   it('renders BLB framework introduction', async () => {
