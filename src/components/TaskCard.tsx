@@ -10,7 +10,7 @@ interface TaskCardProps {
 
 export function TaskCard({ task }: TaskCardProps) {
   return (
-    <Card className="flex flex-col h-full hover:border-primary transition-colors">
+    <Card className="flex flex-col h-full hover:border-primary hover:shadow-lg hover:scale-[1.02] transition-all cursor-pointer">
       <CardHeader>
         <div className="flex items-center justify-between mb-2">
           <Badge variant={task.difficulty === 'hard' ? 'destructive' : task.difficulty === 'medium' ? 'warning' : 'secondary'}>

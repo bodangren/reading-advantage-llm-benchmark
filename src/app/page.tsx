@@ -24,13 +24,13 @@ export default async function Home() {
         <div className="flex gap-4">
           <Link
             href="/leaderboard"
-            className="inline-flex h-10 items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            className="inline-flex h-10 items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90 active:scale-[0.98] transition-all"
           >
             View Full Leaderboard
           </Link>
           <Link
             href="/tasks"
-            className="inline-flex h-10 items-center justify-center rounded-full border border-input bg-background px-6 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+            className="inline-flex h-10 items-center justify-center rounded-full border border-input bg-background px-6 text-sm font-medium hover:bg-accent hover:text-accent-foreground active:scale-[0.98] transition-all"
           >
             Explore Tasks
           </Link>
@@ -40,7 +40,7 @@ export default async function Home() {
       <section>
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-semibold">Top Models (Track A)</h2>
-          <Link href="/leaderboard" className="text-sm font-medium text-primary hover:underline">
+          <Link href="/leaderboard" className="text-sm font-medium text-primary hover:underline active:text-primary/80">
             View all →
           </Link>
         </div>

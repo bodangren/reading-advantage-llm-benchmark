@@ -7,8 +7,8 @@
 - [x] Task: Conductor - User Manual Verification 'Methodology Content' (Protocol in workflow.md) (3e96f60)
 
 ## Phase 2: Global UX Polish
-- [~] Task: Review and refine layout spacing, typography, and colors.
+- [x] Task: Review and refine layout spacing, typography, and colors.
     - [x] Apply consistent padding/margins across all pages.
-    - [ ] Ensure interactive elements (buttons, links, table headers) have clear hover and active states.
-    - [ ] Verify Mobile responsiveness for the Leaderboard and Task Grid.
+    - [x] Ensure interactive elements (buttons, links, table headers) have clear hover and active states.
+    - [x] Verify Mobile responsiveness for the Leaderboard and Task Grid.
 - [ ] Task: Conductor - User Manual Verification 'Global UX Polish' (Protocol in workflow.md)

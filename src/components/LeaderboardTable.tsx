@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import { LeaderboardEntry } from "@/lib/schemas";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
 
 interface LeaderboardTableProps {
@@ -76,46 +77,61 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
           <TableRow>
             <TableHead className="w-[80px]">Rank</TableHead>
             <TableHead
-              className="cursor-pointer hover:bg-muted/50"
+              className="cursor-pointer hover:bg-muted/50 transition-colors"
               onClick={() => handleSort("model")}
             >
-              <div className="flex items-center">
+              <div className={cn(
+                "flex items-center",
+                sortConfig.key === "model" && sortConfig.direction && "text-primary font-semibold"
+              )}>
                 Model
                 <SortIcon columnKey="model" sortKey={sortConfig.key} direction={sortConfig.direction} />
               </div>
             </TableHead>
             <TableHead
-              className="cursor-pointer hover:bg-muted/50"
+              className="cursor-pointer hover:bg-muted/50 transition-colors"
               onClick={() => handleSort("provider")}
             >
-              <div className="flex items-center">
+              <div className={cn(
+                "flex items-center",
+                sortConfig.key === "provider" && sortConfig.direction && "text-primary font-semibold"
+              )}>
                 Provider
                 <SortIcon columnKey="provider" sortKey={sortConfig.key} direction={sortConfig.direction} />
               </div>
             </TableHead>
             <TableHead
-              className="cursor-pointer hover:bg-muted/50"
+              className="cursor-pointer hover:bg-muted/50 transition-colors"
               onClick={() => handleSort("harness")}
             >
-              <div className="flex items-center">
+              <div className={cn(
+                "flex items-center",
+                sortConfig.key === "harness" && sortConfig.direction && "text-primary font-semibold"
+              )}>
                 Harness
                 <SortIcon columnKey="harness" sortKey={sortConfig.key} direction={sortConfig.direction} />
               </div>
             </TableHead>
             <TableHead
-              className="cursor-pointer hover:bg-muted/50 text-right"
+              className="cursor-pointer hover:bg-muted/50 transition-colors text-right"
               onClick={() => handleSort("score")}
             >
-              <div className="flex items-center justify-end">
+              <div className={cn(
+                "flex items-center justify-end",
+                sortConfig.key === "score" && sortConfig.direction && "text-primary font-semibold"
+              )}>
                 Score
                 <SortIcon columnKey="score" sortKey={sortConfig.key} direction={sortConfig.direction} />
               </div>
             </TableHead>
             <TableHead
-              className="cursor-pointer hover:bg-muted/50 text-right"
+              className="cursor-pointer hover:bg-muted/50 transition-colors text-right"
               onClick={() => handleSort("date")}
             >
-              <div className="flex items-center justify-end">
+              <div className={cn(
+                "flex items-center justify-end",
+                sortConfig.key === "date" && sortConfig.direction && "text-primary font-semibold"
+              )}>
                 Date
                 <SortIcon columnKey="date" sortKey={sortConfig.key} direction={sortConfig.direction} />
               </div>

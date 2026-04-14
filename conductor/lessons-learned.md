@@ -17,5 +17,6 @@
 - (2026-04-09, leaderboard_20260404) TDD: writing tests before implementation caught tab state coordination issues early
 - (2026-04-10, leaderboard_20260404) Fix lint errors immediately when discovered to prevent accumulation
 - (2026-04-10, methodology_20260404) Static pages using Next.js App Router - no need for 'use client' if only server data fetching
+- (2026-04-14, methodology_20260404) Use `cn()` utility for conditional classes (active vs hover states on sortable table headers)
 
 ## Planning Improvements
