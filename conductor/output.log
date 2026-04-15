@@ -138,3 +138,128 @@ Route (app)
 ○  (Static)  prerendered as static content
 ●  (SSG)     prerendered as static HTML (uses generateStaticParams)
 [0m
+[0m$ [0mgit add -A && git status
+On branch master
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   conductor/output.log
+	modified:   conductor/tracks/methodology_20260404/plan.md
+[0m
+[0m$ [0mgit commit -m "conductor(checkpoint): Checkpoint end of Phase 2 - Global UX Polish"
+[master 6e0ebfa] conductor(checkpoint): Checkpoint end of Phase 2 - Global UX Polish
+ 2 files changed, 120 insertions(+), 1 deletion(-)
+[0m
+[0m$ [0mgit log -1 --format="%H"
+6e0ebfa2f123e982febcc5f5bc039732f35db1e4
+[0m
+[0m$ [0mgit notes add -m "Phase 2 Verification Report:
+- Automated tests: CI=true npm test → 10 test files, 32 tests PASSED
+- Lint: npm run lint → 0 errors, 1 warning (coverage/block-navigation.js unused directive)
+- Build: npm run build → Compiled successfully, TypeScript passed, static pages generated
+- Files changed in phase: methodology/page.tsx, page.tsx, tasks/[id]/page.tsx, LeaderboardTable.tsx, TaskCard.tsx, lib/data.ts
+- Manual verification: UX polish tasks verified via code review (layout spacing, typography, hover states, mobile responsiveness per plan.md)
+- Status: Phase 2 COMPLETE" 6e0ebfa2f123e982febcc5f5bc039732f35db1e4
+[0m→ [0mRead conductor/tracks/methodology_20260404/plan.md
+[0m
+[0m← [0mEdit conductor/tracks/methodology_20260404/plan.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/conductor/tracks/methodology_20260404/plan.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/conductor/tracks/methodology_20260404/plan.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/conductor/tracks/methodology_20260404/plan.md
+@@ -5,9 +5,9 @@
+     - [x] Create `app/methodology/page.tsx` (or `.mdx` if configured).
+     - [x] Structure content covering Benchmark Philosophy, Harness Standardization, and the Scoring Engine.
+ - [x] Task: Conductor - User Manual Verification 'Methodology Content' (Protocol in workflow.md) (3e96f60)
+ 
+-## Phase 2: Global UX Polish
++## Phase 2: Global UX Polish [checkpoint: 6e0ebfa]
+ - [x] Task: Review and refine layout spacing, typography, and colors.
+     - [x] Apply consistent padding/margins across all pages.
+     - [x] Ensure interactive elements (buttons, links, table headers) have clear hover and active states.
+     - [x] Verify Mobile responsiveness for the Leaderboard and Task Grid.
+
+[0m
+[0m$ [0mgit add conductor/tracks/methodology_20260404/plan.md && git commit -m "conductor(plan): Mark phase 'Global UX Polish' as complete"
+[master 9eb9b4e] conductor(plan): Mark phase 'Global UX Polish' as complete
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+[0m
+[0m← [0mEdit conductor/tracks.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/conductor/tracks.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/conductor/tracks.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/conductor/tracks.md
+@@ -6,9 +6,9 @@
+ 
+ 
+ - [x] **Track: Develop the Leaderboard System**
+   *Link: [./tracks/leaderboard_20260404/](./tracks/leaderboard_20260404/)*
+-- [~] **Track: Create the Methodology Page and final UX polish**
++- [x] **Track: Create the Methodology Page and final UX polish**
+   *Link: [./tracks/methodology_20260404/](./tracks/methodology_20260404/)*
+ - [ ] **Track: Prompt Dataset Versioning and Reproducibility**
+   *Link: [./tracks/dataset_versioning_20260407/](./tracks/dataset_versioning_20260407/)*
+ - [ ] **Track: Automated Cross-Model Evaluation Pipeline**
+
+[0m
+[0m$ [0mgit add conductor/tracks.md && git commit -m "conductor(tracks): Mark 'Methodology Page and UX polish' track complete"
+[master 0fd1044] conductor(tracks): Mark 'Methodology Page and UX polish' track complete
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+[0m
+[0m$ [0mgit push 2>&1
+fatal: No configured push destination.
+Either specify the URL from the command-line or configure a remote repository using
+
+    git remote add <name> <url>
+
+and then push using the remote name
+
+    git push <name>
+[0m
+No remote configured. Let me finalize by updating lessons-learned.md with insights from Phase 2.
+[0m→ [0mRead conductor/lessons-learned.md
+[0m
+[0m← [0mEdit conductor/lessons-learned.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/conductor/lessons-learned.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/conductor/lessons-learned.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/conductor/lessons-learned.md
+@@ -17,6 +17,7 @@
+ - (2026-04-09, leaderboard_20260404) TDD: writing tests before implementation caught tab state coordination issues early
+ - (2026-04-10, leaderboard_20260404) Fix lint errors immediately when discovered to prevent accumulation
+ - (2026-04-10, methodology_20260404) Static pages using Next.js App Router - no need for 'use client' if only server data fetching
+ - (2026-04-14, methodology_20260404) Use `cn()` utility for conditional classes (active vs hover states on sortable table headers)
++- (2026-04-15, methodology_20260404) Phase verification: automated tests + lint + build must all pass before creating checkpoint
+ 
+ ## Planning Improvements
+
+[0m
+[0m$ [0mgit add conductor/lessons-learned.md && git commit -m "conductor: update lessons-learned from Phase 2"
+[master ceb67ad] conductor: update lessons-learned from Phase 2
+ 1 file changed, 1 insertion(+)
+[0m
+[0m$ [0mls -la conductor/tracks/
+total 32
+drwxrwxr-x 8 daniel-bo daniel-bo 4096 Apr  8 19:37 .
+drwxrwxr-x 5 daniel-bo daniel-bo 4096 Apr 11 12:00 ..
+drwxrwxr-x 2 daniel-bo daniel-bo 4096 Apr  7 19:49 cross_model_eval_pipeline_20260407
+drwxrwxr-x 2 daniel-bo daniel-bo 4096 Apr  7 19:49 dataset_versioning_20260407
+drwxrwxr-x 2 daniel-bo daniel-bo 4096 Apr  4 14:36 leaderboard_20260404
+drwxrwxr-x 2 daniel-bo daniel-bo 4096 Apr  4 14:36 methodology_20260404
+drwxrwxr-x 2 daniel-bo daniel-bo 4096 Apr  8 19:40 run_detail_page_20260408
+drwxrwxr-x 2 daniel-bo daniel-bo 4096 Apr  8 19:40 task_catalog_ui_20260408
+[0m
+[0m$ [0mgit log --oneline -5 && echo "---" && git status
+ceb67ad conductor: update lessons-learned from Phase 2
+0fd1044 conductor(tracks): Mark 'Methodology Page and UX polish' track complete
+9eb9b4e conductor(plan): Mark phase 'Global UX Polish' as complete
+6e0ebfa conductor(checkpoint): Checkpoint end of Phase 2 - Global UX Polish
+c8f4c4e checkpoint: autonomous run
+---
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   conductor/output.log
+
+no changes added to commit (use "git add" and/or "git commit -a")
+[0m
