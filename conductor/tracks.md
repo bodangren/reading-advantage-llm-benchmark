@@ -7,7 +7,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: Develop the Leaderboard System**
   *Link: [./tracks/leaderboard_20260404/](./tracks/leaderboard_20260404/)*
-- [~] **Track: Create the Methodology Page and final UX polish**
+- [x] **Track: Create the Methodology Page and final UX polish**
   *Link: [./tracks/methodology_20260404/](./tracks/methodology_20260404/)*
 - [ ] **Track: Prompt Dataset Versioning and Reproducibility**
   *Link: [./tracks/dataset_versioning_20260407/](./tracks/dataset_versioning_20260407/)*
