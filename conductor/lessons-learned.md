@@ -18,5 +18,6 @@
 - (2026-04-10, leaderboard_20260404) Fix lint errors immediately when discovered to prevent accumulation
 - (2026-04-10, methodology_20260404) Static pages using Next.js App Router - no need for 'use client' if only server data fetching
 - (2026-04-14, methodology_20260404) Use `cn()` utility for conditional classes (active vs hover states on sortable table headers)
+- (2026-04-15, methodology_20260404) Phase verification: automated tests + lint + build must all pass before creating checkpoint
 
 ## Planning Improvements
