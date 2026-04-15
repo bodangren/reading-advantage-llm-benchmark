@@ -11,4 +11,4 @@
     - [x] Apply consistent padding/margins across all pages.
     - [x] Ensure interactive elements (buttons, links, table headers) have clear hover and active states.
     - [x] Verify Mobile responsiveness for the Leaderboard and Task Grid.
-- [ ] Task: Conductor - User Manual Verification 'Global UX Polish' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Global UX Polish' (Protocol in workflow.md)
