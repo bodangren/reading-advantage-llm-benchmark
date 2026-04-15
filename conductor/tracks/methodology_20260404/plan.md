@@ -6,7 +6,7 @@
     - [x] Structure content covering Benchmark Philosophy, Harness Standardization, and the Scoring Engine.
 - [x] Task: Conductor - User Manual Verification 'Methodology Content' (Protocol in workflow.md) (3e96f60)
 
-## Phase 2: Global UX Polish
+## Phase 2: Global UX Polish [checkpoint: 6e0ebfa]
 - [x] Task: Review and refine layout spacing, typography, and colors.
     - [x] Apply consistent padding/margins across all pages.
     - [x] Ensure interactive elements (buttons, links, table headers) have clear hover and active states.
