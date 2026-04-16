@@ -1,12 +1,12 @@
 # Implementation Plan
 
 ## Phase 1: Dataset Version Contract
-- [ ] Task: Define dataset version metadata fields and storage location.
-  - [ ] Add validation for version format.
-  - [ ] Add tests for parse/validation behavior.
-- [ ] Task: Wire dataset version into benchmark run records.
-  - [ ] Persist version with run outputs.
-  - [ ] Add tests for backward compatibility with existing records.
+- [x] Task: Define dataset version metadata fields and storage location.
+  - [x] Add validation for version format.
+  - [x] Add tests for parse/validation behavior.
+- [x] Task: Wire dataset version into benchmark run records.
+  - [x] Persist version with run outputs.
+  - [x] Add tests for backward compatibility with existing records.
 - [ ] Task: Conductor - User Manual Verification 'Dataset Version Contract' (Protocol in workflow.md)
 
 ## Phase 2: Reproducibility Surfacing
