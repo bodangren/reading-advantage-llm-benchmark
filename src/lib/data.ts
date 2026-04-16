@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { Task, TaskSchema, Run, RunSchema, LeaderboardEntry, LeaderboardSchema } from './schemas';
+import { Task, TaskSchema, Run, RunSchema, LeaderboardEntry, LeaderboardSchema, DatasetVersion, DatasetVersionSchema } from './schemas';
 import { z } from 'zod';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
@@ -56,4 +56,19 @@ export async function getRunById(id: string): Promise<Run | undefined> {
 
 export async function getLeaderboard(): Promise<LeaderboardEntry[]> {
   return readJsonDirectory('leaderboard', LeaderboardSchema);
+}
+
+export async function getCurrentDatasetVersion(): Promise<DatasetVersion | null> {
+  try {
+    const filePath = path.join(DATA_DIR, 'datasets', 'dataset.json');
+    const content = await fs.readFile(filePath, 'utf-8');
+    const parsed = JSON.parse(content);
+    const result = DatasetVersionSchema.safeParse(parsed);
+    if (result.success) {
+      return result.data;
+    }
+    return null;
+  } catch {
+    return null;
+  }
 }

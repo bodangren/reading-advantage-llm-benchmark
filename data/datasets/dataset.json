@@ -1,0 +1,6 @@
+{
+  "version": "2026-04-07",
+  "created_at": "2026-04-07T12:00:00Z",
+  "description": "Initial benchmark dataset with reading advantage task vocabulary pipeline",
+  "tasks": ["task_import_game_v1"]
+}

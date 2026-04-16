@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import fs from 'fs/promises';
-import { getTasks, getTaskById, getRuns, getRunById, getLeaderboard } from '../../src/lib/data';
+import { getTasks, getTaskById, getRuns, getRunById, getLeaderboard, getCurrentDatasetVersion } from '../../src/lib/data';
 
 vi.mock('fs/promises');
 
@@ -110,6 +110,71 @@ describe('Data Utilities', () => {
       const board = await getLeaderboard();
       expect(board).toHaveLength(1);
       expect(board[0].model).toBe('gemini');
+    });
+  });
+
+  describe('getCurrentDatasetVersion', () => {
+    it('should return dataset version when file exists and is valid', async () => {
+      const mockDataset = {
+        version: '2026-04-07',
+        created_at: '2026-04-07T12:00:00Z',
+        description: 'Initial dataset',
+        tasks: ['task-1'],
+      };
+      vi.mocked(fs.readFile).mockResolvedValueOnce(JSON.stringify(mockDataset));
+
+      const dataset = await getCurrentDatasetVersion();
+      expect(dataset).not.toBeNull();
+      expect(dataset?.version).toBe('2026-04-07');
+    });
+
+    it('should return null when file does not exist', async () => {
+      vi.mocked(fs.readFile).mockRejectedValueOnce(new Error('File not found'));
+
+      const dataset = await getCurrentDatasetVersion();
+      expect(dataset).toBeNull();
+    });
+
+    it('should return null when file content is invalid', async () => {
+      vi.mocked(fs.readFile).mockResolvedValueOnce('invalid-json');
+
+      const dataset = await getCurrentDatasetVersion();
+      expect(dataset).toBeNull();
+    });
+  });
+
+  describe('Backward Compatibility', () => {
+    it('should parse runs without dataset_version field', async () => {
+      const mockRuns = [{
+        id: 'run-1',
+        model: 'gemini',
+        harness: 'opencode',
+        benchmark_version: '1.0',
+        score: 0.9,
+      }];
+      vi.mocked(fs.readdir).mockResolvedValueOnce(['run1.json'] as unknown as Awaited<ReturnType<typeof fs.readdir>>);
+      vi.mocked(fs.readFile).mockResolvedValueOnce(JSON.stringify(mockRuns));
+
+      const runs = await getRuns();
+      expect(runs).toHaveLength(1);
+      expect(runs[0].dataset_version).toBeUndefined();
+    });
+
+    it('should parse runs with dataset_version field', async () => {
+      const mockRuns = [{
+        id: 'run-1',
+        model: 'gemini',
+        harness: 'opencode',
+        benchmark_version: '1.0',
+        dataset_version: '2026-04-07',
+        score: 0.9,
+      }];
+      vi.mocked(fs.readdir).mockResolvedValueOnce(['run1.json'] as unknown as Awaited<ReturnType<typeof fs.readdir>>);
+      vi.mocked(fs.readFile).mockResolvedValueOnce(JSON.stringify(mockRuns));
+
+      const runs = await getRuns();
+      expect(runs).toHaveLength(1);
+      expect(runs[0].dataset_version).toBe('2026-04-07');
     });
   });
 });
