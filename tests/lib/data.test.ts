@@ -156,7 +156,7 @@ describe('Data Utilities', () => {
       const { getRunsByVersion } = await import('../../src/lib/data');
       const versioned = await getRunsByVersion('2026-04-07');
       expect(versioned).toHaveLength(2);
-      expect(versioned.every(r => r.dataset_version === '2026-04-07')).toBe(true);
+      expect(versioned.every((r: { dataset_version?: string }) => r.dataset_version === '2026-04-07')).toBe(true);
     });
 
     it('should return empty array when no runs match version', async () => {
@@ -169,6 +169,46 @@ describe('Data Utilities', () => {
       const { getRunsByVersion } = await import('../../src/lib/data');
       const versioned = await getRunsByVersion('2026-04-07');
       expect(versioned).toHaveLength(0);
+    });
+  });
+
+  describe('getRunCountForTask', () => {
+    it('should count runs for a given task ID', async () => {
+      const mockRuns = [
+        { id: 'run-1', model: 'gemini', harness: 'opencode', benchmark_version: '1.0', task_id: 'task-1', score: 0.9 },
+        { id: 'run-2', model: 'gpt-5', harness: 'opencode', benchmark_version: '1.0', task_id: 'task-1', score: 0.85 },
+        { id: 'run-3', model: 'claude', harness: 'opencode', benchmark_version: '1.0', task_id: 'task-2', score: 0.88 },
+      ];
+      vi.mocked(fs.readdir).mockResolvedValueOnce(['runs.json'] as unknown as Awaited<ReturnType<typeof fs.readdir>>);
+      vi.mocked(fs.readFile).mockResolvedValueOnce(JSON.stringify(mockRuns));
+
+      const { getRunCountForTask } = await import('../../src/lib/data');
+      const count = await getRunCountForTask('task-1');
+      expect(count).toBe(2);
+    });
+
+    it('should return 0 when no runs match task ID', async () => {
+      const mockRuns = [
+        { id: 'run-1', model: 'gemini', harness: 'opencode', benchmark_version: '1.0', task_id: 'task-1', score: 0.9 },
+      ];
+      vi.mocked(fs.readdir).mockResolvedValueOnce(['runs.json'] as unknown as Awaited<ReturnType<typeof fs.readdir>>);
+      vi.mocked(fs.readFile).mockResolvedValueOnce(JSON.stringify(mockRuns));
+
+      const { getRunCountForTask } = await import('../../src/lib/data');
+      const count = await getRunCountForTask('task-nonexistent');
+      expect(count).toBe(0);
+    });
+
+    it('should return 0 when runs have no task_id field', async () => {
+      const mockRuns = [
+        { id: 'run-1', model: 'gemini', harness: 'opencode', benchmark_version: '1.0', score: 0.9 },
+      ];
+      vi.mocked(fs.readdir).mockResolvedValueOnce(['runs.json'] as unknown as Awaited<ReturnType<typeof fs.readdir>>);
+      vi.mocked(fs.readFile).mockResolvedValueOnce(JSON.stringify(mockRuns));
+
+      const { getRunCountForTask } = await import('../../src/lib/data');
+      const count = await getRunCountForTask('task-1');
+      expect(count).toBe(0);
     });
   });
 

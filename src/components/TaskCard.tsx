@@ -6,27 +6,34 @@ import { Task } from "@/lib/schemas";
 
 interface TaskCardProps {
   task: Task;
+  runCount?: number;
 }
 
-export function TaskCard({ task }: TaskCardProps) {
+export function TaskCard({ task, runCount = 0 }: TaskCardProps) {
   return (
     <Card className="flex flex-col h-full hover:border-primary hover:shadow-lg hover:scale-[1.02] transition-all cursor-pointer">
       <CardHeader>
         <div className="flex items-center justify-between mb-2">
-          <Badge variant={task.difficulty === 'hard' ? 'destructive' : task.difficulty === 'medium' ? 'warning' : 'secondary'}>
-            {task.difficulty}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant={task.difficulty === 'hard' ? 'destructive' : task.difficulty === 'medium' ? 'warning' : 'secondary'}>
+              {task.difficulty}
+            </Badge>
+            {task.domain && (
+              <Badge variant="outline">{task.domain}</Badge>
+            )}
+          </div>
           <span className="text-xs text-muted-foreground">v{task.version}</span>
         </div>
         <CardTitle>{task.title}</CardTitle>
         <CardDescription className="line-clamp-2">{task.description}</CardDescription>
       </CardHeader>
-      <CardContent className="flex-grow">
-        {/* Potentially some task stats or tags here */}
-      </CardContent>
-      <CardFooter>
-        <Link href={`/tasks/${task.id}`} className="w-full">
-          <Button variant="outline" className="w-full">View Task</Button>
+      <CardContent className="flex-grow" />
+      <CardFooter className="flex items-center justify-between">
+        <Badge variant={runCount > 0 ? "default" : "secondary"} className={runCount === 0 ? "opacity-50" : ""}>
+          {runCount} run{runCount !== 1 ? 's' : ''}
+        </Badge>
+        <Link href={`/tasks/${task.id}`}>
+          <Button variant="outline">View Task</Button>
         </Link>
       </CardFooter>
     </Card>

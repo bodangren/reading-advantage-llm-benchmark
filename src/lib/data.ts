@@ -77,3 +77,8 @@ export async function getRunsByVersion(version: string): Promise<Run[]> {
   const runs = await getRuns();
   return runs.filter(r => r.dataset_version === version);
 }
+
+export async function getRunCountForTask(taskId: string): Promise<number> {
+  const runs = await getRuns();
+  return runs.filter(r => r.task_id === taskId).length;
+}

@@ -14,7 +14,7 @@
 
 ## Phase 2: Task List Page (`/tasks`)
 
-- [ ] Task: Build `/app/tasks/page.tsx` as a static Server Component.
+- [~] Task: Build `/app/tasks/page.tsx` as a static Server Component.
   - [ ] Call `getAllTasks()` at build time.
   - [ ] Render task cards: title, difficulty badge, domain tag, description, run count badge.
   - [ ] Client component wrapper for difficulty/domain filter controls.

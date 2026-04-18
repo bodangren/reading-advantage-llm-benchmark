@@ -1,8 +1,16 @@
-import { getTasks } from "@/lib/data";
-import { TaskCard } from "@/components/TaskCard";
+import { getTasks, getRuns } from "@/lib/data";
+import { TaskListWithFilters } from "@/components/TaskListWithFilters";
 
 export default async function TasksPage() {
   const tasks = await getTasks();
+  const runs = await getRuns();
+
+  const runCounts: Record<string, number> = {};
+  for (const run of runs) {
+    if (run.task_id) {
+      runCounts[run.task_id] = (runCounts[run.task_id] ?? 0) + 1;
+    }
+  }
 
   return (
     <div className="container mx-auto py-12">
@@ -13,16 +21,12 @@ export default async function TasksPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {tasks.map((task) => (
-          <TaskCard key={task.id} task={task} />
-        ))}
-      </div>
-      
-      {tasks.length === 0 && (
+      {tasks.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <p className="text-lg text-muted-foreground">No tasks found. Ensure the data pipeline has populated the data directory.</p>
         </div>
+      ) : (
+        <TaskListWithFilters tasks={tasks} runCounts={runCounts} />
       )}
     </div>
   );

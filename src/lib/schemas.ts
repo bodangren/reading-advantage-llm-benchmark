@@ -33,6 +33,7 @@ export const RunSchema = z.object({
   harness: z.string(),
   benchmark_version: z.string(),
   dataset_version: z.string().optional(),
+  task_id: z.string().optional(),
   score: z.number(),
   subscores: z.record(z.string(), z.number()).optional(),
   date: z.string().optional(),
