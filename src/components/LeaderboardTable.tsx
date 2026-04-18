@@ -136,6 +136,7 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
                 <SortIcon columnKey="date" sortKey={sortConfig.key} direction={sortConfig.direction} />
               </div>
             </TableHead>
+            <TableHead className="text-right">Dataset</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -155,11 +156,14 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
               <TableCell className="text-right text-muted-foreground text-sm">
                 {entry.date || "-"}
               </TableCell>
+              <TableCell className="text-right text-muted-foreground text-sm">
+                {entry.dataset_version || "-"}
+              </TableCell>
             </TableRow>
           ))}
           {sortedData.length === 0 && (
             <TableRow>
-              <TableCell colSpan={6} className="h-24 text-center">
+              <TableCell colSpan={7} className="h-24 text-center">
                 No results.
               </TableCell>
             </TableRow>

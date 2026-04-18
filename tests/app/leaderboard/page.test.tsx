@@ -6,13 +6,13 @@ import { LeaderboardEntry } from '@/lib/schemas';
 
 vi.mock('@/lib/data', () => {
   const mockTrackAData: LeaderboardEntry[] = [
-    { model: 'Claude 3.5 Sonnet', provider: 'Anthropic', harness: 'track-a', score: 96, date: '2026-04-02' },
-    { model: 'GPT-4o', provider: 'OpenAI', harness: 'track-a', score: 95, date: '2026-04-01' },
+    { model: 'Claude 3.5 Sonnet', provider: 'Anthropic', harness: 'track-a', score: 96, date: '2026-04-02', dataset_version: '2026-04-07' },
+    { model: 'GPT-4o', provider: 'OpenAI', harness: 'track-a', score: 95, date: '2026-04-01', dataset_version: '2026-04-07' },
     { model: 'Llama 3', provider: 'Meta', harness: 'track-a', score: 94, date: '2026-04-03' },
   ];
 
   const mockTrackBData: LeaderboardEntry[] = [
-    { model: 'GPT-4o', provider: 'OpenAI', harness: 'track-b', score: 98, date: '2026-04-01' },
+    { model: 'GPT-4o', provider: 'OpenAI', harness: 'track-b', score: 98, date: '2026-04-01', dataset_version: '2026-04-07' },
     { model: 'Claude 3.5 Sonnet', provider: 'Anthropic', harness: 'track-b', score: 97, date: '2026-04-02' },
   ];
 

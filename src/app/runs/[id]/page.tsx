@@ -103,6 +103,12 @@ export default async function RunDetailPage({ params }: RunPageProps) {
                 <p className="text-sm font-medium text-muted-foreground">Benchmark Version</p>
                 <p className="text-lg">{run.benchmark_version}</p>
               </div>
+              {run.dataset_version && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Dataset Version</p>
+                  <p className="text-lg">{run.dataset_version}</p>
+                </div>
+              )}
               {run.date && (
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Date</p>

@@ -35,6 +35,7 @@ export const LeaderboardSchema = z.object({
   score: z.number(),
   subscores: z.record(z.string(), z.number()).optional(),
   date: z.string().optional(),
+  dataset_version: z.string().optional(),
 });
 
 export type Task = z.infer<typeof TaskSchema>;

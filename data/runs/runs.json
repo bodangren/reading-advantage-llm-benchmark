@@ -4,6 +4,7 @@
     "model": "gpt-5.4",
     "harness": "opencode@1.2",
     "benchmark_version": "1.0",
+    "dataset_version": "2026-04-07",
     "score": 0.82
   }
 ]

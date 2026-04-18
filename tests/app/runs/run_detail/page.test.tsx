@@ -1,4 +1,6 @@
+// @vitest-environment jsdom
 import { describe, it, expect, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
 import RunDetailPage, { generateStaticParams } from '../../../../src/app/runs/[id]/page';
 import * as data from '@/lib/data';
 
@@ -24,5 +26,22 @@ describe('Run Detail Page', () => {
     const params = await generateStaticParams();
     expect(params).toEqual([{ id: '1' }, { id: '2' }]);
     expect(data.getRuns).toHaveBeenCalled();
+  });
+
+  it('should render dataset version when present', async () => {
+    const mockRun = { id: '1', model: 'gemini-pro', harness: 'opencode', benchmark_version: '1.0', dataset_version: '2026-04-07', score: 0.9 };
+    vi.mocked(data.getRunById).mockResolvedValueOnce(mockRun as ReturnType<typeof data.getRunById> extends Promise<infer T> ? T : never);
+
+    render(await RunDetailPage({ params: Promise.resolve({ id: '1' }) }));
+    expect(screen.getByText('Dataset Version')).toBeDefined();
+    expect(screen.getByText('2026-04-07')).toBeDefined();
+  });
+
+  it('should not render dataset version when absent', async () => {
+    const mockRun = { id: '1', model: 'gemini-pro', harness: 'opencode', benchmark_version: '1.0', score: 0.9 };
+    vi.mocked(data.getRunById).mockResolvedValueOnce(mockRun as ReturnType<typeof data.getRunById> extends Promise<infer T> ? T : never);
+
+    render(await RunDetailPage({ params: Promise.resolve({ id: '1' }) }));
+    expect(screen.queryByText('Dataset Version')).toBeNull();
   });
 });
