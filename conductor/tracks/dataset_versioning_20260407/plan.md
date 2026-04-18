@@ -9,9 +9,9 @@
   - [x] Add tests for backward compatibility with existing records.
 - [ ] Task: Conductor - User Manual Verification 'Dataset Version Contract' (Protocol in workflow.md)
 
-## Phase 2: Reproducibility Surfacing
+## Phase 2: Reproducibility Surfacing [checkpoint: 5a3d760]
 - [x] Task: Surface dataset version in leaderboard and run detail views. caf334b
 - [x] Task: Add reproducibility smoke test for same-version reruns. 57b0e78
 - [x] Task: Document version bump and migration process. b4cbb8d
-- [ ] Task: Conductor - User Manual Verification 'Reproducibility Surfacing' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Reproducibility Surfacing' (Protocol in workflow.md) 5a3d760
 
