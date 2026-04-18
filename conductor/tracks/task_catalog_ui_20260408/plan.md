@@ -2,7 +2,7 @@
 
 ## Phase 1: Data Layer & Fixture
 
-- [ ] Task: Define `Task` TypeScript type and JSON schema.
+- [~] Task: Define `Task` TypeScript type and JSON schema.
   - [ ] Fields: `id`, `title`, `difficulty`, `domain`, `description`, `repo_context`, `acceptance_criteria[]`, `rubric` (object with five scoring dimensions).
   - [ ] Add `tasks/blb-task-001.json` fixture matching the schema.
 - [ ] Task: Write build-time data loader (`lib/tasks.ts`).

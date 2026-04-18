@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { TaskSchema, RunSchema, LeaderboardSchema, DatasetVersionSchema } from '../../src/lib/schemas';
+import { TaskSchema, RunSchema, LeaderboardSchema, DatasetVersionSchema, RubricDimensionSchema } from '../../src/lib/schemas';
 
 describe('Zod Schemas', () => {
   describe('TaskSchema', () => {
@@ -16,11 +16,64 @@ describe('Zod Schemas', () => {
       expect(result.success).toBe(true);
     });
 
+    it('should validate a task with full structured fields', () => {
+      const validTask = {
+        id: 'task-1',
+        title: 'Task 1',
+        difficulty: 'medium',
+        domain: 'Web App',
+        description: 'A test task',
+        repo_context: 'Next.js project with App Router',
+        acceptance_criteria: ['Criterion 1', 'Criterion 2'],
+        structured_rubric: [
+          { label: 'Functional correctness', weight: 40, description: 'Works end-to-end' },
+          { label: 'Integration quality', weight: 25, description: 'Follows patterns' },
+        ],
+        rubric: ['Functional correctness (40)'],
+        version: '1.0.0',
+      };
+      const result = TaskSchema.safeParse(validTask);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.domain).toBe('Web App');
+        expect(result.data.repo_context).toBe('Next.js project with App Router');
+        expect(result.data.acceptance_criteria).toHaveLength(2);
+        expect(result.data.structured_rubric).toHaveLength(2);
+        expect(result.data.structured_rubric![0].weight).toBe(40);
+      }
+    });
+
+    it('should validate a task without optional fields', () => {
+      const validTask = {
+        id: 'task-1',
+        title: 'Task 1',
+        difficulty: 'easy',
+        description: 'A test task',
+        version: '1.0.0',
+      };
+      const result = TaskSchema.safeParse(validTask);
+      expect(result.success).toBe(true);
+    });
+
     it('should fail if missing required fields', () => {
       const invalidTask = {
         id: 'task-1',
       };
       const result = TaskSchema.safeParse(invalidTask);
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe('RubricDimensionSchema', () => {
+    it('should validate a valid rubric dimension', () => {
+      const valid = { label: 'Functional correctness', weight: 40, description: 'Works correctly' };
+      const result = RubricDimensionSchema.safeParse(valid);
+      expect(result.success).toBe(true);
+    });
+
+    it('should fail if weight is not a number', () => {
+      const invalid = { label: 'Test', weight: '40', description: 'Test' };
+      const result = RubricDimensionSchema.safeParse(invalid);
       expect(result.success).toBe(false);
     });
   });

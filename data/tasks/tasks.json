@@ -3,7 +3,22 @@
     "id": "task_import_game_v1",
     "title": "Import Game",
     "difficulty": "medium",
+    "domain": "Web App",
     "description": "Import a game, register it, connect vocabulary pipeline, and persist state.",
+    "repo_context": "Next.js App Router with React-Konva for game rendering. The project uses a component-based architecture with games registered in a central game registry.",
+    "acceptance_criteria": [
+      "Game component is registered in the game registry",
+      "Vocabulary pipeline is connected and functional",
+      "Game state persists across navigation",
+      "All existing tests continue to pass"
+    ],
+    "structured_rubric": [
+      { "label": "Functional correctness", "weight": 40, "description": "All acceptance criteria met; feature works end-to-end" },
+      { "label": "Integration quality", "weight": 25, "description": "Code follows existing patterns; no hardcoded values; proper error handling" },
+      { "label": "Regression safety", "weight": 20, "description": "No existing tests broken; no unintended side effects" },
+      { "label": "Minimality", "weight": 10, "description": "No over-engineering; minimal diff; no unnecessary abstractions" },
+      { "label": "Process quality", "weight": 5, "description": "Clean commit history; meaningful messages; follows project conventions" }
+    ],
     "rubric": [
       "Functional correctness (40)",
       "Integration quality (25)",

@@ -47,11 +47,15 @@ export default async function TaskDetailPage({ params }: TaskPageProps) {
             <h2 className="text-2xl font-semibold mb-4">Grading Rubric</h2>
             <Card>
               <CardContent className="pt-6">
-                <ul className="list-disc pl-6 space-y-2">
-                  {task.rubric.map((item, index) => (
-                    <li key={index} className="text-lg">{item}</li>
-                  ))}
-                </ul>
+                {task.rubric && task.rubric.length > 0 ? (
+                  <ul className="list-disc pl-6 space-y-2">
+                    {task.rubric.map((item, index) => (
+                      <li key={index} className="text-lg">{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-muted-foreground">No rubric defined.</p>
+                )}
               </CardContent>
             </Card>
           </section>
