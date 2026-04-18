@@ -2,14 +2,14 @@
 
 ## Phase 1: Data Layer & Fixture
 
-- [~] Task: Define `Task` TypeScript type and JSON schema.
-  - [ ] Fields: `id`, `title`, `difficulty`, `domain`, `description`, `repo_context`, `acceptance_criteria[]`, `rubric` (object with five scoring dimensions).
-  - [ ] Add `tasks/blb-task-001.json` fixture matching the schema.
-- [ ] Task: Write build-time data loader (`lib/tasks.ts`).
-  - [ ] `getAllTasks(): Task[]` — reads all `tasks/*.json` at build time using `fs`.
-  - [ ] `getTask(id: string): Task | null`.
-  - [ ] Validate that each JSON file matches the schema (throw on missing required fields).
-- [ ] Task: Write unit tests for loader with fixture data.
+- [x] Task: Define `Task` TypeScript type and JSON schema. deb0f81
+  - [x] Fields: `id`, `title`, `difficulty`, `domain`, `description`, `repo_context`, `acceptance_criteria[]`, `rubric` (object with five scoring dimensions).
+  - [x] Add `tasks/blb-task-001.json` fixture matching the schema.
+- [x] Task: Write build-time data loader (`lib/tasks.ts`). deb0f81
+  - [x] `getAllTasks(): Task[]` — reads all `tasks/*.json` at build time using `fs`.
+  - [x] `getTask(id: string): Task | null`.
+  - [x] Validate that each JSON file matches the schema (throw on missing required fields).
+- [x] Task: Write unit tests for loader with fixture data. deb0f81
 - [ ] Task: Conductor — User Manual Verification 'Phase 1: Data Layer & Fixture' (Protocol in workflow.md)
 
 ## Phase 2: Task List Page (`/tasks`)
