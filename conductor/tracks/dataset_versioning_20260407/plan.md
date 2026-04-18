@@ -12,6 +12,6 @@
 ## Phase 2: Reproducibility Surfacing
 - [x] Task: Surface dataset version in leaderboard and run detail views. caf334b
 - [x] Task: Add reproducibility smoke test for same-version reruns. 57b0e78
-- [ ] Task: Document version bump and migration process.
+- [~] Task: Document version bump and migration process.
 - [ ] Task: Conductor - User Manual Verification 'Reproducibility Surfacing' (Protocol in workflow.md)
 

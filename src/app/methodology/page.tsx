@@ -124,6 +124,26 @@ export default async function MethodologyPage() {
               </p>
             </div>
           </section>
+
+          <section className="prose dark:prose-invert max-w-none">
+            <h2 className="text-2xl font-semibold mb-4">Dataset Versioning</h2>
+            <div className="text-muted-foreground space-y-4">
+              <p>
+                Each benchmark run is linked to a <strong>dataset version</strong> (date-stamped 
+                in <code className="text-sm bg-muted px-1.5 py-0.5 rounded">YYYY-MM-DD</code> format). 
+                This ensures reproducibility — you can compare runs that used the exact same task set.
+              </p>
+              <p>
+                The leaderboard and run detail pages display the dataset version context so you always 
+                know which dataset was used for a given result. Runs without a dataset version are 
+                legacy entries from before versioning was introduced.
+              </p>
+              <p>
+                For the full operator workflow on introducing new dataset versions, see{' '}
+                <code className="text-sm bg-muted px-1.5 py-0.5 rounded">docs/dataset-versioning.md</code>.
+              </p>
+            </div>
+          </section>
         </div>
     </main>
   );
