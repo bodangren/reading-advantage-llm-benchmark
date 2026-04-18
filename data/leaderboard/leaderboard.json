@@ -4,7 +4,7 @@
     {
       "model": "gpt-5.4",
       "provider": "OpenAI",
-      "harness": "opencode@1.2",
+      "harness": "track-a",
       "score": 82,
       "subscores": {
         "functional": 35,
