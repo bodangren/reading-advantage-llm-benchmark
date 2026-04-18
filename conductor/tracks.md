@@ -13,7 +13,7 @@ This file tracks all major tracks for the project. Each track has its own detail
   *Link: [./tracks/dataset_versioning_20260407/](./tracks/dataset_versioning_20260407/)*
 - [ ] **Track: Automated Cross-Model Evaluation Pipeline**
   *Link: [./tracks/cross_model_eval_pipeline_20260407/](./tracks/cross_model_eval_pipeline_20260407/)*
-- [ ] **Track: Task Catalog & Detail UI**
+- [x] **Track: Task Catalog & Detail UI**
   *Link: [./tracks/task_catalog_ui_20260408/](./tracks/task_catalog_ui_20260408/)*
 - [ ] **Track: Run Detail Page & Artifact Viewer**
   *Link: [./tracks/run_detail_page_20260408/](./tracks/run_detail_page_20260408/)*

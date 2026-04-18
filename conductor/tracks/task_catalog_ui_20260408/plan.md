@@ -26,11 +26,11 @@
 
 ## Phase 3: Task Detail Page (`/tasks/[id]`)
 
-- [~] Task: Build `/app/tasks/[id]/page.tsx` with `generateStaticParams`.
-  - [ ] Acceptance criteria rendered as a read-only checklist.
-  - [ ] Rubric table showing each dimension, its weight, and description.
-  - [ ] Repo context shown in a collapsible code block.
-  - [ ] "Back to Tasks" and breadcrumb navigation.
-- [ ] Task: Write component tests for detail page with fixture task.
-- [ ] Task: Verify static export includes all generated task detail pages.
+- [x] Task: Build `/app/tasks/[id]/page.tsx` with `generateStaticParams`. 49c6ca4
+  - [x] Acceptance criteria rendered as a read-only checklist.
+  - [x] Rubric table showing each dimension, its weight, and description.
+  - [x] Repo context shown in a collapsible code block.
+  - [x] "Back to Tasks" and breadcrumb navigation.
+- [x] Task: Write component tests for detail page with fixture task. 49c6ca4
+- [x] Task: Verify static export includes all generated task detail pages. 49c6ca4
 - [ ] Task: Conductor — User Manual Verification 'Phase 3: Task Detail Page' (Protocol in workflow.md)
