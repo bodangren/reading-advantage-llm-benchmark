@@ -14,14 +14,14 @@
 
 ## Phase 2: Task List Page (`/tasks`)
 
-- [~] Task: Build `/app/tasks/page.tsx` as a static Server Component.
-  - [ ] Call `getAllTasks()` at build time.
-  - [ ] Render task cards: title, difficulty badge, domain tag, description, run count badge.
-  - [ ] Client component wrapper for difficulty/domain filter controls.
-- [ ] Task: Implement run count badge.
-  - [ ] `getRunCountForTask(taskId)` — counts matching entries across `runs/*.json`.
-  - [ ] Greyed badge for zero runs.
-- [ ] Task: Write component tests with fixture tasks (empty state, populated state, filter).
+- [x] Task: Build `/app/tasks/page.tsx` as a static Server Component. 4b86216
+  - [x] Call `getAllTasks()` at build time.
+  - [x] Render task cards: title, difficulty badge, domain tag, description, run count badge.
+  - [x] Client component wrapper for difficulty/domain filter controls.
+- [x] Task: Implement run count badge. 4b86216
+  - [x] `getRunCountForTask(taskId)` — counts matching entries across `runs/*.json`.
+  - [x] Greyed badge for zero runs.
+- [x] Task: Write component tests with fixture tasks (empty state, populated state, filter). 4b86216
 - [ ] Task: Conductor — User Manual Verification 'Phase 2: Task List Page' (Protocol in workflow.md)
 
 ## Phase 3: Task Detail Page (`/tasks/[id]`)
