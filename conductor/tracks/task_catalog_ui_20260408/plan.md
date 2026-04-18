@@ -26,7 +26,7 @@
 
 ## Phase 3: Task Detail Page (`/tasks/[id]`)
 
-- [ ] Task: Build `/app/tasks/[id]/page.tsx` with `generateStaticParams`.
+- [~] Task: Build `/app/tasks/[id]/page.tsx` with `generateStaticParams`.
   - [ ] Acceptance criteria rendered as a read-only checklist.
   - [ ] Rubric table showing each dimension, its weight, and description.
   - [ ] Repo context shown in a collapsible code block.
