@@ -72,3 +72,8 @@ export async function getCurrentDatasetVersion(): Promise<DatasetVersion | null>
     return null;
   }
 }
+
+export async function getRunsByVersion(version: string): Promise<Run[]> {
+  const runs = await getRuns();
+  return runs.filter(r => r.dataset_version === version);
+}

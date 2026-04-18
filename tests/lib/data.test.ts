@@ -143,6 +143,35 @@ describe('Data Utilities', () => {
     });
   });
 
+  describe('Reproducibility', () => {
+    it('should identify runs sharing the same dataset version', async () => {
+      const mockRuns = [
+        { id: 'run-1', model: 'gemini', harness: 'opencode', benchmark_version: '1.0', dataset_version: '2026-04-07', score: 0.9 },
+        { id: 'run-2', model: 'gpt-5', harness: 'opencode', benchmark_version: '1.0', dataset_version: '2026-04-07', score: 0.85 },
+        { id: 'run-3', model: 'claude', harness: 'opencode', benchmark_version: '1.0', score: 0.88 },
+      ];
+      vi.mocked(fs.readdir).mockResolvedValueOnce(['runs.json'] as unknown as Awaited<ReturnType<typeof fs.readdir>>);
+      vi.mocked(fs.readFile).mockResolvedValueOnce(JSON.stringify(mockRuns));
+
+      const { getRunsByVersion } = await import('../../src/lib/data');
+      const versioned = await getRunsByVersion('2026-04-07');
+      expect(versioned).toHaveLength(2);
+      expect(versioned.every(r => r.dataset_version === '2026-04-07')).toBe(true);
+    });
+
+    it('should return empty array when no runs match version', async () => {
+      const mockRuns = [
+        { id: 'run-1', model: 'gemini', harness: 'opencode', benchmark_version: '1.0', score: 0.9 },
+      ];
+      vi.mocked(fs.readdir).mockResolvedValueOnce(['runs.json'] as unknown as Awaited<ReturnType<typeof fs.readdir>>);
+      vi.mocked(fs.readFile).mockResolvedValueOnce(JSON.stringify(mockRuns));
+
+      const { getRunsByVersion } = await import('../../src/lib/data');
+      const versioned = await getRunsByVersion('2026-04-07');
+      expect(versioned).toHaveLength(0);
+    });
+  });
+
   describe('Backward Compatibility', () => {
     it('should parse runs without dataset_version field', async () => {
       const mockRuns = [{
