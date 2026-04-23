@@ -12,7 +12,7 @@
 ## Phase 2: Aggregation and Reporting
 - [x] Task: Implement normalized aggregation output for leaderboard ingestion.
   - [x] Add mapping tests for key metrics and metadata.
-  - [ ] Validate compatibility with existing leaderboard components.
-- [ ] Task: Add operator command/docs for one-shot pipeline runs.
+  - [x] Validate compatibility with existing leaderboard components.
+- [x] Task: Add operator command/docs for one-shot pipeline runs.
 - [ ] Task: Conductor - User Manual Verification 'Aggregation and Reporting' (Protocol in workflow.md)
 

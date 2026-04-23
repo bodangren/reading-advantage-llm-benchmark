@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "pipeline": "npx tsx scripts/run-pipeline.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
