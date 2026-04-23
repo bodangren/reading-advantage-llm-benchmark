@@ -379,3 +379,53 @@ Route (app)
 [x] Verify build and tests pass
 [ ] Commit Phase 1 checkpoint
 [0m
+[0m$ [0mgit add -A && git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   conductor/output.log
+	new file:   data/runs/blb-run-001.json
+	new file:   src/lib/runs.ts
+	modified:   src/lib/schemas.ts
+	new file:   tests/lib/runs.test.ts
+[0m
+[0m$ [0mgit commit -m "Phase 1: Run Detail Data Layer & Fixture (MiniMax-M2.7)
+
+- Added RunDetailSchema with extended fields (wall_time_seconds, scores, diff, test_results, artifacts)
+- Added TestResultSchema and ArtifactSchema types
+- Created data/runs/blb-run-001.json fixture with sample diff, test results, and artifacts
+- Created src/lib/runs.ts data loader with getAllRuns() and getRunById()
+- Added tests/lib/runs.test.ts with comprehensive test coverage
+- 125 tests passing, build succeeds"
+[master d5b8130] Phase 1: Run Detail Data Layer & Fixture (MiniMax-M2.7)
+ 5 files changed, 661 insertions(+), 1 deletion(-)
+ create mode 100644 data/runs/blb-run-001.json
+ create mode 100644 src/lib/runs.ts
+ create mode 100644 tests/lib/runs.test.ts
+[0m
+[0m$ [0mgit push
+To https://github.com/bodangren/reading-advantage-llm-benchmark.git
+   21572e0..d5b8130  master -> master
+[0m
+[0m→ [0mRead conductor/tech-debt.md
+[0m→ [0mRead conductor/lessons-learned.md
+[0m
+[0m← [0mEdit conductor/lessons-learned.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/conductor/lessons-learned.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/conductor/lessons-learned.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/conductor/lessons-learned.md
+@@ -30,5 +30,9 @@
+ ## Architecture & Design
+ 
+ - (2026-04-23, cross_model_eval_pipeline_20260407) Promise.all for parallel execution with isolated failure handling - each model run is independent
+ 
++## Architecture & Design
++
++- (2026-04-24, run_detail_page_20260408) Nested Zod schemas - RunScoresSchema, TestResultSchema, ArtifactSchema inside RunDetailSchema works well for composability
++
+ ## Planning Improvements
+
+[0m
