@@ -14,5 +14,5 @@
   - [x] Add mapping tests for key metrics and metadata.
   - [x] Validate compatibility with existing leaderboard components.
 - [x] Task: Add operator command/docs for one-shot pipeline runs.
-- [ ] Task: Conductor - User Manual Verification 'Aggregation and Reporting' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Aggregation and Reporting' [checkpoint: 6d20f72] (Protocol in workflow.md)
 
