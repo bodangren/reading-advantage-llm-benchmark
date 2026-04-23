@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { executePipeline, executeModelRun, EvaluationFunction } from '../../../src/lib/pipeline/orchestrator';
+import { executePipeline, executeModelRun } from '../../../src/lib/pipeline/orchestrator';
 import { ModelMatrix, ModelConfig, HarnessConfig, Run } from '../../../src/lib/pipeline';
 
 describe('Pipeline Orchestrator', () => {

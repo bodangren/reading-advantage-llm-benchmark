@@ -52,7 +52,7 @@ describe('Task Detail Page', () => {
   });
 
   it('should render acceptance criteria as checklist', async () => {
-    vi.mocked(data.getTaskById).mockResolvedValueOnce(fullTask as any);
+    vi.mocked(data.getTaskById).mockResolvedValueOnce(fullTask as ReturnType<typeof data.getTaskById> extends Promise<infer T> ? Exclude<T, undefined> : never);
     render(await TaskDetailPage({ params: Promise.resolve({ id: 'task-1' }) }));
     expect(screen.getByText('Acceptance Criteria')).toBeDefined();
     expect(screen.getByText('Game component is registered')).toBeDefined();
@@ -60,7 +60,7 @@ describe('Task Detail Page', () => {
   });
 
   it('should render structured rubric table with weights', async () => {
-    vi.mocked(data.getTaskById).mockResolvedValueOnce(fullTask as any);
+    vi.mocked(data.getTaskById).mockResolvedValueOnce(fullTask as ReturnType<typeof data.getTaskById> extends Promise<infer T> ? Exclude<T, undefined> : never);
     render(await TaskDetailPage({ params: Promise.resolve({ id: 'task-1' }) }));
     expect(screen.getByText('Scoring Rubric')).toBeDefined();
     expect(screen.getByText('Functional correctness')).toBeDefined();
@@ -69,21 +69,21 @@ describe('Task Detail Page', () => {
   });
 
   it('should render repo context section', async () => {
-    vi.mocked(data.getTaskById).mockResolvedValueOnce(fullTask as any);
+    vi.mocked(data.getTaskById).mockResolvedValueOnce(fullTask as ReturnType<typeof data.getTaskById> extends Promise<infer T> ? Exclude<T, undefined> : never);
     render(await TaskDetailPage({ params: Promise.resolve({ id: 'task-1' }) }));
     expect(screen.getByText('Repository Context')).toBeDefined();
     expect(screen.getByText('Next.js App Router with React-Konva for game rendering.')).toBeDefined();
   });
 
   it('should render breadcrumb back to tasks', async () => {
-    vi.mocked(data.getTaskById).mockResolvedValueOnce(fullTask as any);
+    vi.mocked(data.getTaskById).mockResolvedValueOnce(fullTask as ReturnType<typeof data.getTaskById> extends Promise<infer T> ? Exclude<T, undefined> : never);
     render(await TaskDetailPage({ params: Promise.resolve({ id: 'task-1' }) }));
     expect(screen.getByText('Back to Tasks')).toBeDefined();
   });
 
   it('should not render optional sections when absent', async () => {
     const minimalTask = { id: '1', title: 'Task 1', difficulty: 'easy', description: 'Desc', version: '1.0' };
-    vi.mocked(data.getTaskById).mockResolvedValueOnce(minimalTask as any);
+    vi.mocked(data.getTaskById).mockResolvedValueOnce(minimalTask as ReturnType<typeof data.getTaskById> extends Promise<infer T> ? Exclude<T, undefined> : never);
     render(await TaskDetailPage({ params: Promise.resolve({ id: '1' }) }));
     expect(screen.queryByText('Acceptance Criteria')).toBeNull();
     expect(screen.queryByText('Repository Context')).toBeNull();

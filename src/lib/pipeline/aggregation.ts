@@ -1,4 +1,4 @@
-import { PipelineResult, ModelRunResult } from './schemas';
+import { PipelineResult } from './schemas';
 import { LeaderboardEntry } from '../schemas';
 
 export interface AggregationOptions {

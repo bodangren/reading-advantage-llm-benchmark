@@ -3,7 +3,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Artifact } from "@/lib/schemas";
 import { FileText, Image, BarChart3, File, Download } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 interface ArtifactLinksProps {
   artifacts: Artifact[];
