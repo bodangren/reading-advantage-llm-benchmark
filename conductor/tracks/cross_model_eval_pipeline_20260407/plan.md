@@ -4,9 +4,9 @@
 - [x] Task: Define model matrix input format and validation.
   - [x] Add schema tests for model/harness config.
   - [x] Add guardrails for unsupported combinations.
-- [ ] Task: Build execution orchestrator scaffold.
-  - [ ] Implement per-model run loop with isolated result capture.
-  - [ ] Add tests for partial-failure behavior.
+- [x] Task: Build execution orchestrator scaffold.
+  - [x] Implement per-model run loop with isolated result capture.
+  - [x] Add tests for partial-failure behavior.
 - [ ] Task: Conductor - User Manual Verification 'Pipeline Skeleton and Contracts' (Protocol in workflow.md)
 
 ## Phase 2: Aggregation and Reporting
