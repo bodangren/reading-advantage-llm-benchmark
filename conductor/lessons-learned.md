@@ -30,9 +30,10 @@
 ## Architecture & Design
 
 - (2026-04-23, cross_model_eval_pipeline_20260407) Promise.all for parallel execution with isolated failure handling - each model run is independent
-
-## Architecture & Design
-
 - (2026-04-24, run_detail_page_20260408) Nested Zod schemas - RunScoresSchema, TestResultSchema, ArtifactSchema inside RunDetailSchema works well for composability
+
+## Recurring Gotchas
+
+- (2026-04-24, run_detail_page_20260408) shadcn Button component does not support asChild prop - use plain anchor tags with Tailwind classes for download links
 
 ## Planning Improvements

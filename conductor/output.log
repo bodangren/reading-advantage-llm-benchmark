@@ -1526,3 +1526,69 @@ Route (app)
 [x] Write component tests
 [ ] Commit Phase 2 checkpoint
 [0m
+[0m$ [0mgit add -A && git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   conductor/output.log
+	modified:   src/app/runs/[id]/page.tsx
+	new file:   src/components/ArtifactLinks.tsx
+	new file:   src/components/DiffViewer.tsx
+	new file:   src/components/ScoreBreakdown.tsx
+	new file:   src/components/TestResultsTable.tsx
+	modified:   tests/app/runs/run_detail/page.test.tsx
+	new file:   tests/components/ArtifactLinks.test.tsx
+	new file:   tests/components/DiffViewer.test.tsx
+	new file:   tests/components/ScoreBreakdown.test.tsx
+	new file:   tests/components/TestResultsTable.test.tsx
+[0m
+[0m$ [0mgit commit -m "Phase 2: Run Detail Page UI (MiniMax-M2.7)
+
+- Updated page to use new RunDetailSchema from lib/runs
+- Added ScoreBreakdown component with horizontal bar chart for 5 dimensions
+- Added DiffViewer component with collapsible file sections and syntax highlighting
+- Added TestResultsTable component with expandable error output
+- Added ArtifactLinks component with download links
+- Added breadcrumb navigation and improved metadata display
+- Updated tests for page and new components
+- 148 tests passing, build succeeds"
+[master 08245f4] Phase 2: Run Detail Page UI (MiniMax-M2.7)
+ 11 files changed, 2051 insertions(+), 76 deletions(-)
+ create mode 100644 src/components/ArtifactLinks.tsx
+ create mode 100644 src/components/DiffViewer.tsx
+ create mode 100644 src/components/ScoreBreakdown.tsx
+ create mode 100644 src/components/TestResultsTable.tsx
+ create mode 100644 tests/components/ArtifactLinks.test.tsx
+ create mode 100644 tests/components/DiffViewer.test.tsx
+ create mode 100644 tests/components/ScoreBreakdown.test.tsx
+ create mode 100644 tests/components/TestResultsTable.test.tsx
+[0m
+[0m$ [0mgit push
+To https://github.com/bodangren/reading-advantage-llm-benchmark.git
+   9728057..08245f4  master -> master
+[0m
+[0m→ [0mRead conductor/lessons-learned.md
+[0m
+[0m← [0mEdit conductor/lessons-learned.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/conductor/lessons-learned.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/conductor/lessons-learned.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/conductor/lessons-learned.md
+@@ -29,10 +29,11 @@
+ 
+ ## Architecture & Design
+ 
+ - (2026-04-23, cross_model_eval_pipeline_20260407) Promise.all for parallel execution with isolated failure handling - each model run is independent
++- (2026-04-24, run_detail_page_20260408) Nested Zod schemas - RunScoresSchema, TestResultSchema, ArtifactSchema inside RunDetailSchema works well for composability
+ 
+-## Architecture & Design
++## Recurring Gotchas
+ 
+-- (2026-04-24, run_detail_page_20260408) Nested Zod schemas - RunScoresSchema, TestResultSchema, ArtifactSchema inside RunDetailSchema works well for composability
++- (2026-04-24, run_detail_page_20260408) shadcn Button component does not support asChild prop - use plain anchor tags with Tailwind classes for download links
+ 
+ ## Planning Improvements
+
+[0m
