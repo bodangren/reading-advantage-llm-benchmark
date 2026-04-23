@@ -11,7 +11,7 @@ This file tracks all major tracks for the project. Each track has its own detail
   *Link: [./tracks/methodology_20260404/](./tracks/methodology_20260404/)*
 - [x] **Track: Prompt Dataset Versioning and Reproducibility**
   *Link: [./tracks/dataset_versioning_20260407/](./tracks/dataset_versioning_20260407/)*
-- [ ] **Track: Automated Cross-Model Evaluation Pipeline**
+- [x] **Track: Automated Cross-Model Evaluation Pipeline**
   *Link: [./tracks/cross_model_eval_pipeline_20260407/](./tracks/cross_model_eval_pipeline_20260407/)*
 - [x] **Track: Task Catalog & Detail UI**
   *Link: [./tracks/task_catalog_ui_20260408/](./tracks/task_catalog_ui_20260408/)*
