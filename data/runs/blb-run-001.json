@@ -1,0 +1,68 @@
+{
+  "id": "blb-run-001",
+  "model": "gpt-5.4",
+  "provider": "OpenAI",
+  "harness": "opencode",
+  "harness_version": "1.2.0",
+  "benchmark_version": "1.0",
+  "dataset_version": "2026-04-07",
+  "task_id": "task_import_game_v1",
+  "run_date": "2026-04-08T14:30:00Z",
+  "wall_time_seconds": 145.7,
+  "total_score": 0.82,
+  "scores": {
+    "functional_correctness": 32,
+    "integration_quality": 22,
+    "regression_safety": 16,
+    "minimality": 8,
+    "process_quality": 4
+  },
+  "diff": "--- a/src/import_game.ts\n+++ b/src/import_game.ts\n@@ -1,8 +1,15 @@\n import { Game, Player } from './types';\n \n-export function importGame(data: unknown): Game {\n-  return JSON.parse(data as string);\n+export function importGame(data: unknown): Game {\n+  if (typeof data === 'string') {\n+    const parsed = JSON.parse(data);\n+    return validateGame(parsed);\n+  }\n+  return validateGame(data);\n }\n \n+function validateGame(data: unknown): Game {\n+  if (!data || typeof data !== 'object') {\n+    throw new Error('Invalid game data');\n+  }\n+  // Additional validation logic\n+  return data as Game;\n+}\n+\nexport function exportGame(game: Game): string {\n  return JSON.stringify(game);\n }\n",
+  "test_results": [
+    {
+      "suite": "unit",
+      "name": "importGame should parse valid JSON",
+      "status": "pass",
+      "duration_ms": 12
+    },
+    {
+      "suite": "unit",
+      "name": "importGame should throw on invalid data",
+      "status": "pass",
+      "duration_ms": 8
+    },
+    {
+      "suite": "integration",
+      "name": "importGame with real game data",
+      "status": "pass",
+      "duration_ms": 45
+    },
+    {
+      "suite": "integration",
+      "name": "exportGame round-trip",
+      "status": "pass",
+      "duration_ms": 23
+    },
+    {
+      "suite": "regression",
+      "name": "handles malformed JSON gracefully",
+      "status": "fail",
+      "duration_ms": 5,
+      "error_message": "Expected Error to be thrown, but it returned undefined"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "run_log.txt",
+      "type": "log",
+      "url": "/artifacts/blb-run-001/log.txt",
+      "size_bytes": 45678
+    },
+    {
+      "name": "coverage_report.html",
+      "type": "report",
+      "url": "/artifacts/blb-run-001/coverage.html",
+      "size_bytes": 123456
+    }
+  ]
+}

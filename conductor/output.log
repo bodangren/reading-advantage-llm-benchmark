@@ -164,3 +164,218 @@ export type ModelRunResult = z.infer<typeof ModelRunResultSchema>;
 export type PipelineResult = z.infer<typeof PipelineResultSchema>;
 [0m
 [0m→ [0mRead src/lib/pipeline/aggregation.ts
+[0m
+[0m$ [0mgit add -A && git commit -m "refactor(pipeline): move schemas to pipeline/schemas.ts and add aggregation module
+
+- Deleted src/lib/pipeline.ts (contained duplicate schema definitions)
+- Added export for aggregation module in pipeline/index.ts
+- aggregation.ts provides LeaderboardEntry aggregation functions from PipelineResult"
+[master 21572e0] refactor(pipeline): move schemas to pipeline/schemas.ts and add aggregation module
+ 3 files changed, 147 insertions(+), 71 deletions(-)
+ delete mode 100644 src/lib/pipeline.ts
+[0m
+[0m→ [0mRead conductor/tracks/run_detail_page_20260408/plan.md
+[0m
+[0m$ [0mgit push
+To https://github.com/bodangren/reading-advantage-llm-benchmark.git
+   f04b130..21572e0  master -> master
+[0m
+[0m→ [0mRead conductor/tracks/run_detail_page_20260408/spec.md
+[0m✱ [0mGlob "runs/**/*"[90m 0 matches[0m
+[0m→ [0mRead src/lib/schemas.ts
+[0m✱ [0mGlob "src/app/tasks/**/page.tsx"[90m 2 matches[0m
+[0m✱ [0mGlob "src/lib/**/*.ts"[90m 8 matches[0m
+[0m→ [0mRead src/app/tasks/[id]/page.tsx
+[0m→ [0mRead src/lib/data.ts
+[0m✱ [0mGlob "data/**/*.json"[90m 4 matches[0m
+[0m
+[0m# [0mTodos
+[ ] Define RunDetailSchema with extended fields for detailed run view
+[ ] Add test_results and artifacts types to schemas.ts
+[ ] Create fixture data/runs/blb-run-001.json
+[ ] Write unit tests for run data loader
+[ ] Verify build and tests pass
+[ ] Commit Phase 1 checkpoint
+[0m
+[0m→ [0mRead data/runs/runs.json
+[0m
+[0m← [0mEdit src/lib/schemas.ts
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/lib/schemas.ts
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/lib/schemas.ts
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/lib/schemas.ts
+@@ -25,8 +25,49 @@
+   structured_rubric: z.array(RubricDimensionSchema).optional(),
+   version: z.string(),
+ });
+ 
++export const TestResultSchema = z.object({
++  suite: z.string(),
++  name: z.string(),
++  status: z.enum(['pass', 'fail', 'skip']),
++  duration_ms: z.number().optional(),
++  error_message: z.string().optional(),
++});
++
++export const ArtifactSchema = z.object({
++  name: z.string(),
++  type: z.enum(['log', 'screenshot', 'report', 'other']),
++  url: z.string(),
++  size_bytes: z.number().optional(),
++});
++
++export const RunScoresSchema = z.object({
++  functional_correctness: z.number().min(0).max(40),
++  integration_quality: z.number().min(0).max(25),
++  regression_safety: z.number().min(0).max(20),
++  minimality: z.number().min(0).max(10),
++  process_quality: z.number().min(0).max(5),
++});
++
++export const RunDetailSchema = z.object({
++  id: z.string(),
++  model: z.string(),
++  provider: z.string().optional(),
++  harness_version: z.string(),
++  harness: z.string(),
++  benchmark_version: z.string(),
++  dataset_version: z.string().optional(),
++  task_id: z.string().optional(),
++  run_date: z.string(),
++  wall_time_seconds: z.number(),
++  total_score: z.number().min(0).max(1),
++  scores: RunScoresSchema,
++  diff: z.string().optional(),
++  test_results: z.array(TestResultSchema),
++  artifacts: z.array(ArtifactSchema),
++});
++
+ export const RunSchema = z.object({
+   id: z.string(),
+   model: z.string(),
+   provider: z.string().optional(),
+
+[0m
+[0m→ [0mRead src/lib/schemas.ts[90m [offset=50][0m
+[0m
+[0m← [0mEdit src/lib/schemas.ts
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/lib/schemas.ts
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/lib/schemas.ts
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/lib/schemas.ts
+@@ -92,6 +92,10 @@
+ 
+ export type RubricDimension = z.infer<typeof RubricDimensionSchema>;
+ export type Task = z.infer<typeof TaskSchema>;
+ export type Run = z.infer<typeof RunSchema>;
++export type RunDetail = z.infer<typeof RunDetailSchema>;
+ export type LeaderboardEntry = z.infer<typeof LeaderboardSchema>;
+-export type DatasetVersion = z.infer<typeof DatasetVersionSchema>;
+\ No newline at end of file
++export type DatasetVersion = z.infer<typeof DatasetVersionSchema>;
++export type TestResult = z.infer<typeof TestResultSchema>;
++export type Artifact = z.infer<typeof ArtifactSchema>;
++export type RunScores = z.infer<typeof RunScoresSchema>;
+\ No newline at end of file
+
+[0m
+[0m# [0mTodos
+[x] Define RunDetailSchema with extended fields for detailed run view
+[x] Add test_results and artifacts types to schemas.ts
+[ ] Create fixture data/runs/blb-run-001.json
+[ ] Write unit tests for run data loader
+[ ] Verify build and tests pass
+[ ] Commit Phase 1 checkpoint
+[0m
+[0m✱ [0mGlob "src/**/*.test.ts"[90m 0 matches[0m
+[0m✱ [0mGlob "**/*.test.{ts,tsx}"[90m 14 matches[0m
+[0m→ [0mRead tests/lib/schemas.test.ts
+[0m→ [0mRead tests/app/runs/run_detail/page.test.tsx
+[0m✱ [0mGlob "src/app/runs/**/*"[90m 1 match[0m
+[0m→ [0mRead src/app/runs/[id]/page.tsx
+[0m
+[0m← [0mWrite data/runs/blb-run-001.json
+Wrote file successfully.
+[0m
+[0m✱ [0mGlob "src/lib/runs.ts"[90m 0 matches[0m
+[0m
+[0m← [0mWrite src/lib/runs.ts
+Wrote file successfully.
+[0m
+[0m→ [0mRead tests/lib/data.test.ts
+[0m
+[0m← [0mWrite tests/lib/runs.test.ts
+Wrote file successfully.
+[0m
+[0m$ [0mnpm test -- --run tests/lib/runs.test.ts 2>&1
+> tmp_app@0.1.0 test
+> vitest --run tests/lib/runs.test.ts
+
+
+ RUN  v4.1.2 /home/daniel-bo/Desktop/reading-advantage-llm-benchmark
+
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  01:34:11
+   Duration  503ms (transform 93ms, setup 0ms, import 208ms, tests 28ms, environment 0ms)
+[0m
+[0m# [0mTodos
+[x] Define RunDetailSchema with extended fields for detailed run view
+[x] Add test_results and artifacts types to schemas.ts
+[x] Create fixture data/runs/blb-run-001.json
+[x] Write unit tests for run data loader
+[ ] Verify build and tests pass
+[ ] Commit Phase 1 checkpoint
+[0m
+[0m$ [0mnpm test 2>&1 | tail -20
+> tmp_app@0.1.0 test
+> vitest
+
+
+ RUN  v4.1.2 /home/daniel-bo/Desktop/reading-advantage-llm-benchmark
+
+
+ Test Files  15 passed (15)
+      Tests  125 passed (125)
+   Start at  01:34:18
+   Duration  23.88s (transform 2.59s, setup 0ms, import 11.99s, tests 9.29s, environment 36.42s)
+[0m
+[0m$ [0mnpm run build 2>&1 | tail -30
+▲ Next.js 16.2.2 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 23.9s
+  Running TypeScript ...
+  Finished TypeScript in 9.6s ...
+  Collecting page data using 3 workers ...
+  Generating static pages using 3 workers (0/9) ...
+  Generating static pages using 3 workers (2/9) 
+  Generating static pages using 3 workers (4/9) 
+  Generating static pages using 3 workers (6/9) 
+✓ Generating static pages using 3 workers (9/9) in 566ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /leaderboard
+├ ○ /methodology
+├ ● /runs/[id]
+│ └ /runs/run_001
+├ ○ /tasks
+└ ● /tasks/[id]
+  └ /tasks/task_import_game_v1
+
+
+○  (Static)  prerendered as static content
+●  (SSG)     prerendered as static HTML (uses generateStaticParams)
+[0m
+[0m# [0mTodos
+[x] Define RunDetailSchema with extended fields for detailed run view
+[x] Add test_results and artifacts types to schemas.ts
+[x] Create fixture data/runs/blb-run-001.json
+[x] Write unit tests for run data loader
+[x] Verify build and tests pass
+[ ] Commit Phase 1 checkpoint
+[0m
