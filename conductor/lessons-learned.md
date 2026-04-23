@@ -21,4 +21,14 @@
 - (2026-04-15, methodology_20260404) Phase verification: automated tests + lint + build must all pass before creating checkpoint
 - (2026-04-16, dataset_versioning_20260407) Zod schemas for backward compatibility - use optional() fields for new features on existing types
 
+## Patterns That Worked Well
+
+- (2026-04-23, cross_model_eval_pipeline_20260407) Dependency injection for testability - pass EvaluationFunction as parameter instead of dynamic import
+- (2026-04-23, cross_model_eval_pipeline_20260407) Zod's omit({}) trick to create variant schemas from existing ones
+- (2026-04-23, cross_model_eval_pipeline_20260407) TypeScript type assertion in filter() - use explicit type guard instead of complex generics
+
+## Architecture & Design
+
+- (2026-04-23, cross_model_eval_pipeline_20260407) Promise.all for parallel execution with isolated failure handling - each model run is independent
+
 ## Planning Improvements
