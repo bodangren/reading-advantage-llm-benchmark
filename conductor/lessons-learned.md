@@ -35,5 +35,6 @@
 ## Recurring Gotchas
 
 - (2026-04-24, run_detail_page_20260408) shadcn Button component does not support asChild prop - use plain anchor tags with Tailwind classes for download links
+- (2026-04-24, run_detail_page_20260408) getAllByRole for multiple elements with same accessible name, not getByRole
 
 ## Planning Improvements
