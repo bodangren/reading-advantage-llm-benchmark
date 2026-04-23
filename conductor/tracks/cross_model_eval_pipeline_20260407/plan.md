@@ -1,9 +1,9 @@
 # Implementation Plan
 
 ## Phase 1: Pipeline Skeleton and Contracts
-- [ ] Task: Define model matrix input format and validation.
-  - [ ] Add schema tests for model/harness config.
-  - [ ] Add guardrails for unsupported combinations.
+- [x] Task: Define model matrix input format and validation.
+  - [x] Add schema tests for model/harness config.
+  - [x] Add guardrails for unsupported combinations.
 - [ ] Task: Build execution orchestrator scaffold.
   - [ ] Implement per-model run loop with isolated result capture.
   - [ ] Add tests for partial-failure behavior.
