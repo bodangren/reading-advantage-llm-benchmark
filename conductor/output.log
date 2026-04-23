@@ -5,29 +5,162 @@
 [0m→ [0mSkill "conductor"
 [0m→ [0mRead conductor/tracks.md
 [0m→ [0mRead conductor/tech-debt.md
-[0m→ [0mRead conductor/lessons-learned.md
 [0m✗ [0mread failed
 [91m[1mError: [0mFile not found: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/conductor/current_directive.md
+[0m→ [0mRead conductor/lessons-learned.md
 [0m
 [0m$ [0mgit status
 On branch master
-Your branch is ahead of 'origin/master' by 15 commits.
-  (use "git push" to publish your local commits)
+Your branch is up to date with 'origin/master'.
 
 Changes not staged for commit:
-  (use "git add <file>..." to update what will be committed)
+  (use "git add/rm <file>..." to update what will be committed)
   (use "git restore <file>..." to discard changes in working directory)
 	modified:   conductor/output.log
-	modified:   conductor/tracks.md
-
-Untracked files:
-  (use "git add <file>..." to include in what will be committed)
-	conductor/tracks/ci_cd_cost_tracking_20260423/
-	conductor/tracks/model_comparison_reports_20260423/
+	deleted:    src/lib/pipeline.ts
+	modified:   src/lib/pipeline/index.ts
 
 no changes added to commit (use "git add" and/or "git commit -a")
 [0m
 [0m$ [0mgit log -1 --oneline
-1e7b06c conductor(plan): Mark Task Catalog track as complete
+f04b130 conductor: update tech-debt and lessons-learned from cross_model_eval_pipeline
 [0m
-The workspace is dirty. Committing first:
+[0m$ [0mgit diff --stat
+conductor/output.log      | 18 +++++----------
+ src/lib/pipeline.ts       | 58 -----------------------------------------------
+ src/lib/pipeline/index.ts |  3 ++-
+ 3 files changed, 8 insertions(+), 71 deletions(-)
+[0m
+[0m→ [0mRead src/lib/pipeline/index.ts
+[0m
+[0m$ [0mgit diff src/lib/pipeline.ts
+fatal: ambiguous argument 'src/lib/pipeline.ts': unknown revision or path not in the working tree.
+Use '--' to separate paths from revisions, like this:
+'git <command> [<revision>...] -- [<file>...]'
+[0m
+[0m$ [0mgit diff src/lib/pipeline/index.ts
+diff --git a/src/lib/pipeline/index.ts b/src/lib/pipeline/index.ts
+index 6079657..850b1a5 100644
+--- a/src/lib/pipeline/index.ts
++++ b/src/lib/pipeline/index.ts
+@@ -1,4 +1,5 @@
+ export * from './schemas';
+ export type { Run } from '../schemas';
+ export * from './orchestrator';
+-export * from './harness';
+\ No newline at end of file
++export * from './harness';
++export * from './aggregation';
+\ No newline at end of file
+[0m
+[0m→ [0mRead conductor/output.log
+[0m✱ [0mGlob "conductor/tracks/**/plan.md"[90m 8 matches[0m
+[0m✱ [0mGlob "src/lib/pipeline/**/*"[90m 5 matches[0m
+[0m
+[0m$ [0mnpm run build 2>&1 | head -50
+> tmp_app@0.1.0 build
+> next build
+
+▲ Next.js 16.2.2 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 14.1s
+  Running TypeScript ...
+  Finished TypeScript in 11.6s ...
+  Collecting page data using 3 workers ...
+  Generating static pages using 3 workers (0/9) ...
+  Generating static pages using 3 workers (2/9) 
+  Generating static pages using 3 workers (4/9) 
+  Generating static pages using 3 workers (6/9) 
+✓ Generating static pages using 3 workers (9/9) in 728ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /leaderboard
+├ ○ /methodology
+├ ● /runs/[id]
+│ └ /runs/run_001
+├ ○ /tasks
+└ ● /tasks/[id]
+  └ /tasks/task_import_game_v1
+
+
+○  (Static)  prerendered as static content
+●  (SSG)     prerendered as static HTML (uses generateStaticParams)
+[0m
+[0m$ [0mnpm test 2>&1 | tail -30
+> tmp_app@0.1.0 test
+> vitest
+
+
+ RUN  v4.1.2 /home/daniel-bo/Desktop/reading-advantage-llm-benchmark
+
+
+ Test Files  14 passed (14)
+      Tests  115 passed (115)
+   Start at  01:31:22
+   Duration  13.99s (transform 1.57s, setup 0ms, import 7.84s, tests 5.86s, environment 20.52s)
+[0m
+[0m$ [0mgit show HEAD:src/lib/pipeline.ts 2>/dev/null | head -60
+import { z } from 'zod';
+
+const SUPPORTED_HARNESSES = ['opencode', 'anthropic', 'openai', 'google'] as const;
+
+export const ModelConfigSchema = z.object({
+  model_id: z.string().min(1, 'model_id is required'),
+  provider: z.string().optional(),
+  enabled: z.boolean().default(true),
+});
+
+export const HarnessConfigSchema = z.object({
+  harness_id: z.string().refine(
+    (val) => SUPPORTED_HARNESSES.includes(val as typeof SUPPORTED_HARNESSES[number]),
+    { message: `harness_id must be one of: ${SUPPORTED_HARNESSES.join(', ')}` }
+  ),
+  temperature: z.number().min(0).max(2.0).default(0.0),
+  max_tokens: z.number().min(100).max(128000).default(2048),
+});
+
+export const ModelMatrixSchema = z.object({
+  dataset_version: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Version must be in YYYY-MM-DD format'),
+  models: z.array(ModelConfigSchema).min(1, 'At least one model is required'),
+  harness: HarnessConfigSchema,
+});
+
+export const ModelRunResultSchema = z.object({
+  model_id: z.string(),
+  provider: z.string().optional(),
+  status: z.enum(['success', 'failed']),
+  run: z.object({
+    id: z.string(),
+    model: z.string(),
+    harness: z.string(),
+    benchmark_version: z.string(),
+    dataset_version: z.string().optional(),
+    task_id: z.string().optional(),
+    score: z.number(),
+    subscores: z.record(z.string(), z.number()).optional(),
+    date: z.string().optional(),
+  }).optional(),
+  error: z.string().optional(),
+});
+
+export const PipelineResultSchema = z.object({
+  pipeline_version: z.string(),
+  dataset_version: z.string(),
+  started_at: z.string(),
+  completed_at: z.string(),
+  status: z.enum(['success', 'partial_failure', 'failed']),
+  model_results: z.array(ModelRunResultSchema),
+  error: z.string().optional(),
+});
+
+export type ModelConfig = z.infer<typeof ModelConfigSchema>;
+export type HarnessConfig = z.infer<typeof HarnessConfigSchema>;
+export type ModelMatrix = z.infer<typeof ModelMatrixSchema>;
+export type ModelRunResult = z.infer<typeof ModelRunResultSchema>;
+export type PipelineResult = z.infer<typeof PipelineResultSchema>;
+[0m
+[0m→ [0mRead src/lib/pipeline/aggregation.ts
