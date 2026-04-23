@@ -1,0 +1,8 @@
+{
+  "id": "task_authoring_interface_20260424",
+  "title": "Task Authoring Interface",
+  "status": "pending",
+  "created": "2026-04-24",
+  "dependencies": ["task_catalog_ui_20260408"],
+  "tags": ["authoring", "ui", "tasks", "creation"]
+}

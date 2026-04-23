@@ -1592,3 +1592,23 @@ Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/conductor/lessons
  ## Planning Improvements
 
 [0m
+[0m$ [0mgit add -A && git commit -m "conductor: update lessons-learned from run_detail_page Phase 2"
+[master 0c82e9c] conductor: update lessons-learned from run_detail_page Phase 2
+ 2 files changed, 69 insertions(+), 2 deletions(-)
+[0m
+[0m$ [0mgit push
+To https://github.com/bodangren/reading-advantage-llm-benchmark.git
+   08245f4..0c82e9c  master -> master
+[0m
+[0m# [0mTodos
+[x] Phase 1: Data Layer & Fixture
+[x] Phase 2: Run Detail Page
+[x] Commit Phase 2 checkpoint
+[0m
+Autonomous run complete. 
+
+**Summary:**
+- **Phase 1**: Data layer - Added `RunDetailSchema`, fixture at `data/runs/blb-run-001.json`, and `src/lib/runs.ts` loader
+- **Phase 2**: Run Detail Page - Built `ScoreBreakdown`, `DiffViewer`, `TestResultsTable`, `ArtifactLinks` components; updated page to use new schema; 148 tests passing
+
+**Next phase (Phase 3)**: Run Index Page (`/runs`) - Build the index page listing all runs.
