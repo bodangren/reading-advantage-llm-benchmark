@@ -7,7 +7,7 @@
 - [x] Task: Build execution orchestrator scaffold.
   - [x] Implement per-model run loop with isolated result capture.
   - [x] Add tests for partial-failure behavior.
-- [ ] Task: Conductor - User Manual Verification 'Pipeline Skeleton and Contracts' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Pipeline Skeleton and Contracts' [checkpoint: faec7ac] (Protocol in workflow.md)
 
 ## Phase 2: Aggregation and Reporting
 - [ ] Task: Implement normalized aggregation output for leaderboard ingestion.
