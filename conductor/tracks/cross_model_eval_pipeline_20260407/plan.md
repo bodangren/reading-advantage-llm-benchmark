@@ -10,8 +10,8 @@
 - [x] Task: Conductor - User Manual Verification 'Pipeline Skeleton and Contracts' [checkpoint: faec7ac] (Protocol in workflow.md)
 
 ## Phase 2: Aggregation and Reporting
-- [ ] Task: Implement normalized aggregation output for leaderboard ingestion.
-  - [ ] Add mapping tests for key metrics and metadata.
+- [x] Task: Implement normalized aggregation output for leaderboard ingestion.
+  - [x] Add mapping tests for key metrics and metadata.
   - [ ] Validate compatibility with existing leaderboard components.
 - [ ] Task: Add operator command/docs for one-shot pipeline runs.
 - [ ] Task: Conductor - User Manual Verification 'Aggregation and Reporting' (Protocol in workflow.md)
