@@ -1,0 +1,11 @@
+{
+  "track_id": "model_comparison_reports_20260423",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-04-23T12:00:00Z",
+  "updated_at": "2026-04-23T12:00:00Z",
+  "description": "Side-by-side model comparison reports with score deltas, per-task breakdowns, strengths/weaknesses analysis, and exportable as PDF/Markdown.",
+  "estimated_tasks": 12,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}
