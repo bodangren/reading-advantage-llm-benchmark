@@ -99,3 +99,56 @@ export type DatasetVersion = z.infer<typeof DatasetVersionSchema>;
 export type TestResult = z.infer<typeof TestResultSchema>;
 export type Artifact = z.infer<typeof ArtifactSchema>;
 export type RunScores = z.infer<typeof RunScoresSchema>;
+
+export const NormalizedScoreSchema = z.object({
+  raw: z.number(),
+  normalized: z.number().min(0).max(100),
+  scale: z.enum(['0-1', '0-100']),
+});
+
+export const ModelResultSchema = z.object({
+  model: z.string(),
+  provider: z.string().optional(),
+  normalizedScore: z.number().min(0).max(100),
+  rawScore: z.number(),
+  subscores: z.record(z.string(), z.number()).optional(),
+  taskResults: z.array(z.object({
+    taskId: z.string(),
+    taskTitle: z.string(),
+    domain: z.string().optional(),
+    normalizedScore: z.number().min(0).max(100),
+    rawScore: z.number(),
+    winner: z.boolean(),
+    delta: z.number(),
+  })),
+});
+
+export const ComparisonReportSchema = z.object({
+  id: z.string(),
+  generatedAt: z.string(),
+  datasetVersion: z.string().optional(),
+  taskSet: z.array(z.string()).min(1),
+  models: z.array(ModelResultSchema).min(1),
+  aggregateScores: z.array(z.object({
+    model: z.string(),
+    normalizedScore: z.number().min(0).max(100),
+    rank: z.number().int().min(1),
+  })),
+  strengthsWeaknesses: z.array(z.object({
+    model: z.string(),
+    strengths: z.array(z.object({
+      category: z.string(),
+      avgScore: z.number(),
+      taskCount: z.number(),
+    })),
+    weaknesses: z.array(z.object({
+      category: z.string(),
+      avgScore: z.number(),
+      taskCount: z.number(),
+    })),
+  })).optional(),
+});
+
+export type NormalizedScore = z.infer<typeof NormalizedScoreSchema>;
+export type ModelResult = z.infer<typeof ModelResultSchema>;
+export type ComparisonReport = z.infer<typeof ComparisonReportSchema>;

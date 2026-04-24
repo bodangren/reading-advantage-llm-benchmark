@@ -42,3 +42,9 @@
 - (2026-04-24, ci_cd_cost_tracking_20260423) Immutability patterns (createSpendWindow returns new window) make state management predictable and testable
 - (2026-04-24, ci_cd_cost_tracking_20260423) Externalized pricing table as constant makes updates possible without code changes
 - (2026-04-24, ci_cd_cost_tracking_20260423) Test boundary conditions explicitly (at threshold vs over threshold) rather than assuming <= behavior
+
+## Patterns That Worked Well
+
+- (2026-04-24, model_comparison_reports_20260423) Score normalization: `normalizeScore()` handles 0-1→0-100 and pass-through for 0-100 scale
+- (2026-04-24, model_comparison_reports_20260423) Use Zod schemas for new data models - provides validation and TypeScript types with `infer`
+- (2026-04-24, model_comparison_reports_20260423) Use `.min(1)` on array schemas to prevent empty arrays
