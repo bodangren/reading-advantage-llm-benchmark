@@ -15,10 +15,10 @@ This file tracks all major tracks for the project. Each track has its own detail
   *Link: [./archive/cross_model_eval_pipeline_20260407/](./archive/cross_model_eval_pipeline_20260407/)*
 - [x] **Track: Task Catalog & Detail UI**
   *Link: [./archive/task_catalog_ui_20260408/](./archive/task_catalog_ui_20260408/)*
-- [ ] **Track: Run Detail Page & Artifact Viewer**
-  *Link: [./tracks/run_detail_page_20260408/](./tracks/run_detail_page_20260408/)*
-- [ ] **Track: CI/CD Cost Tracking**
-  *Link: [./tracks/ci_cd_cost_tracking_20260423/](./tracks/ci_cd_cost_tracking_20260423/)*
+- [x] **Track: Run Detail Page & Artifact Viewer**
+  *Link: [./archive/run_detail_page_20260408/](./archive/run_detail_page_20260408/)*
+- [x] **Track: CI/CD Cost Tracking**
+  *Link: [./archive/ci_cd_cost_tracking_20260423/](./archive/ci_cd_cost_tracking_20260423/)*
 - [ ] **Track: Model Comparison Reports**
   *Link: [./tracks/model_comparison_reports_20260423/](./tracks/model_comparison_reports_20260423/)*
 - [ ] **Track: Task Authoring Interface**

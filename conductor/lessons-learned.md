@@ -38,3 +38,7 @@
 - (2026-04-24, run_detail_page_20260408) getAllByRole for multiple elements with same accessible name, not getByRole
 
 ## Planning Improvements
+
+- (2026-04-24, ci_cd_cost_tracking_20260423) Immutability patterns (createSpendWindow returns new window) make state management predictable and testable
+- (2026-04-24, ci_cd_cost_tracking_20260423) Externalized pricing table as constant makes updates possible without code changes
+- (2026-04-24, ci_cd_cost_tracking_20260423) Test boundary conditions explicitly (at threshold vs over threshold) rather than assuming <= behavior

@@ -14,3 +14,4 @@
 | 2026-04-11 | leaderboard_20260404 | Score format ambiguous (0-1 vs 0-100) in LeaderboardTable | Medium | Open | Line 137 does `score <= 1 ? score*100 : score` — normalize data format at source |
 | 2026-04-16 | dataset_versioning_20260407 | No dataset version field in Run records | Medium | Resolved | Added dataset_version optional field to RunSchema with YYYY-MM-DD validation (2026-04-16) |
 | 2026-04-23 | cross_model_eval_pipeline_20260407 | Pipeline harness interface is a stub | Medium | Open | harness.ts needs real API integration - currently returns mock Run objects |
+| 2026-04-24 | ci_cd_cost_tracking_20260423 | Pricing table hardcoded in PRICING_TABLE constant | Low | Open | Could be externalized to JSON/YAML file for easier updates without code changes |
