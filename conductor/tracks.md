@@ -24,3 +24,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 - [ ] **Track: Task Authoring Interface**
   *Link: [./tracks/task_authoring_interface_20260424/](./tracks/task_authoring_interface_20260424/)*
   Form-based task editor, live preview, task versioning with diff view, bulk import/export.
+
+- [x] [Visual Refresh: Define Unique Identity](tracks/visual_refresh_20260425/)

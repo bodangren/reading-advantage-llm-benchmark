@@ -5,61 +5,41 @@
 
 ## Architecture & Design
 
-- (2026-04-09, leaderboard_20260404) Tabs components need React context for state coordination - independent useState in each subcomponent doesn't share state
+- (2026-04-09) Tabs components need React context for state coordination - independent useState doesn't share state
+- (2026-04-23) Promise.all for parallel execution with isolated failure handling - each model run is independent
+- (2026-04-24) Nested Zod schemas (RunScoresSchema, TestResultSchema, ArtifactSchema inside RunDetailSchema) works well for composability
+- (2026-04-25) Separate comparison logic (compareModels, rankModels) from UI concerns for testability
+- (2026-04-25) Strengths/weaknesses analyzer uses midpoint splitting - top half strengths, bottom half weaknesses sorted ascending
 
 ## Recurring Gotchas
 
-- (2026-04-09, leaderboard_20260404) SortIcon defined inside component render causes lint error "Cannot create components during render" - **FIXED** by extracting to separate function with proper props passing
-- (2026-04-11, methodology_20260404) Pages with inline `<header>` elements duplicate the shared Header from layout - **FIXED** by removing inline header and relying on layout's shared Header component
+- (2026-04-09) SortIcon defined inside component render causes lint error "Cannot create components during render" - **FIXED** by extracting to separate function
+- (2026-04-11) Pages with inline `<header>` elements duplicate the shared Header - **FIXED** by relying on layout's shared Header
+- (2026-04-24) shadcn Button component does not support asChild prop - use plain anchor tags for download links
+- (2026-04-24) getAllByRole for multiple elements with same accessible name, not getByRole
+- (2026-04-25) React impure function error for Date.now() in useMemo - use stable ID instead
+- (2026-04-25) Delta calculation is relative to max score (winner=0), not absolute difference
 
 ## Patterns That Worked Well
 
-- (2026-04-09, leaderboard_20260404) TDD: writing tests before implementation caught tab state coordination issues early
-- (2026-04-10, leaderboard_20260404) Fix lint errors immediately when discovered to prevent accumulation
-- (2026-10, methodology_20260404) Static pages using Next.js App Router - no need for 'use client' if only server data fetching
-- (2026-04-14, methodology_20260404) Use `cn()` utility for conditional classes (active vs hover states on sortable table headers)
-- (2026-04-15, methodology_20260404) Phase verification: automated tests + lint + build must all pass before creating checkpoint
-- (2026-04-16, dataset_versioning_20260407) Zod schemas for backward compatibility - use optional() fields for new features on existing types
+- (2026-04-09) TDD: writing tests before implementation caught tab state coordination issues early
+- (2026-04-10) Fix lint errors immediately when discovered to prevent accumulation
+- (2026-04-14) Use `cn()` utility for conditional classes (active vs hover states on sortable table headers)
+- (2026-04-15) Phase verification: automated tests + lint + build must all pass before creating checkpoint
+- (2026-04-16) Zod schemas for backward compatibility - use optional() fields for new features on existing types
+- (2026-04-23) Dependency injection for testability - pass EvaluationFunction as parameter instead of dynamic import
+- (2026-04-23) Zod's omit({}) trick to create variant schemas from existing ones
+- (2026-04-23) TypeScript type assertion in filter() - use explicit type guard instead of complex generics
+- (2026-04-24) Immutability patterns (createSpendWindow returns new window) make state management predictable and testable
+- (2026-04-24) Externalized pricing table as constant makes updates possible without code changes
+- (2026-04-24) Test boundary conditions explicitly (at threshold vs over threshold) rather than assuming <= behavior
+- (2026-04-24) Score normalization: `normalizeScore()` handles 0-1→0-100 and pass-through for 0-100 scale
+- (2026-04-24) Use Zod schemas for new data models - provides validation and TypeScript types with `infer`
+- (2026-04-24) Use `.min(1)` on array schemas to prevent empty arrays
+- (2026-04-25) Client component pattern with CompareClient for interactive model selection
+- (2026-04-25) Export module separates Markdown and PDF generation for testability
 
-## Patterns That Worked Well
+## Visual Design (2026-04-25)
 
-- (2026-04-23, cross_model_eval_pipeline_20260407) Dependency injection for testability - pass EvaluationFunction as parameter instead of dynamic import
-- (2026-04-23, cross_model_eval_pipeline_20260407) Zod's omit({}) trick to create variant schemas from existing ones
-- (2026-04-23, cross_model_eval_pipeline_20260407) TypeScript type assertion in filter() - use explicit type guard instead of complex generics
-
-## Architecture & Design
-
-- (2026-04-23, cross_model_eval_pipeline_20260407) Promise.all for parallel execution with isolated failure handling - each model run is independent
-- (2026-04-24, run_detail_page_20260408) Nested Zod schemas - RunScoresSchema, TestResultSchema, ArtifactSchema inside RunDetailSchema works well for composability
-
-## Recurring Gotchas
-
-- (2026-04-24, run_detail_page_20260408) shadcn Button component does not support asChild prop - use plain anchor tags with Tailwind classes for download links
-- (2026-04-24, run_detail_page_20260408) getAllByRole for multiple elements with same accessible name, not getByRole
-
-## Planning Improvements
-
-- (2026-04-24, ci_cd_cost_tracking_20260423) Immutability patterns (createSpendWindow returns new window) make state management predictable and testable
-- (2026-04-24, ci_cd_cost_tracking_20260423) Externalized pricing table as constant makes updates possible without code changes
-- (2026-04-24, ci_cd_cost_tracking_20260423) Test boundary conditions explicitly (at threshold vs over threshold) rather than assuming <= behavior
-
-## Patterns That Worked Well
-
-- (2026-04-24, model_comparison_reports_20260423) Score normalization: `normalizeScore()` handles 0-1→0-100 and pass-through for 0-100 scale
-- (2026-04-24, model_comparison_reports_20260423) Use Zod schemas for new data models - provides validation and TypeScript types with `infer`
-- (2026-04-24, model_comparison_reports_20260423) Use `.min(1)` on array schemas to prevent empty arrays
-
-## Architecture & Design
-
-- (2026-04-25, model_comparison_reports_20260423) Separate comparison logic (compareModels, rankModels) from UI concerns for testability
-- (2026-04-25, model_comparison_reports_20260423) Strengths/weaknesses analyzer uses midpoint splitting - top half strengths, bottom half weaknesses sorted ascending
-
-## Recurring Gotchas
-
-- (2026-04-25, model_comparison_reports_20260423) Delta calculation is relative to max score (winner=0), not absolute difference
-- (2026-04-25, model_comparison_reports_20260423) React impure function error for Date.now() in useMemo - use stable ID instead
-
-## Patterns That Worked Well
-
-- (2026-04-25, model_comparison_reports_20260423) Client component pattern with CompareClient for interactive model selection
-- (2026-04-25, model_comparison_reports_20260423) Export module separates Markdown and PDF generation for testability
+- (2026-04-25) OKLCH color values in CSS don't match DESIGN.md hex tokens - need to sync both during refactoring
+- (2026-04-25) Convert OKLCH to hex tokens when updating globals.css to match DESIGN.md specification
