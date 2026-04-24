@@ -28,8 +28,8 @@
 - [ ] Task: Conductor - User Manual Verification 'UI and Report Generation' (Protocol in workflow.md)
 
 ## Phase 4: Export
-- [ ] Task: Implement Markdown export (tables for summary, per-task, and strengths/weaknesses).
-  - [ ] Add snapshot tests for Markdown output structure.
-- [ ] Task: Implement PDF export (charts rendered to images, styled layout).
-  - [ ] Add tests for PDF generation (file produced, page count, content spot-checks).
-- [ ] Task: Conductor - User Manual Verification 'Export' (Protocol in workflow.md)
+- [x] Task: Implement Markdown export (tables for summary, per-task, and strengths/weaknesses).
+  - [x] Add snapshot tests for Markdown output structure.
+- [x] Task: Implement PDF export (charts rendered to images, styled layout).
+  - [x] Add tests for PDF generation (file produced, page count, content spot-checks).
+- [x] Task: Conductor - User Manual Verification 'Export' (Protocol in workflow.md)

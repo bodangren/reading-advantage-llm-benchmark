@@ -15,4 +15,4 @@
 | 2026-04-16 | dataset_versioning_20260407 | No dataset version field in Run records | Medium | Resolved | Added dataset_version optional field to RunSchema with YYYY-MM-DD validation (2026-04-16) |
 | 2026-04-23 | cross_model_eval_pipeline_20260407 | Pipeline harness interface is a stub | Medium | Open | harness.ts needs real API integration - currently returns mock Run objects |
 | 2026-04-24 | ci_cd_cost_tracking_20260423 | Pricing table hardcoded in PRICING_TABLE constant | Low | Open | Could be externalized to JSON/YAML file for easier updates without code changes |
-| 2026-04-24 | model_comparison_reports_20260423 | ComparisonReport schema created for Phase 1 | Low | Resolved | NormalizedScoreSchema, ModelResultSchema, ComparisonReportSchema added to schemas.ts |
+| 2026-04-25 | model_comparison_reports_20260423 | ComparisonReport schema created for Phase 1 | Low | Resolved | NormalizedScoreSchema, ModelResultSchema, ComparisonReportSchema added to schemas.ts |

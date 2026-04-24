@@ -48,3 +48,18 @@
 - (2026-04-24, model_comparison_reports_20260423) Score normalization: `normalizeScore()` handles 0-1→0-100 and pass-through for 0-100 scale
 - (2026-04-24, model_comparison_reports_20260423) Use Zod schemas for new data models - provides validation and TypeScript types with `infer`
 - (2026-04-24, model_comparison_reports_20260423) Use `.min(1)` on array schemas to prevent empty arrays
+
+## Architecture & Design
+
+- (2026-04-25, model_comparison_reports_20260423) Separate comparison logic (compareModels, rankModels) from UI concerns for testability
+- (2026-04-25, model_comparison_reports_20260423) Strengths/weaknesses analyzer uses midpoint splitting - top half strengths, bottom half weaknesses sorted ascending
+
+## Recurring Gotchas
+
+- (2026-04-25, model_comparison_reports_20260423) Delta calculation is relative to max score (winner=0), not absolute difference
+- (2026-04-25, model_comparison_reports_20260423) React impure function error for Date.now() in useMemo - use stable ID instead
+
+## Patterns That Worked Well
+
+- (2026-04-25, model_comparison_reports_20260423) Client component pattern with CompareClient for interactive model selection
+- (2026-04-25, model_comparison_reports_20260423) Export module separates Markdown and PDF generation for testability
