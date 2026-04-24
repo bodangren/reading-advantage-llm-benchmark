@@ -8,7 +8,6 @@ export interface AggregationOptions {
 
 export function aggregateLeaderboardEntries(
   pipelineResult: PipelineResult,
-  _options: AggregationOptions = {}
 ): LeaderboardEntry[] {
   return pipelineResult.model_results
     .filter((result) => result.status === 'success' && result.run !== undefined)

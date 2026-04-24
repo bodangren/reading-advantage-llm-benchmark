@@ -16,3 +16,4 @@
 | 2026-04-23 | cross_model_eval_pipeline_20260407 | Pipeline harness interface is a stub | Medium | Open | harness.ts needs real API integration - currently returns mock Run objects |
 | 2026-04-24 | ci_cd_cost_tracking_20260423 | Pricing table hardcoded in PRICING_TABLE constant | Low | Open | Could be externalized to JSON/YAML file for easier updates without code changes |
 | 2026-04-25 | model_comparison_reports_20260423 | ComparisonReport schema created for Phase 1 | Low | Resolved | NormalizedScoreSchema, ModelResultSchema, ComparisonReportSchema added to schemas.ts |
+| 2026-04-25 | model_comparison_reports_20260423 | Duplicate TaskResult/ModelResult interfaces in 4 files | Medium | Open | CompareClient.tsx, TaskDiffView.tsx, StrengthsWeaknessesSection.tsx, export.ts each define local interfaces instead of importing from schemas.ts |

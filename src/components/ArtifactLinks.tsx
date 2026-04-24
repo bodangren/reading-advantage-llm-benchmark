@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Artifact } from "@/lib/schemas";
-import { FileText, Image, BarChart3, File, Download } from "lucide-react";
+import { FileText, Image as ImageIcon, BarChart3, File, Download } from "lucide-react";
 
 interface ArtifactLinksProps {
   artifacts: Artifact[];
@@ -13,7 +13,7 @@ function ArtifactIcon({ type }: { type: Artifact["type"] }) {
     case "log":
       return <FileText className="h-5 w-5" />;
     case "screenshot":
-      return <Image className="h-5 w-5" />;
+      return <ImageIcon className="h-5 w-5" />;
     case "report":
       return <BarChart3 className="h-5 w-5" />;
     default:

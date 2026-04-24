@@ -123,7 +123,8 @@ describe('ComparisonReportSchema', () => {
     });
 
     it('should fail if id is missing', () => {
-      const { id: _id, ...invalid } = validReport;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { id: _unused, ...invalid } = validReport;
       const result = ComparisonReportSchema.safeParse(invalid);
       expect(result.success).toBe(false);
     });
