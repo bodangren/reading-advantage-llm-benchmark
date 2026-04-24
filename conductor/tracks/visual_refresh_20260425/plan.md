@@ -7,6 +7,6 @@
 - [x] Run `npx -y @google/design.md lint DESIGN.md` to ensure structural compliance.
 
 ## Phase 2: Refactor UI Components
-- [ ] Update global CSS and Tailwind configuration to match the new `DESIGN.md`.
-- [ ] Refactor core UI components (buttons, cards, layout) to reflect the new visual theme.
-- [ ] Verify the visual refresh locally.
+- [x] Update global CSS and Tailwind configuration to match the new `DESIGN.md`.
+- [x] Refactor core UI components (buttons, cards, layout) to reflect the new visual theme.
+- [x] Verify the visual refresh locally.
