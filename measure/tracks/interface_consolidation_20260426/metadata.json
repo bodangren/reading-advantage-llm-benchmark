@@ -1,0 +1,9 @@
+{
+  "id": "interface_consolidation_20260426",
+  "title": "Interface Consolidation",
+  "status": "pending",
+  "priority": "medium",
+  "type": "refactor",
+  "created": "2026-04-26",
+  "depends_on": []
+}

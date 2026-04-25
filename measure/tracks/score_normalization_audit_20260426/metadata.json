@@ -1,0 +1,9 @@
+{
+  "id": "score_normalization_audit_20260426",
+  "title": "Score Normalization Audit",
+  "status": "pending",
+  "priority": "medium",
+  "type": "bug",
+  "created": "2026-04-26",
+  "depends_on": []
+}

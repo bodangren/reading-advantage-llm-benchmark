@@ -1,5 +1,23 @@
 <!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
+# This is NOT the Next.js you know## Measure Workflow
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-<!-- END:nextjs-agent-rules -->
+## Measure Workflow
+
+All development runs through the **Measure** spec-driven development framework exclusively. At the start of every session:
+
+1. Load the `measure` skill
+2. Read `measure/index.md` to understand the project context
+3. Follow the workflow defined in `measure/workflow.md`
+
+Key reference files:
+- `measure/tracks.md` — Active work registry
+- `measure/tracks/<track_id>/plan.md` — Task checklist
+- `measure/product.md` — Product vision
+- `measure/tech-stack.md` — Technology choices
+- `measure/lessons-learned.md` — Project memory
+- `measure/tech-debt.md` — Known shortcuts
+
+Never start significant work without an active track. Always update `measure/tracks.md` and the current track's `plan.md` before and after work.
+
+
+
