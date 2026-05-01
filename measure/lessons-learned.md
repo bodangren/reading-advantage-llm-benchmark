@@ -38,6 +38,7 @@
 - (2026-04-24) Use `.min(1)` on array schemas to prevent empty arrays
 - (2026-04-25) Client component pattern with CompareClient for interactive model selection
 - (2026-04-25) Export module separates Markdown and PDF generation for testability
+- (2026-05-01) Exponential backoff with sleep() for retry logic - delay doubles on each retry
 
 ## Visual Design (2026-04-25)
 
