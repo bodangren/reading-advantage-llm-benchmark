@@ -39,6 +39,7 @@
 - (2026-04-25) Client component pattern with CompareClient for interactive model selection
 - (2026-04-25) Export module separates Markdown and PDF generation for testability
 - (2026-05-01) Exponential backoff with sleep() for retry logic - delay doubles on each retry
+- (2026-05-02) File-based persistence via saveRun() to data/runs/ directory - Run converted to RunDetail before storage
 
 ## Visual Design (2026-04-25)
 

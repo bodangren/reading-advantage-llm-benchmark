@@ -29,9 +29,9 @@ This file tracks all major tracks for the project. Each track has its own detail
   *Link: [./archive/visual_refresh_20260425/](./archive/visual_refresh_20260425/)*
   *Status: Complete*
 
-- [ ] **Track: Harness Implementation**
-  *Link: [./tracks/harness_implementation_20260426/](./tracks/harness_implementation_20260426/)*
-  Replace stub harness with real OpenCode API integration for actual model evaluation.
+- [x] **Track: Harness Implementation**
+  *Link: [./archive/harness_implementation_20260426/](./archive/harness_implementation_20260426/)*
+  *Status: Complete*
 
 - [ ] **Track: Score Normalization Audit**
   *Link: [./tracks/score_normalization_audit_20260426/](./tracks/score_normalization_audit_20260426/)*
