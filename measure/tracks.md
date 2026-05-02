@@ -37,6 +37,6 @@ This file tracks all major tracks for the project. Each track has its own detail
   *Link: [./archive/score_normalization_audit_20260426/](./archive/score_normalization_audit_20260426/)*
   *Status: Complete*
 
-- [ ] **Track: Interface Consolidation**
-  *Link: [./tracks/interface_consolidation_20260426/](./tracks/interface_consolidation_20260426/)*
-  Extract duplicate TaskResult/ModelResult interfaces into shared schemas.ts.
+- [x] **Track: Interface Consolidation**
+  *Link: [./archive/interface_consolidation_20260426/](./archive/interface_consolidation_20260426/)*
+  *Status: Complete*
