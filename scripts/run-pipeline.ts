@@ -6,21 +6,40 @@ import { ModelMatrixSchema } from '../src/lib/pipeline/schemas';
 import fs from 'fs/promises';
 import path from 'path';
 
-async function main() {
-  const args = process.argv.slice(2);
+function parseArgs(args: string[]) {
+  const result: { matrixPath?: string; track?: 'fixed' | 'native' } = {};
 
-  if (args.length === 0) {
-    console.error('Usage: run-pipeline <matrix-file>');
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--track' && i + 1 < args.length) {
+      result.track = args[++i] as 'fixed' | 'native';
+    } else if (!args[i].startsWith('--')) {
+      result.matrixPath = args[i];
+    }
+  }
+
+  return result;
+}
+
+async function main() {
+  const args = parseArgs(process.argv.slice(2));
+
+  if (!args.matrixPath) {
+    console.error('Usage: run-pipeline <matrix-file> [--track fixed|native]');
     console.error('  matrix-file: Path to JSON file containing model matrix configuration');
+    console.error('  --track: Evaluation track (fixed or native, default: fixed)');
     process.exit(1);
   }
 
-  const matrixPath = args[0];
+  const matrixPath = args.matrixPath;
 
   try {
     console.log(`Reading matrix from: ${matrixPath}`);
     const matrixContent = await fs.readFile(matrixPath, 'utf-8');
     const matrixJson = JSON.parse(matrixContent);
+
+    if (args.track) {
+      matrixJson.track = args.track;
+    }
 
     const parseResult = ModelMatrixSchema.safeParse(matrixJson);
     if (!parseResult.success) {
@@ -33,6 +52,7 @@ async function main() {
     console.log(`Dataset version: ${parseResult.data.dataset_version}`);
     console.log(`Models: ${parseResult.data.models.length}`);
     console.log(`Harness: ${parseResult.data.harness.harness_id}`);
+    console.log(`Track: ${parseResult.data.track}`);
 
     const result = await executePipeline(parseResult.data);
 

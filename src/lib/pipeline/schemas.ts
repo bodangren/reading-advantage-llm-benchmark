@@ -22,6 +22,12 @@ export const ModelMatrixSchema = z.object({
   dataset_version: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Version must be in YYYY-MM-DD format'),
   models: z.array(ModelConfigSchema).min(1, 'At least one model is required'),
   harness: HarnessConfigSchema,
+  track: z.enum(['fixed', 'native']).default('fixed'),
+  agent_config: z.object({
+    agentType: z.enum(['opencode', 'claude-code', 'github-copilot', 'cursor', 'windsurf', 'custom']),
+    systemPrompt: z.string().optional(),
+    toolAccess: z.array(z.enum(['filesystem', 'bash', 'websearch', 'browser', 'git', 'api'])),
+  }).optional(),
 });
 
 export const ModelRunResultSchema = z.object({

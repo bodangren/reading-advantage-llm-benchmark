@@ -1109,3 +1109,166 @@ Route (app)
 ○  (Static)  prerendered as static content
 ●  (SSG)     prerendered as static HTML (uses generateStaticParams)
 [0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && git add -A && git commit -m "feat(track-b): add leaderboard filtering by track type
+
+- Add track field to LeaderboardSchema
+- Add filterByTrack() utility function for filtering entries by track
+- Add normalizeScore() utility function for score normalization
+- Add Track badge with icon (Bot for native, Settings for fixed) to LeaderboardTable
+- Add leaderboard filter tests with sort verification
+- Leaderboard page already has track tabs - no UI changes needed" 2>&1
+[master 24baf14] feat(track-b): add leaderboard filtering by track type
+ 5 files changed, 451 insertions(+), 1 deletion(-)
+ create mode 100644 tests/lib/leaderboard-filter.test.ts
+[0m
+[0m# [0mTodos
+[x] Write tests for TrackConfig Zod schema
+[x] Implement TrackConfig schema in lib/schemas.ts
+[x] Write tests for run record serialization with track field
+[x] Extend RunDetailSchema to include track field
+[x] Write tests for leaderboard filtering by track type
+[x] Add track filter UI component to leaderboard page
+[ ] Implement --track CLI flag in benchmark runner script
+[ ] Write tests for native agent config validation
+[ ] Add example Track B config file
+[ ] Update methodology page to document Track B
+[ ] Run full test suite
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && git push 2>&1
+To https://github.com/bodangren/reading-advantage-llm-benchmark.git
+   4997ba9..24baf14  master -> master
+[0m
+[0m✱ [0mGlob "scripts/**/*.{ts,js}"[90m 1 match[0m
+[0m→ [0mRead scripts/run-pipeline.ts
+[0m→ [0mRead src/lib/pipeline/schemas.ts
+[0m
+[0m← [0mEdit src/lib/pipeline/schemas.ts
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/lib/pipeline/schemas.ts
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/lib/pipeline/schemas.ts
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/lib/pipeline/schemas.ts
+@@ -21,8 +21,14 @@
+ export const ModelMatrixSchema = z.object({
+   dataset_version: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Version must be in YYYY-MM-DD format'),
+   models: z.array(ModelConfigSchema).min(1, 'At least one model is required'),
+   harness: HarnessConfigSchema,
++  track: z.enum(['fixed', 'native']).default('fixed'),
++  agent_config: z.object({
++    agentType: z.enum(['opencode', 'claude-code', 'github-copilot', 'cursor', 'windsurf', 'custom']),
++    systemPrompt: z.string().optional(),
++    toolAccess: z.array(z.enum(['filesystem', 'bash', 'websearch', 'browser', 'git', 'api'])),
++  }).optional(),
+ });
+ 
+ export const ModelRunResultSchema = z.object({
+   model_id: z.string(),
+
+[0m
+[0m← [0mEdit scripts/run-pipeline.ts
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/scripts/run-pipeline.ts
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/scripts/run-pipeline.ts
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/scripts/run-pipeline.ts
+@@ -5,24 +5,43 @@
+ import { ModelMatrixSchema } from '../src/lib/pipeline/schemas';
+ import fs from 'fs/promises';
+ import path from 'path';
+ 
++function parseArgs(args: string[]) {
++  const result: { matrixPath?: string; track?: 'fixed' | 'native' } = {};
++
++  for (let i = 0; i < args.length; i++) {
++    if (args[i] === '--track' && i + 1 < args.length) {
++      result.track = args[++i] as 'fixed' | 'native';
++    } else if (!args[i].startsWith('--')) {
++      result.matrixPath = args[i];
++    }
++  }
++
++  return result;
++}
++
+ async function main() {
+-  const args = process.argv.slice(2);
++  const args = parseArgs(process.argv.slice(2));
+ 
+-  if (args.length === 0) {
+-    console.error('Usage: run-pipeline <matrix-file>');
++  if (!args.matrixPath) {
++    console.error('Usage: run-pipeline <matrix-file> [--track fixed|native]');
+     console.error('  matrix-file: Path to JSON file containing model matrix configuration');
++    console.error('  --track: Evaluation track (fixed or native, default: fixed)');
+     process.exit(1);
+   }
+ 
+-  const matrixPath = args[0];
++  const matrixPath = args.matrixPath;
+ 
+   try {
+     console.log(`Reading matrix from: ${matrixPath}`);
+     const matrixContent = await fs.readFile(matrixPath, 'utf-8');
+     const matrixJson = JSON.parse(matrixContent);
+ 
++    if (args.track) {
++      matrixJson.track = args.track;
++    }
++
+     const parseResult = ModelMatrixSchema.safeParse(matrixJson);
+     if (!parseResult.success) {
+       console.error('Invalid matrix configuration:');
+       console.error(parseResult.error.format());
+@@ -32,8 +51,9 @@
+     console.log('Starting pipeline execution...');
+     console.log(`Dataset version: ${parseResult.data.dataset_version}`);
+     console.log(`Models: ${parseResult.data.models.length}`);
+     console.log(`Harness: ${parseResult.data.harness.harness_id}`);
++    console.log(`Track: ${parseResult.data.track}`);
+ 
+     const result = await executePipeline(parseResult.data);
+ 
+     console.log('\nPipeline completed!');
+
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && npm test -- --run 2>&1 | tail -50
+> tmp_app@0.1.0 test
+> vitest --run
+
+
+ RUN  v4.1.2 /home/daniel-bo/Desktop/reading-advantage-llm-benchmark
+
+
+ Test Files  38 passed (38)
+      Tests  298 passed (298)
+   Start at  07:50:31
+   Duration  85.84s (transform 7.94s, setup 0ms, import 47.79s, tests 36.99s, environment 120.38s)
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && npm run build 2>&1 | tail -30
+Creating an optimized production build ...
+✓ Compiled successfully in 38.2s
+  Running TypeScript ...
+  Finished TypeScript in 34.4s ...
+  Collecting page data using 3 workers ...
+  Generating static pages using 3 workers (0/11) ...
+  Generating static pages using 3 workers (2/11) 
+  Generating static pages using 3 workers (5/11) 
+  Generating static pages using 3 workers (8/11) 
+✓ Generating static pages using 3 workers (11/11) in 1937ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /compare
+├ ○ /leaderboard
+├ ○ /methodology
+├ ○ /runs
+├ ● /runs/[id]
+│ └ /runs/blb-run-001
+├ ○ /tasks
+└ ● /tasks/[id]
+  └ /tasks/task_import_game_v1
+
+
+○  (Static)  prerendered as static content
+●  (SSG)     prerendered as static HTML (uses generateStaticParams)
+[0m
