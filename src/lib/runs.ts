@@ -53,3 +53,11 @@ export function validateRun(run: unknown): RunDetail {
   }
   return result.data;
 }
+
+export async function saveRun(run: RunDetail): Promise<string> {
+  await fs.mkdir(RUNS_DATA_DIR, { recursive: true });
+  const fileName = `${run.id}.json`;
+  const filePath = path.join(RUNS_DATA_DIR, fileName);
+  await fs.writeFile(filePath, JSON.stringify(run, null, 2), 'utf-8');
+  return filePath;
+}

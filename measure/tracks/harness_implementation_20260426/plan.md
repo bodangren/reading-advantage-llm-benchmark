@@ -6,10 +6,10 @@
 - [x] Add error handling and retry logic
 - [x] Test with single model evaluation
 
-## Phase 2: Database Integration [ ]
-- [ ] Design run result schema
-- [ ] Implement result storage
-- [ ] Add result retrieval for dashboard
+## Phase 2: Database Integration [x]
+- [x] Design run result schema
+- [x] Implement result storage
+- [x] Add result retrieval for dashboard
 
 ## Phase 3: Full Pipeline [ ]
 - [ ] Wire harness into evaluation pipeline
