@@ -7,16 +7,10 @@
 - [x] 1.4 Write component tests for form validation
 
 ## Phase 2: Live Preview
-- [ ] 2.1 Create TaskPreview component with markdown rendering
-- [ ] 2.2 Add acceptance criteria preview
-- [ ] 2.3 Implement rubric preview with scoring breakdown
-- [ ] 2.4 Write tests for preview accuracy
-
-## Phase 3: Version Control
-- [ ] 3.1 Create TaskVersion dataclass with metadata
-- [ ] 3.2 Implement version history storage
-- [ ] 3.3 Add diff view for version comparison
-- [ ] 4.4 Write tests for version tracking
+- [x] 2.1 Create TaskPreview component with markdown rendering
+- [x] 2.2 Add acceptance criteria preview
+- [x] 2.3 Implement rubric preview with scoring breakdown
+- [x] 2.4 Write tests for preview accuracy
 
 ## Phase 4: Bulk Operations
 - [ ] 4.1 Create bulk import UI with file upload
