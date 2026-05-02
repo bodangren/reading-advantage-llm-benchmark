@@ -52,17 +52,37 @@ export default async function MethodologyPage() {
               <div className="border rounded-lg p-6">
                 <h3 className="font-semibold text-lg mb-2">Track A: Fixed Harness</h3>
                 <p className="text-muted-foreground text-sm">
-                  All models use identical OpenCode configuration. This ensures apples-to-apples 
+                  All models use identical OpenCode configuration. This ensures apples-to-apples
                   comparison of model capability.
                 </p>
+                <ul className="mt-3 text-xs text-muted-foreground space-y-1">
+                  <li>Standardized system prompt</li>
+                  <li>Fixed tool access (filesystem, bash)</li>
+                  <li>Same max tokens and temperature</li>
+                </ul>
               </div>
               <div className="border rounded-lg p-6">
                 <h3 className="font-semibold text-lg mb-2">Track B: Native Agent</h3>
                 <p className="text-muted-foreground text-sm">
-                  Models use their own best agent/harness. Evaluates how models perform with 
+                  Models use their own best agent/harness. Evaluates how models perform with
                   native tool use and agent frameworks.
                 </p>
+                <ul className="mt-3 text-xs text-muted-foreground space-y-1">
+                  <li>Custom system prompt per model</li>
+                  <li>Extended tool access (websearch, git, etc.)</li>
+                  <li>Configurable via <code className="bg-muted px-1 rounded">--track native</code></li>
+                </ul>
               </div>
+            </div>
+            <div className="bg-muted/50 rounded-lg p-6 my-6">
+              <h4 className="font-semibold mb-3">Running Track B Evaluations</h4>
+              <pre className="text-sm bg-background rounded p-4 overflow-x-auto">
+                npm run pipeline configs/track-b-native.json --track native
+              </pre>
+              <p className="text-xs text-muted-foreground mt-3">
+                See <code className="bg-muted px-1 rounded">configs/track-b-native-example.json</code> for
+                a complete configuration example with agent_type, system_prompt, and tool_access settings.
+              </p>
             </div>
           </section>
 

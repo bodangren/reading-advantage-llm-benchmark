@@ -1272,3 +1272,116 @@ Route (app)
 ○  (Static)  prerendered as static content
 ●  (SSG)     prerendered as static HTML (uses generateStaticParams)
 [0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && git add -A && git commit -m "feat(track-b): add --track CLI flag to pipeline runner
+
+- Add track and agent_config fields to ModelMatrixSchema
+- Add parseArgs() function to extract --track flag from CLI
+- Pipeline runner now accepts --track flag: fixed (default) or native
+- When --track native is specified, agent_config must be provided in matrix file
+- Display track info in pipeline startup summary" 2>&1
+[master 81d5d90] feat(track-b): add --track CLI flag to pipeline runner
+ 3 files changed, 193 insertions(+), 4 deletions(-)
+[0m
+[0m# [0mTodos
+[x] Write tests for TrackConfig Zod schema
+[x] Implement TrackConfig schema in lib/schemas.ts
+[x] Write tests for run record serialization with track field
+[x] Extend RunDetailSchema to include track field
+[x] Write tests for leaderboard filtering by track type
+[x] Add track filter UI component to leaderboard page
+[x] Implement --track CLI flag in benchmark runner script
+[x] Write tests for native agent config validation
+[ ] Add example Track B config file
+[ ] Update methodology page to document Track B
+[ ] Run full test suite
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && git push 2>&1
+To https://github.com/bodangren/reading-advantage-llm-benchmark.git
+   24baf14..81d5d90  master -> master
+[0m
+[0m✱ [0mGlob "data/**/*.json"[90m 5 matches[0m
+[0m→ [0mRead data/leaderboard/leaderboard.json
+[0m
+[0m← [0mWrite configs/track-b-native-example.json
+Wrote file successfully.
+[0m
+[0m→ [0mRead src/app/methodology/page.tsx
+[0m
+[0m← [0mEdit src/app/methodology/page.tsx
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/app/methodology/page.tsx
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/app/methodology/page.tsx
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/app/methodology/page.tsx
+@@ -51,20 +51,40 @@
+   <div className="grid md:grid-cols-2 gap-6 mt-6">
+     <div className="border rounded-lg p-6">
+       <h3 className="font-semibold text-lg mb-2">Track A: Fixed Harness</h3>
+       <p className="text-muted-foreground text-sm">
+-        All models use identical OpenCode configuration. This ensures apples-to-apples 
++        All models use identical OpenCode configuration. This ensures apples-to-apples
+         comparison of model capability.
+       </p>
++      <ul className="mt-3 text-xs text-muted-foreground space-y-1">
++        <li>Standardized system prompt</li>
++        <li>Fixed tool access (filesystem, bash)</li>
++        <li>Same max tokens and temperature</li>
++      </ul>
+     </div>
+     <div className="border rounded-lg p-6">
+       <h3 className="font-semibold text-lg mb-2">Track B: Native Agent</h3>
+       <p className="text-muted-foreground text-sm">
+-        Models use their own best agent/harness. Evaluates how models perform with 
++        Models use their own best agent/harness. Evaluates how models perform with
+         native tool use and agent frameworks.
+       </p>
++      <ul className="mt-3 text-xs text-muted-foreground space-y-1">
++        <li>Custom system prompt per model</li>
++        <li>Extended tool access (websearch, git, etc.)</li>
++        <li>Configurable via <code className="bg-muted px-1 rounded">--track native</code></li>
++      </ul>
+     </div>
+   </div>
++  <div className="bg-muted/50 rounded-lg p-6 my-6">
++    <h4 className="font-semibold mb-3">Running Track B Evaluations</h4>
++    <pre className="text-sm bg-background rounded p-4 overflow-x-auto">
++      npm run pipeline configs/track-b-native.json --track native
++    </pre>
++    <p className="text-xs text-muted-foreground mt-3">
++      See <code className="bg-muted px-1 rounded">configs/track-b-native-example.json</code> for
++      a complete configuration example with agent_type, system_prompt, and tool_access settings.
++    </p>
++  </div>
+ </section>
+ 
+ <section className="prose dark:prose-invert max-w-none">
+   <h2 className="text-2xl font-semibold mb-4">Scoring Engine</h2>
+
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && npm test -- --run 2>&1 | tail -20
+❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/components/BulkOperations.test.tsx:29:19
+     27|     await new Promise(resolve => setTimeout(resolve, 100))
+     28|
+     29|     expect(screen.getByText(/Validation Errors/i)).toBeDefined()
+       |                   ^
+     30|   })
+     31|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 37 passed (38)
+      Tests  1 failed | 297 passed (298)
+   Start at  07:54:44
+   Duration  96.96s (transform 8.55s, setup 0ms, import 55.55s, tests 41.40s, environment 133.75s)
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && npm run build 2>&1 | tail -30
+(no output)
+
+<bash_metadata>
+bash tool terminated command after exceeding timeout 120000 ms. If this command is expected to take longer and is not waiting for interactive input, retry with a larger timeout value in milliseconds.
+</bash_metadata>
+[0m
