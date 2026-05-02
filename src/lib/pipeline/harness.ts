@@ -3,6 +3,8 @@ import { Run, RunDetail, RunDetailSchema } from '../schemas';
 import { runOpenCodeEvaluation, OpenCodeConfig, DEFAULT_CONFIG } from '../opencode-api';
 import { saveRun } from '../runs';
 
+const MOCK_MODE = process.env.HARNESS_MOCK_MODE === 'true';
+
 export async function runEvaluation(
   modelConfig: ModelConfig,
   harnessConfig: HarnessConfig,
@@ -10,7 +12,7 @@ export async function runEvaluation(
 ): Promise<Run> {
   const runId = `run-${Date.now()}-${modelConfig.model_id}`;
 
-  if (harnessConfig.harness_id !== 'opencode') {
+  if (MOCK_MODE || harnessConfig.harness_id !== 'opencode') {
     return createMockRun(runId, modelConfig, harnessConfig, datasetVersion);
   }
 

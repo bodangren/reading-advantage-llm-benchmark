@@ -11,7 +11,7 @@
 - [x] Implement result storage
 - [x] Add result retrieval for dashboard
 
-## Phase 3: Full Pipeline [ ]
-- [ ] Wire harness into evaluation pipeline
-- [ ] Test end-to-end evaluation flow
-- [ ] Add mock mode toggle for development
+## Phase 3: Full Pipeline [x]
+- [x] Wire harness into evaluation pipeline
+- [x] Test end-to-end evaluation flow
+- [x] Add mock mode toggle for development
