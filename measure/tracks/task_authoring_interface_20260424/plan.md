@@ -19,10 +19,10 @@
 - [x] 3.4 Write tests for version tracking
 
 ## Phase 4: Bulk Operations
-- [ ] 4.1 Create bulk import UI with file upload
-- [ ] 4.2 Implement import validation and error reporting
-- [ ] 4.3 Add bulk export with format options
-- [ ] 4.4 Write integration tests for bulk operations
+- [x] 4.1 Create bulk import UI with file upload
+- [x] 4.2 Implement import validation and error reporting
+- [x] 4.3 Add bulk export with format options
+- [x] 4.4 Write integration tests for bulk operations
 
 ## Phase 5: Task Management
 - [ ] 5.1 Add task status management (draft, review, published)
