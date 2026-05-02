@@ -105,6 +105,7 @@ export const LeaderboardSchema = z.object({
   subscores: z.record(z.string(), z.number()).optional(),
   date: z.string().optional(),
   dataset_version: z.string().optional(),
+  track: z.enum(['fixed', 'native']).optional(),
 });
 
 export type RubricDimension = z.infer<typeof RubricDimensionSchema>;

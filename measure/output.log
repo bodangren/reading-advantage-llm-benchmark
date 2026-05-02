@@ -733,3 +733,379 @@ $ next dev
 bash tool terminated command after exceeding timeout 30000 ms. If this command is expected to take longer and is not waiting for interactive input, retry with a larger timeout value in milliseconds.
 </bash_metadata>
 [0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && git add -A && git commit -m "feat(track-b): add TrackConfig schema and extend RunDetailSchema with track field
+
+- Add TrackConfigSchema with discriminatedUnion for fixed/native track types
+- Add AgentConfigSchema for native agent configuration (agentType, systemPrompt, toolAccess)
+- Extend RunDetailSchema with optional track field
+- Add tests for TrackConfig validation (fixed/native, invalid track type, missing agentConfig)
+- Add tests for run serialization with track field (fixed, native, backward compatible, invalid)
+
+Phase 1 complete for Track B - Native Agent Evaluation Mode" 2>&1
+[master 4997ba9] feat(track-b): add TrackConfig schema and extend RunDetailSchema with track field
+ 5 files changed, 928 insertions(+), 33 deletions(-)
+[0m
+[0m$ [0mpkill -f "next dev" 2>/dev/null; sleep 1; echo "killed"
+(no output)
+
+<bash_metadata>
+bash tool terminated command after exceeding timeout 10000 ms. If this command is expected to take longer and is not waiting for interactive input, retry with a larger timeout value in milliseconds.
+</bash_metadata>
+[0m
+[0m# [0mTodos
+[x] Write tests for TrackConfig Zod schema
+[x] Implement TrackConfig schema in lib/schemas.ts
+[x] Write tests for run record serialization with track field
+[x] Extend RunDetailSchema to include track field
+[ ] Write tests for leaderboard filtering by track type
+[ ] Add track filter UI component to leaderboard page
+[ ] Implement --track CLI flag in benchmark runner script
+[ ] Write tests for native agent config validation
+[ ] Add example Track B config file
+[ ] Update methodology page to document Track B
+[ ] Run full test suite
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && git push 2>&1
+To https://github.com/bodangren/reading-advantage-llm-benchmark.git
+   ecaa402..4997ba9  master -> master
+[0m
+[0m✱ [0mGlob "src/**/leaderboard*.{ts,tsx}"[90m 0 matches[0m
+[0m✱ [0mGlob "src/**/Leaderboard*.{ts,tsx}"[90m 1 match[0m
+[0m→ [0mRead src/components/LeaderboardTable.tsx
+[0m✱ [0mGlob "src/app/leaderboard/**/*.{ts,tsx}"[90m 1 match[0m
+[0m→ [0mRead src/app/leaderboard/page.tsx
+[0m→ [0mRead src/lib/schemas.ts[90m [limit=20, offset=99][0m
+[0m
+[0m← [0mEdit src/lib/schemas.ts
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/lib/schemas.ts
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/lib/schemas.ts
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/lib/schemas.ts
+@@ -104,8 +104,9 @@
+   score: z.number(),
+   subscores: z.record(z.string(), z.number()).optional(),
+   date: z.string().optional(),
+   dataset_version: z.string().optional(),
++  track: z.enum(['fixed', 'native']).optional(),
+ });
+ 
+ export type RubricDimension = z.infer<typeof RubricDimensionSchema>;
+ export type Task = z.infer<typeof TaskSchema>;
+
+[0m
+[0m→ [0mRead src/lib/data.ts
+[0m→ [0mRead src/lib/runs.ts
+[0m
+[0m← [0mEdit src/components/LeaderboardTable.tsx
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/components/LeaderboardTable.tsx
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/components/LeaderboardTable.tsx
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/components/LeaderboardTable.tsx
+@@ -11,9 +11,9 @@
+ } from "@/components/ui/table";
+ import { LeaderboardEntry } from "@/lib/schemas";
+ import { Badge } from "@/components/ui/badge";
+ import { cn } from "@/lib/utils";
+-import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
++import { ChevronUp, ChevronDown, ChevronsUpDown, Bot, Settings } from "lucide-react";
+ 
+ interface LeaderboardTableProps {
+   data: LeaderboardEntry[];
+ }
+
+[0m
+[0m← [0mEdit src/components/LeaderboardTable.tsx
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/components/LeaderboardTable.tsx
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/components/LeaderboardTable.tsx
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/components/LeaderboardTable.tsx
+@@ -149,8 +149,16 @@
+ <TableCell>{entry.provider || "-"}</TableCell>
+ <TableCell>
+   <Badge variant="outline">{entry.harness || "-"}</Badge>
+ </TableCell>
++<TableCell>
++  {entry.track ? (
++    <Badge variant={entry.track === 'native' ? 'default' : 'secondary'} className="gap-1">
++      {entry.track === 'native' ? <Bot className="h-3 w-3" /> : <Settings className="h-3 w-3" />}
++      {entry.track === 'native' ? 'Native' : 'Fixed'}
++    </Badge>
++  ) : '-'}
++</TableCell>
+ <TableCell className="text-right font-mono">
+   {entry.score <= 1 ? (entry.score * 100).toFixed(1) : entry.score.toFixed(1)}%
+ </TableCell>
+ <TableCell className="text-right text-muted-foreground text-sm">
+
+[0m
+[0m← [0mWrite tests/lib/leaderboard-filter.test.ts
+Wrote file successfully.
+[0m
+[0m→ [0mRead src/lib/utils.ts
+[0m
+[0m← [0mEdit src/lib/utils.ts
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/lib/utils.ts
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/lib/utils.ts
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/lib/utils.ts
+@@ -1,6 +1,17 @@
+ import { clsx, type ClassValue } from "clsx"
+ import { twMerge } from "tailwind-merge"
++import type { LeaderboardEntry } from './schemas'
+ 
+ export function cn(...inputs: ClassValue[]) {
+   return twMerge(clsx(inputs))
+ }
++
++export function filterByTrack(entries: LeaderboardEntry[], track: 'fixed' | 'native'): LeaderboardEntry[] {
++  return entries
++    .filter((entry) => entry.track === track)
++    .sort((a, b) => b.score - a.score);
++}
++
++export function normalizeScore(score: number): number {
++  return score <= 1 ? score * 100 : score;
++}
+
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && npm test -- --run tests/lib/leaderboard-filter.test.ts 2>&1
+> tmp_app@0.1.0 test
+> vitest --run tests/lib/leaderboard-filter.test.ts
+
+
+ RUN  v4.1.2 /home/daniel-bo/Desktop/reading-advantage-llm-benchmark
+
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  07:45:05
+   Duration  2.99s (transform 475ms, setup 0ms, import 814ms, tests 26ms, environment 2ms)
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && npm test -- --run 2>&1
+> tmp_app@0.1.0 test
+> vitest --run
+
+
+ RUN  v4.1.2 /home/daniel-bo/Desktop/reading-advantage-llm-benchmark
+
+stderr | tests/components/BulkOperations.test.tsx > BulkOperations > shows valid task count after successful import
+An update to BulkOperations inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+ ❯ tests/components/BulkOperations.test.tsx (5 tests | 2 failed) 2220ms
+     × validates JSON and shows errors for invalid data 826ms
+     × shows valid task count after successful import 313ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/components/BulkOperations.test.tsx > BulkOperations > validates JSON and shows errors for invalid data
+TestingLibraryElementError: Unable to find an element with the text: /Validation Errors/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"rounded-xl border bg-card text-card-foreground shadow"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex flex-col space-y-1.5 p-6"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"font-semibold leading-none tracking-tight"[39m
+        [36m>[39m
+          [0mBulk Operations[0m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"p-6 pt-0 space-y-4"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"border-2 border-dashed rounded-lg p-8 text-center transition-colors border-muted"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"lucide lucide-upload h-12 w-12 mx-auto mb-4 text-muted-foreground"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mheight[39m=[32m"24"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-linecap[39m=[32m"round"[39m
+            [33mstroke-linejoin[39m=[32m"round"[39m
+            [33mstroke-width[39m=[32m"2"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [33mwidth[39m=[32m"24"[39m
+            [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M12 3v12"[39m
+            [36m/>[39m
+            [36m<path[39m
+              [33md[39m=[32m"m17 8-5-5-5 5"[39m
+            [36m/>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"text-sm text-muted-foreground mb-4"[39m
+          [36m>[39m
+            [0mDrag & drop a JSON file with task array, or click to upload[0m
+          [36m</p>[39m
+          [36m<label[39m
+            [33mclass[39m=[32m"cursor-pointer inline-flex items-center justify-center rounded-lg border border-input bg-background hover:bg-muted hover:text-foreground h-8 gap-1.5 px-2.5 text-sm"[39m
+          [36m>[39m
+            [0mChoose File[0m
+            [36m<input[39m
+              [33maccept[39m=[32m".json"[39m
+              [33mclass[39m=[32m"hidden"[39m
+              [33mtype[39m=[32m"file"[39m
+            [36m/>[39m
+          [36m</label>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/components/BulkOperations.test.tsx:29:19
+     27|     await new Promise(resolve => setTimeout(resolve, 100))
+     28|
+     29|     expect(screen.getByText(/Validation Errors/i)).toBeDefined()
+       |                   ^
+     30|   })
+     31|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/components/BulkOperations.test.tsx > BulkOperations > shows valid task count after successful import
+TestingLibraryElementError: Unable to find an element with the text: /2 valid/. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"rounded-xl border bg-card text-card-foreground shadow"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex flex-col space-y-1.5 p-6"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"font-semibold leading-none tracking-tight"[39m
+        [36m>[39m
+          [0mBulk Operations[0m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"p-6 pt-0 space-y-4"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"border-2 border-dashed rounded-lg p-8 text-center transition-colors border-muted"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"lucide lucide-upload h-12 w-12 mx-auto mb-4 text-muted-foreground"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mheight[39m=[32m"24"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-linecap[39m=[32m"round"[39m
+            [33mstroke-linejoin[39m=[32m"round"[39m
+            [33mstroke-width[39m=[32m"2"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [33mwidth[39m=[32m"24"[39m
+            [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M12 3v12"[39m
+            [36m/>[39m
+            [36m<path[39m
+              [33md[39m=[32m"m17 8-5-5-5 5"[39m
+            [36m/>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"text-sm text-muted-foreground mb-4"[39m
+          [36m>[39m
+            [0mDrag & drop a JSON file with task array, or click to upload[0m
+          [36m</p>[39m
+          [36m<label[39m
+            [33mclass[39m=[32m"cursor-pointer inline-flex items-center justify-center rounded-lg border border-input bg-background hover:bg-muted hover:text-foreground h-8 gap-1.5 px-2.5 text-sm"[39m
+          [36m>[39m
+            [0mChoose File[0m
+            [36m<input[39m
+              [33maccept[39m=[32m".json"[39m
+              [33mclass[39m=[32m"hidden"[39m
+              [33mtype[39m=[32m"file"[39m
+            [36m/>[39m
+          [36m</label>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/components/BulkOperations.test.tsx:59:19
+     57|     await new Promise(resolve => setTimeout(resolve, 100))
+     58|
+     59|     expect(screen.getByText(/2 valid/)).toBeDefined()
+       |                   ^
+     60|   })
+     61|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 37 passed (38)
+      Tests  2 failed | 296 passed (298)
+   Start at  07:45:22
+   Duration  104.72s (transform 10.62s, setup 0ms, import 57.30s, tests 41.14s, environment 154.41s)
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && npm run build 2>&1
+> tmp_app@0.1.0 build
+> next build
+
+▲ Next.js 16.2.2 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 47s
+  Running TypeScript ...
+  Finished TypeScript in 37.8s ...
+  Collecting page data using 3 workers ...
+  Generating static pages using 3 workers (0/11) ...
+  Generating static pages using 3 workers (2/11) 
+  Generating static pages using 3 workers (5/11) 
+  Generating static pages using 3 workers (8/11) 
+✓ Generating static pages using 3 workers (11/11) in 1540ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /compare
+├ ○ /leaderboard
+├ ○ /methodology
+├ ○ /runs
+├ ● /runs/[id]
+│ └ /runs/blb-run-001
+├ ○ /tasks
+└ ● /tasks/[id]
+  └ /tasks/task_import_game_v1
+
+
+○  (Static)  prerendered as static content
+●  (SSG)     prerendered as static HTML (uses generateStaticParams)
+[0m

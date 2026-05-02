@@ -12,7 +12,7 @@ import {
 import { LeaderboardEntry } from "@/lib/schemas";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
+import { ChevronUp, ChevronDown, ChevronsUpDown, Bot, Settings } from "lucide-react";
 
 interface LeaderboardTableProps {
   data: LeaderboardEntry[];
@@ -149,6 +149,14 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
               <TableCell>{entry.provider || "-"}</TableCell>
               <TableCell>
                 <Badge variant="outline">{entry.harness || "-"}</Badge>
+              </TableCell>
+              <TableCell>
+                {entry.track ? (
+                  <Badge variant={entry.track === 'native' ? 'default' : 'secondary'} className="gap-1">
+                    {entry.track === 'native' ? <Bot className="h-3 w-3" /> : <Settings className="h-3 w-3" />}
+                    {entry.track === 'native' ? 'Native' : 'Fixed'}
+                  </Badge>
+                ) : '-'}
               </TableCell>
               <TableCell className="text-right font-mono">
                 {entry.score <= 1 ? (entry.score * 100).toFixed(1) : entry.score.toFixed(1)}%
