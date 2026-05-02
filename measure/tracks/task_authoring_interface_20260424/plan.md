@@ -1,10 +1,10 @@
 # Implementation Plan: Task Authoring Interface
 
 ## Phase 1: Task Editor Form
-- [ ] 1.1 Create TaskEditor component with form fields
-- [ ] 1.2 Implement field validation with Zod schemas
-- [ ] 1.3 Add markdown editor for task descriptions
-- [ ] 1.4 Write component tests for form validation
+- [x] 1.1 Create TaskEditor component with form fields
+- [x] 1.2 Implement field validation with Zod schemas
+- [x] 1.3 Add markdown editor for task descriptions
+- [x] 1.4 Write component tests for form validation
 
 ## Phase 2: Live Preview
 - [ ] 2.1 Create TaskPreview component with markdown rendering

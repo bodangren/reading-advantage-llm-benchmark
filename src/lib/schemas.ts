@@ -13,6 +13,22 @@ export const RubricDimensionSchema = z.object({
   description: z.string(),
 });
 
+export const TaskFormDataSchema = z.object({
+  id: z.string().min(1, "Task ID is required").regex(/^[a-z0-9_]+$/i, "Task ID must be alphanumeric with underscores only"),
+  title: z.string().min(1, "Title is required"),
+  difficulty: z.enum(["easy", "medium", "hard"]),
+  domain: z.string(),
+  description: z.string().min(1, "Description is required"),
+  repo_context: z.string(),
+  acceptance_criteria: z.array(z.string()),
+  structured_rubric: z.array(RubricDimensionSchema),
+}).refine(
+  (data) => data.structured_rubric.reduce((sum, r) => sum + r.weight, 0) === 100,
+  { message: "Rubric weights must sum to 100", path: ["structured_rubric"] }
+);
+
+export type TaskFormData = z.infer<typeof TaskFormDataSchema>;
+
 export const TaskSchema = z.object({
   id: z.string(),
   title: z.string(),
