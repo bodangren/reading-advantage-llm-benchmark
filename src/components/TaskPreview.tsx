@@ -11,7 +11,7 @@ interface TaskPreviewProps {
 function renderMarkdown(text: string): string {
   if (!text) return ""
 
-  let html = text
+  const html = text
     .replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code class="language-$1">$2</code></pre>')
     .replace(/`([^`]+)`/g, '<code>$1</code>')
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')

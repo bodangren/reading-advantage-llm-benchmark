@@ -12,6 +12,12 @@
 - [x] 2.3 Implement rubric preview with scoring breakdown
 - [x] 2.4 Write tests for preview accuracy
 
+## Phase 3: Version Control
+- [x] 3.1 Create TaskVersion schema with metadata
+- [x] 3.2 Implement version history storage
+- [x] 3.3 Add diff view for version comparison
+- [x] 3.4 Write tests for version tracking
+
 ## Phase 4: Bulk Operations
 - [ ] 4.1 Create bulk import UI with file upload
 - [ ] 4.2 Implement import validation and error reporting

@@ -168,3 +168,13 @@ export const ComparisonReportSchema = z.object({
 export type NormalizedScore = z.infer<typeof NormalizedScoreSchema>;
 export type ModelResult = z.infer<typeof ModelResultSchema>;
 export type ComparisonReport = z.infer<typeof ComparisonReportSchema>;
+
+export const TaskVersionSchema = z.object({
+  version: z.string(),
+  created_at: z.string(),
+  task_id: z.string(),
+  task_data: TaskSchema,
+  change_summary: z.string().optional(),
+});
+
+export type TaskVersion = z.infer<typeof TaskVersionSchema>;

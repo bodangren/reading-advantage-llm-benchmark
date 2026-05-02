@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { Task, TaskSchema, Run, RunSchema, LeaderboardEntry, LeaderboardSchema, DatasetVersion, DatasetVersionSchema } from './schemas';
+import { Task, TaskSchema, Run, RunSchema, LeaderboardEntry, LeaderboardSchema, DatasetVersion, DatasetVersionSchema, TaskVersion, TaskVersionSchema } from './schemas';
 import { z } from 'zod';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
@@ -81,4 +81,50 @@ export async function getRunsByVersion(version: string): Promise<Run[]> {
 export async function getRunCountForTask(taskId: string): Promise<number> {
   const runs = await getRuns();
   return runs.filter(r => r.task_id === taskId).length;
+}
+
+export async function getTaskVersions(taskId: string): Promise<TaskVersion[]> {
+  const versionsDir = path.join(DATA_DIR, 'tasks', 'versions', taskId);
+  try {
+    const files = await fs.readdir(versionsDir);
+    const versions: TaskVersion[] = [];
+
+    for (const file of files) {
+      if (file.endsWith('.json')) {
+        const filePath = path.join(versionsDir, file);
+        const content = await fs.readFile(filePath, 'utf-8');
+        const parsed = JSON.parse(content);
+        const result = TaskVersionSchema.safeParse(parsed);
+        if (result.success) {
+          versions.push(result.data);
+        }
+      }
+    }
+
+    return versions.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  } catch {
+    return [];
+  }
+}
+
+export async function saveTaskVersion(taskId: string, taskData: Task, changeSummary?: string): Promise<TaskVersion> {
+  const versionsDir = path.join(DATA_DIR, 'tasks', 'versions', taskId);
+  await fs.mkdir(versionsDir, { recursive: true });
+
+  const version = taskData.version || '1.0';
+  const timestamp = new Date().toISOString();
+  const versionId = `${version}_${Date.now()}`;
+
+  const taskVersion: TaskVersion = {
+    version,
+    created_at: timestamp,
+    task_id: taskId,
+    task_data: taskData,
+    change_summary: changeSummary,
+  };
+
+  const filePath = path.join(versionsDir, `${versionId}.json`);
+  await fs.writeFile(filePath, JSON.stringify(taskVersion, null, 2));
+
+  return taskVersion;
 }
