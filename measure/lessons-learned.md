@@ -45,3 +45,4 @@
 
 - (2026-04-25) OKLCH color values in CSS don't match DESIGN.md hex tokens - need to sync both during refactoring
 - (2026-04-25) Convert OKLCH to hex tokens when updating globals.css to match DESIGN.md specification
+- (2026-05-03) Basic markdown rendering can be done with regex chain; full library needed for complex cases

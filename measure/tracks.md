@@ -21,8 +21,8 @@ This file tracks all major tracks for the project. Each track has its own detail
   *Link: [./archive/ci_cd_cost_tracking_20260423/](./archive/ci_cd_cost_tracking_20260423/)*
 - [x] **Track: Model Comparison Reports**
   *Link: [./archive/model_comparison_reports_20260423/](./archive/model_comparison_reports_20260423/)*
-- [ ] **Track: Task Authoring Interface**
-  *Link: [./tracks/task_authoring_interface_20260424/](./tracks/task_authoring_interface_20260424/)*
+- [x] **Track: Task Authoring Interface**
+  *Link: [./archive/task_authoring_interface_20260424/](./archive/task_authoring_interface_20260424/)*
   Form-based task editor, live preview, task versioning with diff view, bulk import/export.
 
 - [x] **Track: Visual Refresh: Define Unique Identity**
