@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { TaskSchema, RunSchema, LeaderboardSchema, DatasetVersionSchema, RubricDimensionSchema } from '../../src/lib/schemas';
+import { TaskSchema, RunSchema, LeaderboardSchema, DatasetVersionSchema, RubricDimensionSchema, TrackConfigSchema } from '../../src/lib/schemas';
 
 describe('Zod Schemas', () => {
   describe('TaskSchema', () => {
@@ -161,6 +161,83 @@ describe('Zod Schemas', () => {
         version: '2026-04-07',
       };
       const result = DatasetVersionSchema.safeParse(invalidDataset);
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe('TrackConfigSchema', () => {
+    it('should validate a fixed track type', () => {
+      const fixedTrack = {
+        track: 'fixed' as const,
+        agentConfig: undefined,
+      };
+      const result = TrackConfigSchema.safeParse(fixedTrack);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.track).toBe('fixed');
+        expect(result.data.agentConfig).toBeUndefined();
+      }
+    });
+
+    it('should validate a native track type with agent config', () => {
+      const nativeTrack = {
+        track: 'native' as const,
+        agentConfig: {
+          agentType: 'opencode',
+          systemPrompt: 'You are a helpful coding assistant.',
+          toolAccess: ['filesystem', 'bash', 'websearch'],
+        },
+      };
+      const result = TrackConfigSchema.safeParse(nativeTrack);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.track).toBe('native');
+        expect(result.data.agentConfig).toBeDefined();
+        expect(result.data.agentConfig!.agentType).toBe('opencode');
+        expect(result.data.agentConfig!.toolAccess).toContain('filesystem');
+      }
+    });
+
+    it('should reject invalid track type', () => {
+      const invalidTrack = {
+        track: 'unknown' as any,
+      };
+      const result = TrackConfigSchema.safeParse(invalidTrack);
+      expect(result.success).toBe(false);
+    });
+
+    it('should reject native track without agentConfig', () => {
+      const invalidTrack = {
+        track: 'native' as const,
+        agentConfig: undefined,
+      };
+      const result = TrackConfigSchema.safeParse(invalidTrack);
+      expect(result.success).toBe(false);
+    });
+
+    it('should validate agentConfig with all required fields', () => {
+      const validAgentConfig = {
+        track: 'native' as const,
+        agentConfig: {
+          agentType: 'claude-code',
+          systemPrompt: 'You are an expert programmer.',
+          toolAccess: ['filesystem', 'bash'],
+        },
+      };
+      const result = TrackConfigSchema.safeParse(validAgentConfig);
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject agentConfig with unknown tool', () => {
+      const invalidAgentConfig = {
+        track: 'native' as const,
+        agentConfig: {
+          agentType: 'opencode',
+          systemPrompt: 'Test',
+          toolAccess: ['unknown_tool' as any],
+        },
+      };
+      const result = TrackConfigSchema.safeParse(invalidAgentConfig);
       expect(result.success).toBe(false);
     });
   });

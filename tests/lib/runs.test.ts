@@ -273,5 +273,107 @@ describe('Runs Data Utilities', () => {
       expect(result.artifacts).toHaveLength(1);
       expect(result.diff).toContain('file.ts');
     });
+
+    it('should validate run with track field set to fixed', () => {
+      const trackARun = {
+        id: 'track-a-run-001',
+        model: 'gpt-5.4',
+        harness: 'opencode',
+        harness_version: '1.2.0',
+        benchmark_version: '1.0',
+        run_date: '2026-04-08T14:30:00Z',
+        wall_time_seconds: 145.7,
+        total_score: 0.82,
+        scores: {
+          functional_correctness: 32,
+          integration_quality: 22,
+          regression_safety: 16,
+          minimality: 8,
+          process_quality: 4
+        },
+        test_results: [],
+        artifacts: [],
+        track: 'fixed'
+      };
+
+      const result = validateRun(trackARun);
+      expect(result.id).toBe('track-a-run-001');
+    });
+
+    it('should validate run with track field set to native', () => {
+      const trackBRun = {
+        id: 'track-b-run-001',
+        model: 'claude-sonnet',
+        harness: 'opencode',
+        harness_version: '1.2.0',
+        benchmark_version: '1.0',
+        run_date: '2026-04-08T14:30:00Z',
+        wall_time_seconds: 200.5,
+        total_score: 0.88,
+        scores: {
+          functional_correctness: 35,
+          integration_quality: 24,
+          regression_safety: 18,
+          minimality: 8,
+          process_quality: 3
+        },
+        test_results: [],
+        artifacts: [],
+        track: 'native'
+      };
+
+      const result = validateRun(trackBRun);
+      expect(result.id).toBe('track-b-run-001');
+    });
+
+    it('should validate run without track field (backward compatible)', () => {
+      const legacyRun = {
+        id: 'legacy-run-001',
+        model: 'gpt-4',
+        harness: 'opencode',
+        harness_version: '1.0.0',
+        benchmark_version: '1.0',
+        run_date: '2026-04-01T10:00:00Z',
+        wall_time_seconds: 100,
+        total_score: 0.75,
+        scores: {
+          functional_correctness: 30,
+          integration_quality: 20,
+          regression_safety: 15,
+          minimality: 7,
+          process_quality: 3
+        },
+        test_results: [],
+        artifacts: []
+      };
+
+      const result = validateRun(legacyRun);
+      expect(result.id).toBe('legacy-run-001');
+    });
+
+    it('should reject invalid track field value', () => {
+      const invalidTrackRun = {
+        id: 'invalid-track-run',
+        model: 'gpt-4',
+        harness: 'opencode',
+        harness_version: '1.0.0',
+        benchmark_version: '1.0',
+        run_date: '2026-04-01T10:00:00Z',
+        wall_time_seconds: 100,
+        total_score: 0.75,
+        scores: {
+          functional_correctness: 30,
+          integration_quality: 20,
+          regression_safety: 15,
+          minimality: 7,
+          process_quality: 3
+        },
+        test_results: [],
+        artifacts: [],
+        track: 'unknown' as any
+      };
+
+      expect(() => validateRun(invalidTrackRun)).toThrow();
+    });
   });
 });

@@ -69,8 +69,8 @@ export const RunDetailSchema = z.object({
   id: z.string(),
   model: z.string(),
   provider: z.string().optional(),
-  harness_version: z.string(),
   harness: z.string(),
+  harness_version: z.string(),
   benchmark_version: z.string(),
   dataset_version: z.string().optional(),
   task_id: z.string().optional(),
@@ -81,6 +81,7 @@ export const RunDetailSchema = z.object({
   diff: z.string().optional(),
   test_results: z.array(TestResultSchema),
   artifacts: z.array(ArtifactSchema),
+  track: z.enum(['fixed', 'native']).optional(),
 });
 
 export const RunSchema = z.object({
@@ -178,3 +179,23 @@ export const TaskVersionSchema = z.object({
 });
 
 export type TaskVersion = z.infer<typeof TaskVersionSchema>;
+
+export const AgentConfigSchema = z.object({
+  agentType: z.enum(['opencode', 'claude-code', 'github-copilot', 'cursor', 'windsurf', 'custom']),
+  systemPrompt: z.string().optional(),
+  toolAccess: z.array(z.enum(['filesystem', 'bash', 'websearch', 'browser', 'git', 'api'])),
+});
+
+export const TrackConfigSchema = z.discriminatedUnion('track', [
+  z.object({
+    track: z.literal('fixed'),
+    agentConfig: z.undefined().optional(),
+  }),
+  z.object({
+    track: z.literal('native'),
+    agentConfig: AgentConfigSchema,
+  }),
+]);
+
+export type AgentConfig = z.infer<typeof AgentConfigSchema>;
+export type TrackConfig = z.infer<typeof TrackConfigSchema>;
