@@ -33,9 +33,9 @@ This file tracks all major tracks for the project. Each track has its own detail
   *Link: [./archive/harness_implementation_20260426/](./archive/harness_implementation_20260426/)*
   *Status: Complete*
 
-- [ ] **Track: Score Normalization Audit**
-  *Link: [./tracks/score_normalization_audit_20260426/](./tracks/score_normalization_audit_20260426/)*
-  Standardize score format across all components (0-100 display, 0-1 internal).
+- [x] **Track: Score Normalization Audit**
+  *Link: [./archive/score_normalization_audit_20260426/](./archive/score_normalization_audit_20260426/)*
+  *Status: Complete*
 
 - [ ] **Track: Interface Consolidation**
   *Link: [./tracks/interface_consolidation_20260426/](./tracks/interface_consolidation_20260426/)*
