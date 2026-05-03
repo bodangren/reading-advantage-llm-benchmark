@@ -20,6 +20,3 @@ Changes not staged for commit:
 
 no changes added to commit (use "git add" and/or "git commit -a")
 [0m
-[0m$ [0mgit log -1 --oneline
-1e0c453 [MiniMax-M2-7] Track complete: Native Agent Evaluation Mode
-[0m
