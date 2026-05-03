@@ -42,6 +42,9 @@
 - (2026-05-02) File-based persistence via saveRun() to data/runs/ directory - Run converted to RunDetail before storage
 - (2026-05-03) Zod discriminatedUnion for mutually exclusive fields (fixed vs native track) - requires distinct literal values on discriminator field
 - (2026-05-03) LLM task generation needs proper prompt templates with examples for consistent output format
+- (2026-05-04) API routes in app/api/ are dynamically routed (ƒ) and work with NextResponse.json()
+- (2026-05-04) computeStats p95 uses Math.ceil(length * 0.95) - 1 index on sorted array
+- (2026-05-04) filterRuns combines multiple filter conditions with AND logic via early returns
 
 ## Visual Design (2026-04-25)
 
