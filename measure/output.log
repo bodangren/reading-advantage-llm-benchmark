@@ -1385,3 +1385,121 @@ Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/app/methodolo
 bash tool terminated command after exceeding timeout 120000 ms. If this command is expected to take longer and is not waiting for interactive input, retry with a larger timeout value in milliseconds.
 </bash_metadata>
 [0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && git add -A && git commit -m "feat(track-b): add example config and update methodology docs
+
+- Add configs/track-b-native-example.json with full native agent config
+- Update methodology page with Track B details, tool access list, 
+  and CLI usage example
+- Include code snippets for --track native flag and config file reference
+- Phase 4 complete for Track B" 2>&1
+[master f411466] feat(track-b): add example config and update methodology docs
+ 3 files changed, 154 insertions(+), 2 deletions(-)
+ create mode 100644 configs/track-b-native-example.json
+[0m
+[0m# [0mTodos
+[x] Write tests for TrackConfig Zod schema
+[x] Implement TrackConfig schema in lib/schemas.ts
+[x] Write tests for run record serialization with track field
+[x] Extend RunDetailSchema to include track field
+[x] Write tests for leaderboard filtering by track type
+[x] Add track filter UI component to leaderboard page
+[x] Implement --track CLI flag in benchmark runner script
+[x] Write tests for native agent config validation
+[x] Add example Track B config file
+[x] Update methodology page to document Track B
+[ ] Run full test suite
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && git push 2>&1
+To https://github.com/bodangren/reading-advantage-llm-benchmark.git
+   81d5d90..f411466  master -> master
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && npm test -- --run 2>&1
+> tmp_app@0.1.0 test
+> vitest --run
+
+
+ RUN  v4.1.2 /home/daniel-bo/Desktop/reading-advantage-llm-benchmark
+
+
+
+<bash_metadata>
+bash tool terminated command after exceeding timeout 120000 ms. If this command is expected to take longer and is not waiting for interactive input, retry with a larger timeout value in milliseconds.
+</bash_metadata>
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && npx vitest --run tests/lib/schemas.test.ts 2>&1
+RUN  v4.1.2 /home/daniel-bo/Desktop/reading-advantage-llm-benchmark
+
+
+ Test Files  1 passed (1)
+      Tests  19 passed (19)
+   Start at  08:01:23
+   Duration  3.57s (transform 420ms, setup 0ms, import 953ms, tests 176ms, environment 1ms)
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && npx vitest --run tests/lib/leaderboard-filter.test.ts tests/lib/runs.test.ts 2>&1
+RUN  v4.1.2 /home/daniel-bo/Desktop/reading-advantage-llm-benchmark
+
+
+ Test Files  2 passed (2)
+      Tests  20 passed (20)
+   Start at  08:01:45
+   Duration  4.27s (transform 1.45s, setup 0ms, import 2.84s, tests 325ms, environment 1ms)
+[0m
+[0m→ [0mRead measure/tracks/native_agent_track_b_20260503/plan.md
+[0m
+[0m← [0mWrite measure/tracks/native_agent_track_b_20260503/plan.md
+Wrote file successfully.
+[0m
+[0m← [0mEdit measure/tracks.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tracks.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tracks.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tracks.md
+@@ -32,8 +32,12 @@
+ - [x] **Track: Harness Implementation**
+   *Link: [./archive/harness_implementation_20260426/](./archive/harness_implementation_20260426/)*
+   *Status: Complete*
+ 
++- [x] **Track: Track B — Native Agent Evaluation Mode**
++  *Link: [./archive/native_agent_track_b_20260503/](./archive/native_agent_track_b_20260503/)*
++  *Status: Complete*
++
+ - [x] **Track: Score Normalization Audit**
+   *Link: [./archive/score_normalization_audit_20260426/](./archive/score_normalization_audit_20260426/)*
+   *Status: Complete*
+ 
+
+[0m
+[0m→ [0mRead measure/tech-debt.md
+[0m
+[0m← [0mEdit measure/tech-debt.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tech-debt.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tech-debt.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tech-debt.md
+@@ -18,4 +18,5 @@
+ | 2026-04-25 | model_comparison_reports_20260423 | ComparisonReport schema created for Phase 1 | Low | Resolved | NormalizedScoreSchema, ModelResultSchema, ComparisonReportSchema added to schemas.ts |
+ | 2026-04-25 | model_comparison_reports_20260423 | Duplicate TaskResult/ModelResult interfaces in 4 files | Medium | Resolved | schemas.ts exports ComparisonReport, ModelResult types; UI components use local interfaces by design (2026-05-02) |
+ | 2026-04-25 | visual_refresh_20260425 | CSS OKLCH values vs DESIGN.md hex tokens inconsistency | Low | Resolved | Synced globals.css with DESIGN.md hex tokens during Phase 2 |
+ | 2026-05-03 | task_authoring_interface_20260424 | Task versioning storage path needs manual directory creation | Low | Open | saveTaskVersion() creates versions dir recursively; may need cleanup job for old versions |
++| 2026-05-03 | native_agent_track_b_20260503 | BulkOperations test intermittently fails with act() warnings | Low | Open | Test uses setTimeout(100) instead of proper waitFor; not wrapped in act() for async state updates |
+
+[0m
+[0m→ [0mRead measure/lessons-learned.md
+[0m
+[0m← [0mEdit measure/lessons-learned.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+@@ -39,8 +39,9 @@
+ - (2026-04-25) Client component pattern with CompareClient for interactive model selection
+ - (2026-04-25) Export module separates Markdown and PDF generation for testability
+ - (2026-05-01) Exponential backoff with sleep() for retry logic - delay doubles on each retry
+ - (2026-05-02) File-based persistence via saveRun() to data/runs/ directory - Run converted to RunDetail before storage
++- (2026-05-03) Zod discriminatedUnion for mutually exclusive fields (fixed vs native track) - requires distinct literal values on discriminator field
+ 
+ ## Visual Design (2026-04-25)
+ 
+ - (2026-04-25) OKLCH color values in CSS don't match DESIGN.md hex tokens - need to sync both during refactoring
+
+[0m

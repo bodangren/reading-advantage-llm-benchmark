@@ -19,3 +19,4 @@
 | 2026-04-25 | model_comparison_reports_20260423 | Duplicate TaskResult/ModelResult interfaces in 4 files | Medium | Resolved | schemas.ts exports ComparisonReport, ModelResult types; UI components use local interfaces by design (2026-05-02) |
 | 2026-04-25 | visual_refresh_20260425 | CSS OKLCH values vs DESIGN.md hex tokens inconsistency | Low | Resolved | Synced globals.css with DESIGN.md hex tokens during Phase 2 |
 | 2026-05-03 | task_authoring_interface_20260424 | Task versioning storage path needs manual directory creation | Low | Open | saveTaskVersion() creates versions dir recursively; may need cleanup job for old versions |
+| 2026-05-03 | native_agent_track_b_20260503 | BulkOperations test intermittently fails with act() warnings | Low | Open | Test uses setTimeout(100) instead of proper waitFor; not wrapped in act() for async state updates |

@@ -33,6 +33,10 @@ This file tracks all major tracks for the project. Each track has its own detail
   *Link: [./archive/harness_implementation_20260426/](./archive/harness_implementation_20260426/)*
   *Status: Complete*
 
+- [x] **Track: Track B — Native Agent Evaluation Mode**
+  *Link: [./archive/native_agent_track_b_20260503/](./archive/native_agent_track_b_20260503/)*
+  *Status: Complete*
+
 - [x] **Track: Score Normalization Audit**
   *Link: [./archive/score_normalization_audit_20260426/](./archive/score_normalization_audit_20260426/)*
   *Status: Complete*
