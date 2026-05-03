@@ -4,6 +4,7 @@ import { generateTasks } from '../src/lib/task-generator';
 import { listCandidates, updateCandidateStatus, CandidateStatus } from '../src/lib/candidate-storage';
 import { getAllRuns, getRunsForModel } from '../src/lib/runs';
 import { compareRuns, filterRegressions, generateRegressionReport } from '../src/lib/regression';
+import { exportToCSV, filterRuns } from '../src/lib/export';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -26,6 +27,10 @@ function parseArgs(args: string[]): { command: string; subcommand: string; optio
       options.model = args[++i];
     } else if (arg === '--threshold' && i + 1 < args.length) {
       options.threshold = parseFloat(args[++i]);
+    } else if (arg === '--format' && i + 1 < args.length) {
+      options.format = args[++i];
+    } else if (arg === '--output' && i + 1 < args.length) {
+      options.output = args[++i];
     } else if (arg === 'approve' || arg === 'reject') {
       options.action = arg;
       if (i + 1 < args.length && !args[i + 1].startsWith('--')) {
@@ -199,6 +204,54 @@ async function handleRegress(options: Record<string, string | number>): Promise<
   }
 }
 
+async function handleExport(options: Record<string, string | number>): Promise<void> {
+  const model = options.model as string | undefined;
+  const format = (options.format as string) || 'csv';
+  const outputFile = options.output as string | undefined;
+
+  if (format !== 'csv' && format !== 'json') {
+    console.error('Error: --format must be csv or json');
+    console.error('Usage: asf benchmark export --format csv --output results.csv [--model gpt-4o]');
+    process.exit(1);
+  }
+
+  try {
+    let runs = await getAllRuns();
+
+    if (model) {
+      runs = filterRuns(runs, { model });
+    }
+
+    if (runs.length === 0) {
+      console.log('No runs found to export.');
+      process.exit(0);
+    }
+
+    let content: string;
+    let extension: string;
+
+    if (format === 'csv') {
+      content = exportToCSV(runs);
+      extension = 'csv';
+    } else {
+      content = JSON.stringify(runs, null, 2);
+      extension = 'json';
+    }
+
+    if (outputFile) {
+      await fs.writeFile(outputFile, content, 'utf-8');
+      console.log(`Exported ${runs.length} run(s) to ${outputFile}`);
+    } else {
+      console.log(content);
+    }
+
+    process.exit(0);
+  } catch (error) {
+    console.error('Export failed:', error);
+    process.exit(1);
+  }
+}
+
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
 
@@ -220,9 +273,12 @@ async function main(): Promise<void> {
       case 'regress':
         await handleRegress(args.options);
         break;
+      case 'export':
+        await handleExport(args.options);
+        break;
       default:
         console.error(`Unknown subcommand: ${args.subcommand}`);
-        console.error('Available subcommands: regress');
+        console.error('Available subcommands: regress, export');
         process.exit(1);
     }
   } else {

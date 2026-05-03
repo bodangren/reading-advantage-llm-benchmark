@@ -8,8 +8,8 @@
 - [x] Implement `generateRegressionReport(items) -> string` function
 - [x] Write tests for CLI exit code (1 on regressions, 0 on clean)
 - [x] Implement `asf benchmark regress` CLI subcommand with --model and --threshold flags
-- [ ] Add example regression report output in docs/
-- [ ] Write integration test: two mock runs → regress command → markdown output
+- [x] Add example regression report output in docs/
+- [x] Write integration test: two mock runs → regress command → markdown output
 - [x] Run full test suite: `npm test`
 
 ## Implementation Summary
@@ -25,9 +25,8 @@
 - Exit code 1 when regressions detected, 0 when clean
 
 ## Verification
-- Tests: 338 passed
+- Tests: 344 passed (44 test files)
 - Build: Compiles successfully
 
 ## Pending
-- Example regression report in docs/
-- Integration test for CLI command
+- None - Track complete

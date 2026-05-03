@@ -50,9 +50,16 @@ This file tracks all major tracks for the project. Each track has its own detail
    *Status: Complete*
    LLM-assisted task generation from repo snapshots with review queue
 
+- [x] **Track: Regression Detection & Alert System**
+   *Link: [./archive/regression_detection_alerts_20260503/](./archive/regression_detection_alerts_20260503/)*
+   *Status: Complete*
+   Cross-run score comparison with threshold-based regression reporting
+
+- [x] **Track: Benchmark Data Export & API Layer**
+   *Link: [./archive/benchmark_data_export_api_20260503/](./archive/benchmark_data_export_api_20260503/)*
+   *Status: Complete*
+   Read-only API, CSV export, and summary statistics for benchmark data
+
 ## Upcoming Tracks
 
-- [ ] **Track: Regression Detection & Alert System** *Link: [./tracks/regression_detection_alerts_20260503/](./tracks/regression_detection_alerts_20260503/)*
-  Cross-run score comparison with threshold-based regression reporting
-- [ ] **Track: Benchmark Data Export & API Layer** *Link: [./tracks/benchmark_data_export_api_20260503/](./tracks/benchmark_data_export_api_20260503/)*
-  Read-only API, CSV export, and summary statistics for benchmark data
+- (none)

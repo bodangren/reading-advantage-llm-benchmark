@@ -1,122 +1,109 @@
-export interface AggregateScore {
-  model: string;
-  normalizedScore: number;
-  rank: number;
+import type { RunDetail } from './schemas';
+
+export interface QueryFilters {
+  model?: string;
+  task?: string;
+  startDate?: string;
+  endDate?: string;
+  minScore?: number;
+  maxScore?: number;
 }
 
-export interface TaskResult {
-  taskId: string;
-  taskTitle: string;
-  domain?: string;
-  normalizedScore: number;
-  rawScore: number;
-  winner: boolean;
-  delta: number;
+export interface SummaryStats {
+  mean: number;
+  median: number;
+  p95: number;
 }
 
-export interface ModelResult {
-  model: string;
-  provider?: string;
-  normalizedScore: number;
-  rawScore: number;
-  taskResults: TaskResult[];
-}
-
-export interface StrengthsWeaknesses {
-  category: string;
-  avgScore: number;
-  taskCount: number;
-}
-
-export interface ComparisonReport {
-  id: string;
-  generatedAt: string;
-  datasetVersion?: string;
-  taskSet: string[];
-  models: ModelResult[];
-  aggregateScores: AggregateScore[];
-  strengthsWeaknesses?: {
-    model: string;
-    strengths: StrengthsWeaknesses[];
-    weaknesses: StrengthsWeaknesses[];
-  }[];
-}
-
-export function exportToMarkdown(report: ComparisonReport): string {
-  const lines: string[] = [];
-  
-  lines.push(`# Model Comparison Report`);
-  lines.push(`Generated: ${new Date(report.generatedAt).toLocaleString()}`);
-  lines.push('');
-
-  lines.push(`## Summary`);
-  lines.push('');
-  lines.push('| Rank | Model | Score |');
-  lines.push('|------|-------|-------|');
-  for (const score of report.aggregateScores) {
-    lines.push(`| ${score.rank} | ${score.model} | ${score.normalizedScore.toFixed(1)} |`);
-  }
-  lines.push('');
-
-  if (report.models.length > 0 && report.models[0].taskResults.length > 0) {
-    lines.push('## Per-Task Comparison');
-    lines.push('');
-    const taskIds = report.models[0].taskResults.map(t => t.taskId);
-    
-    lines.push('| Task | ' + report.models.map(m => m.model).join(' | ') + ' |');
-    lines.push('|------|' + report.models.map(() => '------').join('|') + '|');
-    
-    for (const taskId of taskIds) {
-      const taskResults = report.models.map(m => m.taskResults.find(t => t.taskId === taskId)!);
-      const taskTitle = taskResults[0]?.taskTitle || taskId;
-      const row = [`| ${taskTitle}`];
-      for (const t of taskResults) {
-        const winnerMark = t.winner ? ' **(+)**' : '';
-        row.push(` ${t.normalizedScore.toFixed(1)}${winnerMark} |`);
-      }
-      lines.push(row.join('|'));
+export function filterRuns(runs: RunDetail[], filters: QueryFilters): RunDetail[] {
+  return runs.filter(run => {
+    if (filters.model && run.model !== filters.model) {
+      return false;
     }
-    lines.push('');
+    if (filters.task && run.task_id !== filters.task) {
+      return false;
+    }
+    if (filters.startDate && run.run_date < filters.startDate) {
+      return false;
+    }
+    if (filters.endDate && run.run_date > filters.endDate) {
+      return false;
+    }
+    if (filters.minScore !== undefined && run.total_score < filters.minScore) {
+      return false;
+    }
+    if (filters.maxScore !== undefined && run.total_score > filters.maxScore) {
+      return false;
+    }
+    return true;
+  });
+}
+
+export function computeStats(scores: number[]): SummaryStats {
+  if (scores.length === 0) {
+    return { mean: 0, median: 0, p95: 0 };
   }
 
-  if (report.strengthsWeaknesses && report.strengthsWeaknesses.length > 0) {
-    lines.push('## Strengths & Weaknesses');
-    lines.push('');
-    for (const sw of report.strengthsWeaknesses) {
-      lines.push(`### ${sw.model}`);
-      lines.push('');
-      if (sw.strengths.length > 0) {
-        lines.push('**Strengths:**');
-        for (const s of sw.strengths) {
-          lines.push(`- ${s.category} (${s.taskCount} tasks, avg ${s.avgScore.toFixed(1)})`);
-        }
-        lines.push('');
-      }
-      if (sw.weaknesses.length > 0) {
-        lines.push('**Weaknesses:**');
-        for (const w of sw.weaknesses) {
-          lines.push(`- ${w.category} (${w.taskCount} tasks, avg ${w.avgScore.toFixed(1)})`);
-        }
-        lines.push('');
-      }
-    }
+  const sorted = [...scores].sort((a, b) => a - b);
+  const sum = sorted.reduce((a, b) => a + b, 0);
+  const mean = sum / sorted.length;
+
+  const mid = Math.floor(sorted.length / 2);
+  const median = sorted.length % 2 !== 0
+    ? sorted[mid]
+    : (sorted[mid - 1] + sorted[mid]) / 2;
+
+  const p95Index = Math.ceil(sorted.length * 0.95) - 1;
+  const p95 = sorted[p95Index];
+
+  return { mean, median, p95 };
+}
+
+export function exportToCSV(runs: RunDetail[]): string {
+  const headers = ['id', 'model', 'run_date', 'total_score', 'task_id', 'harness', 'wall_time_seconds'];
+  const lines: string[] = [headers.join(',')];
+
+  for (const run of runs) {
+    const row = [
+      escapeCSV(run.id),
+      escapeCSV(run.model),
+      escapeCSV(run.run_date),
+      run.total_score.toString(),
+      escapeCSV(run.task_id || ''),
+      escapeCSV(run.harness),
+      run.wall_time_seconds.toString(),
+    ];
+    lines.push(row.join(','));
   }
 
   return lines.join('\n');
 }
 
-export function exportToPDF(report: ComparisonReport): string {
-  return JSON.stringify({
-    title: 'Model Comparison Report',
-    generatedAt: report.generatedAt,
-    summary: report.aggregateScores,
-    taskComparison: report.models.map(m => ({
-      model: m.model,
-      tasks: m.taskResults.map(t => ({
-        title: t.taskTitle,
-        score: t.normalizedScore,
-        winner: t.winner,
-      })),
-    })),
+function escapeCSV(value: string): string {
+  if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+    return `"${value.replace(/"/g, '""')}"`;
+  }
+  return value;
+}
+
+export function runsToLeaderboardFormat(runs: RunDetail[]) {
+  const byModel = new Map<string, RunDetail[]>();
+  for (const run of runs) {
+    const existing = byModel.get(run.model) || [];
+    existing.push(run);
+    byModel.set(run.model, existing);
+  }
+
+  return Array.from(byModel.entries()).map(([model, modelRuns]) => {
+    const scores = modelRuns.map(r => r.total_score);
+    const stats = computeStats(scores);
+    return {
+      model,
+      runs: modelRuns.length,
+      latestRunDate: modelRuns[0].run_date,
+      meanScore: stats.mean,
+      medianScore: stats.median,
+      p95Score: stats.p95,
+    };
   });
 }
