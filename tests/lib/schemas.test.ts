@@ -200,6 +200,7 @@ describe('Zod Schemas', () => {
 
     it('should reject invalid track type', () => {
       const invalidTrack = {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         track: 'unknown' as any,
       };
       const result = TrackConfigSchema.safeParse(invalidTrack);
@@ -234,6 +235,7 @@ describe('Zod Schemas', () => {
         agentConfig: {
           agentType: 'opencode',
           systemPrompt: 'Test',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           toolAccess: ['unknown_tool' as any],
         },
       };

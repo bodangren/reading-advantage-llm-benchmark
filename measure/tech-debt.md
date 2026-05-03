@@ -8,6 +8,7 @@
 
 | Date | Track | Item | Severity | Status | Notes |
 |------|-------|------|----------|--------|-------|
+| 2026-05-04 | cli_llm_integration_20260504 | Test file uses `as any` for type narrowing | Low | Resolved | Added eslint-disable for legitimate test type narrowing in schemas.test.ts and runs.test.ts |
 | 2026-04-09 | leaderboard_20260404 | SortIcon component defined inside render | Medium | Resolved | Moved to separate function outside component (2026-04-10) |
 | 2026-04-10 | leaderboard_20260404 | Same SortIcon lint errors persist at verification | Medium | Resolved | Phase 2 checkpoint - tech-debt item resolved in Phase 3 |
 | 2026-04-11 | methodology_20260404 | Header/nav duplicated between home and methodology pages | Low | Resolved | Removed inline header from methodology page - now uses shared Header from layout (2026-04-11) |

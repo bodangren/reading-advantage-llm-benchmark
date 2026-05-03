@@ -76,6 +76,7 @@ describe('API Routes', () => {
 
   describe('GET /api/runs', () => {
     it('should return all runs when no filters provided', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(getAllRuns).mockResolvedValue(mockRuns as any);
 
       const request = new NextRequest('http://localhost/api/runs');
@@ -88,6 +89,7 @@ describe('API Routes', () => {
     });
 
     it('should filter runs by model', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(getAllRuns).mockResolvedValue(mockRuns as any);
 
       const request = new NextRequest('http://localhost/api/runs?model=gpt-4o');
@@ -96,10 +98,11 @@ describe('API Routes', () => {
 
       expect(response.status).toBe(200);
       expect(data.count).toBe(2);
-      expect(data.runs.every((r: any) => r.model === 'gpt-4o')).toBe(true);
+      expect(data.runs.every((r) => r.model === 'gpt-4o')).toBe(true);
     });
 
     it('should filter runs by score range', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(getAllRuns).mockResolvedValue(mockRuns as any);
 
       const request = new NextRequest('http://localhost/api/runs?minScore=0.80&maxScore=0.95');
@@ -113,6 +116,7 @@ describe('API Routes', () => {
 
   describe('GET /api/leaderboard', () => {
     it('should return leaderboard with stats sorted by mean score', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(getAllRuns).mockResolvedValue(mockRuns as any);
 
       const response = await leaderboardHandler();

@@ -5,6 +5,7 @@ import { listCandidates, updateCandidateStatus, CandidateStatus } from '../src/l
 import { getAllRuns, getRunsForModel } from '../src/lib/runs';
 import { compareRuns, filterRegressions, generateRegressionReport } from '../src/lib/regression';
 import { exportToCSV, filterRuns } from '../src/lib/export';
+import { OpenAIClient } from '../src/lib/llm-client';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -31,6 +32,10 @@ function parseArgs(args: string[]): { command: string; subcommand: string; optio
       options.format = args[++i];
     } else if (arg === '--output' && i + 1 < args.length) {
       options.output = args[++i];
+    } else if (arg === '--api-key' && i + 1 < args.length) {
+      options['api-key'] = args[++i];
+    } else if (arg === '--api-base' && i + 1 < args.length) {
+      options['api-base'] = args[++i];
     } else if (arg === 'approve' || arg === 'reject') {
       options.action = arg;
       if (i + 1 < args.length && !args[i + 1].startsWith('--')) {
@@ -45,44 +50,46 @@ function parseArgs(args: string[]): { command: string; subcommand: string; optio
 async function handleGenerate(options: Record<string, string | number>): Promise<void> {
   const repoPath = options.repo as string;
   const count = (options.count as number) || 5;
-  const modelId = (options.model as string) || 'gpt-4';
+  const modelId = (options.model as string) || 'gpt-4o';
+  const apiKey = (options['api-key'] as string) || process.env.OPENAI_API_KEY;
+  const apiBase = (options['api-base'] as string) || process.env.LLM_API_BASE;
 
   if (!repoPath) {
     console.error('Error: --repo is required');
-    console.error('Usage: asf task generate --repo <path> [--count 5] [--model gpt-4]');
+    console.error('Usage: asf task generate --repo <path> [--count 5] [--model gpt-4o] [--api-key <key>] [--api-base <url>]');
     process.exit(1);
   }
 
   console.log(`Generating ${count} task(s) from repository: ${repoPath}`);
   console.log(`Using model: ${modelId}`);
 
-  const mockLlmClient = async (prompt: string): Promise<string> => {
-    console.log('\n[DEBUG] LLM Prompt sent:');
-    console.log(prompt.substring(0, 200) + '...\n');
-    const tasks = [
-      {
-        id: `generated_task_${Date.now()}_1`,
-        title: 'Implement User Authentication',
-        difficulty: 'medium',
-        description: 'Add JWT-based authentication to the application with login/logout functionality.',
-        version: '1.0.0',
-      },
-      {
-        id: `generated_task_${Date.now()}_2`,
-        title: 'Add Data Export Feature',
-        difficulty: 'easy',
-        description: 'Create an export feature that allows users to download their data as CSV.',
-        version: '1.0.0',
-      },
-    ];
-    return JSON.stringify(tasks.slice(0, count));
-  };
+  let llmClient: (prompt: string) => Promise<string>;
+
+  if (apiKey) {
+    const client = new OpenAIClient({
+      apiKey,
+      model: modelId,
+      baseUrl: apiBase || 'https://api.openai.com/v1',
+      maxRetries: 3,
+    });
+    llmClient = async (prompt: string) => {
+      console.log('\n[INFO] Sending request to LLM API...');
+      const response = await client.complete(prompt);
+      console.log('[INFO] Received response from LLM API');
+      return response;
+    };
+  } else {
+    console.error('\nError: --api-key is required for real API calls');
+    console.error('Alternatively, set the OPENAI_API_KEY environment variable.');
+    console.error('Usage: asf task generate --repo <path> --api-key <your-api-key> [--count 3] [--model gpt-4o]');
+    process.exit(1);
+  }
 
   try {
     const tasks = await generateTasks({
       repoPath,
       count,
-      llmClient: mockLlmClient,
+      llmClient,
       modelId,
     });
 
@@ -235,6 +242,7 @@ async function handleExport(options: Record<string, string | number>): Promise<v
       extension = 'csv';
     } else {
       content = JSON.stringify(runs, null, 2);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       extension = 'json';
     }
 
