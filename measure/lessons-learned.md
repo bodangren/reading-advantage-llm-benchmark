@@ -41,6 +41,7 @@
 - (2026-05-01) Exponential backoff with sleep() for retry logic - delay doubles on each retry
 - (2026-05-02) File-based persistence via saveRun() to data/runs/ directory - Run converted to RunDetail before storage
 - (2026-05-03) Zod discriminatedUnion for mutually exclusive fields (fixed vs native track) - requires distinct literal values on discriminator field
+- (2026-05-03) LLM task generation needs proper prompt templates with examples for consistent output format
 
 ## Visual Design (2026-04-25)
 

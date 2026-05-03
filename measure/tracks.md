@@ -38,19 +38,20 @@ This file tracks all major tracks for the project. Each track has its own detail
   *Status: Complete*
 
 - [x] **Track: Score Normalization Audit**
-  *Link: [./archive/score_normalization_audit_20260426/](./archive/score_normalization_audit_20260426/)*
-  *Status: Complete*
+   *Link: [./archive/score_normalization_audit_20260426/](./archive/score_normalization_audit_20260426/)*
+   *Status: Complete*
 
 - [x] **Track: Interface Consolidation**
-  *Link: [./archive/interface_consolidation_20260426/](./archive/interface_consolidation_20260426/)*
-  *Status: Complete*
+   *Link: [./archive/interface_consolidation_20260426/](./archive/interface_consolidation_20260426/)*
+   *Status: Complete*
+
+- [x] **Track: Automated Task Generation Pipeline**
+   *Link: [./archive/automated_task_generation_20260503/](./archive/automated_task_generation_20260503/)*
+   *Status: Complete*
+   LLM-assisted task generation from repo snapshots with review queue
 
 ## Upcoming Tracks
 
-- [ ] **Track: Track B — Native Agent Evaluation Mode** *Link: [./tracks/native_agent_track_b_20260503/](./tracks/native_agent_track_b_20260503/)*
-  Harness abstraction for model-native agent evaluation with leaderboard filtering
-- [ ] **Track: Automated Task Generation Pipeline** *Link: [./tracks/automated_task_generation_20260503/](./tracks/automated_task_generation_20260503/)*
-  LLM-assisted task generation from repo snapshots with review queue
 - [ ] **Track: Regression Detection & Alert System** *Link: [./tracks/regression_detection_alerts_20260503/](./tracks/regression_detection_alerts_20260503/)*
   Cross-run score comparison with threshold-based regression reporting
 - [ ] **Track: Benchmark Data Export & API Layer** *Link: [./tracks/benchmark_data_export_api_20260503/](./tracks/benchmark_data_export_api_20260503/)*

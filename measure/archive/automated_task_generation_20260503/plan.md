@@ -9,6 +9,6 @@
 - [x] Write tests for review CLI listing candidates with status
 - [x] Implement `asf task generate` CLI subcommand
 - [x] Implement `asf task review` CLI subcommand with approve/reject actions
-- [ ] Add example generation prompt template for web application repos
-- [ ] Write integration test: generate → validate → review → approve task flow
-- [ ] Run full test suite: `npm test`
+- [x] Add example generation prompt template for web application repos
+- [x] Write integration test: generate → validate → review → approve task flow
+- [x] Run full test suite: `npm test`
