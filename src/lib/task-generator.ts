@@ -1,4 +1,5 @@
 import { Task } from './schemas';
+import { WEBAPP_TASK_PROMPT } from './prompts/webapp-task-prompt';
 
 export interface TaskSpec extends Task {
   generatedBy: string;
@@ -10,22 +11,10 @@ export interface GenerateTasksOptions {
   count: number;
   llmClient: (prompt: string) => Promise<string>;
   modelId?: string;
+  promptTemplate?: string;
 }
 
-const TASK_GENERATION_PROMPT = `You are a benchmark task generator. Given a repository context, generate realistic coding tasks that test LLM capabilities.
-
-Generate {count} task(s) in JSON array format. Each task must have:
-- id: unique identifier (snake_case)
-- title: short descriptive title
-- difficulty: "easy" | "medium" | "hard"
-- description: detailed task description
-- version: "1.0.0"
-
-Example format:
-[{"id": "task_name", "title": "Task Title", "difficulty": "medium", "description": "Detailed description...", "version": "1.0.0"}]
-
-Repository context:
-{context}`;
+const DEFAULT_PROMPT_TEMPLATE = WEBAPP_TASK_PROMPT;
 
 export class TaskGenerator {
   constructor(private repoPath: string) {}
@@ -43,10 +32,10 @@ export class TaskGenerator {
 }
 
 export async function generateTasks(options: GenerateTasksOptions): Promise<TaskSpec[]> {
-  const { repoPath, count, llmClient, modelId = 'unknown' } = options;
+  const { repoPath, count, llmClient, modelId = 'unknown', promptTemplate = DEFAULT_PROMPT_TEMPLATE } = options;
 
   const context = `Repository path: ${repoPath}`;
-  const prompt = TASK_GENERATION_PROMPT
+  const prompt = promptTemplate
     .replace('{count}', String(count))
     .replace('{context}', context);
 
