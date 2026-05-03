@@ -18,6 +18,16 @@ export async function getRunById(id: string): Promise<RunDetail | null> {
   return runs.find(r => r.id === id) || null;
 }
 
+export async function getLatestRunForModel(model: string): Promise<RunDetail | null> {
+  const runs = await getAllRuns();
+  return runs.find(r => r.model === model) || null;
+}
+
+export async function getRunsForModel(model: string): Promise<RunDetail[]> {
+  const runs = await getAllRuns();
+  return runs.filter(r => r.model === model);
+}
+
 async function loadRunsFromDirectory(): Promise<RunDetail[]> {
   try {
     const files = await fs.readdir(RUNS_DATA_DIR);

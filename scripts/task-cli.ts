@@ -2,6 +2,8 @@
 
 import { generateTasks } from '../src/lib/task-generator';
 import { listCandidates, updateCandidateStatus, CandidateStatus } from '../src/lib/candidate-storage';
+import { getAllRuns, getRunsForModel } from '../src/lib/runs';
+import { compareRuns, filterRegressions, generateRegressionReport } from '../src/lib/regression';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -22,6 +24,8 @@ function parseArgs(args: string[]): { command: string; subcommand: string; optio
       options.status = args[++i] as CandidateStatus;
     } else if (arg === '--model' && i + 1 < args.length) {
       options.model = args[++i];
+    } else if (arg === '--threshold' && i + 1 < args.length) {
+      options.threshold = parseFloat(args[++i]);
     } else if (arg === 'approve' || arg === 'reject') {
       options.action = arg;
       if (i + 1 < args.length && !args[i + 1].startsWith('--')) {
@@ -152,28 +156,81 @@ async function handleReview(options: Record<string, string | number>): Promise<v
   }
 }
 
-async function main(): Promise<void> {
-  const args = parseArgs(process.argv.slice(2));
+async function handleRegress(options: Record<string, string | number>): Promise<void> {
+  const model = options.model as string | undefined;
+  const threshold = (options.threshold as number) || 0.05;
 
-  if (args.command !== 'task') {
-    console.error('Expected: asf task <subcommand>');
-    console.error('Available subcommands:');
-    console.error('  generate  - Generate candidate tasks from a repository');
-    console.error('  review     - Review and manage candidate tasks');
+  if (!model) {
+    console.error('Error: --model is required');
+    console.error('Usage: asf benchmark regress --model <model-id> [--threshold <value>]');
     process.exit(1);
   }
 
-  switch (args.subcommand) {
-    case 'generate':
-      await handleGenerate(args.options);
-      break;
-    case 'review':
-      await handleReview(args.options);
-      break;
-    default:
-      console.error(`Unknown subcommand: ${args.subcommand}`);
-      console.error('Available subcommands: generate, review');
-      process.exit(1);
+  console.log(`Checking regressions for model: ${model}`);
+  console.log(`Threshold: ${(threshold * 100).toFixed(0)}%\n`);
+
+  try {
+    const runs = await getRunsForModel(model);
+
+    if (runs.length < 2) {
+      console.log(`Not enough runs found for ${model} to compare. Found ${runs.length}, need at least 2.`);
+      console.log('No regressions detected.');
+      process.exit(0);
+    }
+
+    const sortedRuns = runs.sort((a, b) => new Date(a.run_date).getTime() - new Date(b.run_date).getTime());
+    const beforeRun = sortedRuns[0];
+    const afterRun = sortedRuns[sortedRuns.length - 1];
+
+    console.log(`Comparing runs:`);
+    console.log(`  Before: ${beforeRun.id} (${beforeRun.run_date}) - score ${(beforeRun.total_score * 100).toFixed(1)}%`);
+    console.log(`  After:  ${afterRun.id} (${afterRun.run_date}) - score ${(afterRun.total_score * 100).toFixed(1)}%\n`);
+
+    const report = compareRuns(beforeRun, afterRun);
+    const filtered = filterRegressions(report, threshold);
+    const markdown = generateRegressionReport(filtered, model);
+
+    console.log(markdown);
+
+    process.exit(filtered.length > 0 ? 1 : 0);
+  } catch (error) {
+    console.error('Regression check failed:', error);
+    process.exit(1);
+  }
+}
+
+async function main(): Promise<void> {
+  const args = parseArgs(process.argv.slice(2));
+
+  if (args.command === 'task') {
+    switch (args.subcommand) {
+      case 'generate':
+        await handleGenerate(args.options);
+        break;
+      case 'review':
+        await handleReview(args.options);
+        break;
+      default:
+        console.error(`Unknown subcommand: ${args.subcommand}`);
+        console.error('Available subcommands: generate, review');
+        process.exit(1);
+    }
+  } else if (args.command === 'benchmark') {
+    switch (args.subcommand) {
+      case 'regress':
+        await handleRegress(args.options);
+        break;
+      default:
+        console.error(`Unknown subcommand: ${args.subcommand}`);
+        console.error('Available subcommands: regress');
+        process.exit(1);
+    }
+  } else {
+    console.error('Expected: asf task <subcommand> or asf benchmark <subcommand>');
+    console.error('Available commands:');
+    console.error('  task      - Task generation and review');
+    console.error('  benchmark - Benchmark analysis');
+    process.exit(1);
   }
 }
 
