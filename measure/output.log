@@ -8,6 +8,7 @@
 [0m→ [0mRead measure/lessons-learned.md
 [0m✗ [0mread failed
 [91m[1mError: [0mFile not found: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/current_directive.md
+[0m✱ [0mGlob "measure/tracks/*"[90m in . · 0 matches[0m
 [0m
 [0m$ [0mgit status
 On branch master
@@ -19,66 +20,4 @@ Changes not staged for commit:
 	modified:   measure/output.log
 
 no changes added to commit (use "git add" and/or "git commit -a")
-[0m
-[0m→ [0mRead measure/tracks/cli_llm_integration_20260504/plan.md
-[0m→ [0mRead measure/tracks/cli_llm_integration_20260504/spec.md
-[0m✱ [0mGlob "**/llm-client*"[90m 2 matches[0m
-[0m✱ [0mGlob "**/opencode-api*"[90m 2 matches[0m
-[0m→ [0mRead src/lib/llm-client.ts
-[0m→ [0mRead tests/lib/llm-client.test.ts
-[0m→ [0mRead src/lib/opencode-api.ts
-[0m→ [0mRead scripts/task-cli.ts
-The plan shows Phase 1 and Phase 2 are mostly complete. Let me verify the current state by running tests and checking what remains.
-[0m
-[0m$ [0mnpm run build 2>&1 | tail -50
-> tmp_app@0.1.0 build
-> next build
-
-▲ Next.js 16.2.2 (Turbopack)
-
-  Creating an optimized production build ...
-✓ Compiled successfully in 14.2s
-  Running TypeScript ...
-  Finished TypeScript in 35.9s ...
-  Collecting page data using 3 workers ...
-  Generating static pages using 3 workers (0/4) ...
-  Generating static pages using 3 workers (1/4) 
-  Generating static pages using 3 workers (2/4) 
-  Generating static pages using 3 workers (3/4) 
-✓ Generating static pages using 3 workers (4/4) in 606ms
-  Finalizing page optimization ...
-
-Route (app)
-┌ ○ /_not-found
-├ ƒ /api/leaderboard
-└ ƒ /api/runs
-
-
-○  (Static)   prerendered as static content
-ƒ  (Dynamic)  server-rendered on demand
-[0m
-[0m$ [0mnpm test 2>&1 | tail -100
-> tmp_app@0.1.0 test
-> vitest
-
-
- RUN  v4.1.2 /home/daniel-bo/Desktop/reading-advantage-llm-benchmark
-
-
- Test Files  46 passed (46)
-      Tests  369 passed (369)
-   Start at  13:31:30
-   Duration  55.81s (transform 4.98s, setup 0ms, import 29.76s, tests 29.15s, environment 73.69s)
-[0m
-All 369 tests pass and build succeeds. Phase 1 is complete and Phase 2's implementation is done. Let me check what's remaining.
-[0m✗ [0mread failed
-[91m[1mError: [0mFile not found: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/lib/task-cli.test.ts
-Phase 1 is already complete and verified. Phase 2 is next: CLI Integration. Let me check what's needed:
-[0m
-[0m# [0mTodos
-[x] Phase 1: API Client Abstraction - COMPLETED
-[ ] Phase 2: CLI Integration - Write integration tests for task-cli
-[ ] Phase 2: CLI Integration - Update task-cli.ts to use OpenAIClient
-[ ] Phase 3: Documentation
-[ ] Phase 4: Verification and commit
 [0m
