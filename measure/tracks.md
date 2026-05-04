@@ -67,4 +67,9 @@ This file tracks all major tracks for the project. Each track has its own detail
    *Status: Complete*
    Replace setTimeout with waitFor in BulkOperations tests
 
+- [x] **Track: Pricing Configuration Externalization**
+   *Link: [./archive/pricing_config_externalization_20260505/](./archive/pricing_config_externalization_20260505/)*
+   *Status: Complete*
+   Moved hardcoded PRICING_TABLE to data/pricing.json with getPricingTable() caching loader
+
 ## Completed Tracks

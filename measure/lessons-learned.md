@@ -26,6 +26,7 @@
 - Zod omit({}) trick to create variant schemas
 - Immutability patterns (createSpendWindow returns new window)
 - Externalized constants for data that may change
+- JSON config file with getXxx() function that caches loaded data (pricing.ts pattern)
 - Test boundary conditions explicitly (at vs over threshold)
 - Score normalization: `normalizeScore()` handles 0-1→0-100 and pass-through
 - Use `.min(1)` on array schemas to prevent empty arrays

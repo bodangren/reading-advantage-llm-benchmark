@@ -1,0 +1,11 @@
+{
+  "entries": [
+    { "provider": "openai", "model": "gpt-4.5", "input_price_per_1k": 0.005, "output_price_per_1k": 0.015 },
+    { "provider": "openai", "model": "gpt-4o", "input_price_per_1k": 0.0025, "output_price_per_1k": 0.01 },
+    { "provider": "openai", "model": "gpt-4o-mini", "input_price_per_1k": 0.00015, "output_price_per_1k": 0.0006 },
+    { "provider": "anthropic", "model": "claude-3-5-sonnet", "input_price_per_1k": 0.003, "output_price_per_1k": 0.015 },
+    { "provider": "anthropic", "model": "claude-3-5-haiku", "input_price_per_1k": 0.0008, "output_price_per_1k": 0.004 },
+    { "provider": "google", "model": "gemini-2-flash", "input_price_per_1k": 0.0001, "output_price_per_1k": 0.0005 },
+    { "provider": "google", "model": "gemini-2-pro", "input_price_per_1k": 0.002, "output_price_per_1k": 0.01 }
+  ]
+}
