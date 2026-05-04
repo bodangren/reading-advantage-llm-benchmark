@@ -16,6 +16,7 @@
 - getAllByRole for multiple elements with same name, not getByRole
 - React impure function error for Date.now() in useMemo - use stable ID instead
 - Delta calculation is relative to max score (winner=0), not absolute difference
+- Use `waitFor` from @testing-library/react instead of `setTimeout` for async state updates in tests
 
 ## Patterns That Work
 

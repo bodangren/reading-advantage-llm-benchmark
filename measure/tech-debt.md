@@ -20,5 +20,5 @@
 | 2026-04-25 | model_comparison_reports_20260423 | Duplicate TaskResult/ModelResult interfaces in 4 files | Medium | Resolved | schemas.ts exports ComparisonReport, ModelResult types; UI components use local interfaces by design (2026-05-02) |
 | 2026-04-25 | visual_refresh_20260425 | CSS OKLCH values vs DESIGN.md hex tokens inconsistency | Low | Resolved | Synced globals.css with DESIGN.md hex tokens during Phase 2 |
 | 2026-05-03 | task_authoring_interface_20260424 | Task versioning storage path needs manual directory creation | Low | Open | saveTaskVersion() creates versions dir recursively; may need cleanup job for old versions |
-| 2026-05-03 | native_agent_track_b_20260503 | BulkOperations test intermittently fails with act() warnings | Low | Open | Test uses setTimeout(100) instead of proper waitFor; not wrapped in act() for async state updates |
+| 2026-05-03 | native_agent_track_b_20260503 | BulkOperations test intermittently fails with act() warnings | Low | Resolved | Replaced setTimeout with waitFor in BulkOperations.test.tsx (2026-05-05) |
 | 2026-05-04 | automated_task_generation_20260503 | CLI uses mock LLM client instead of real API | Medium | Resolved | task-cli.ts now uses OpenAIClient; accepts --api-key and env vars OPENAI_API_KEY, LLM_API_BASE |

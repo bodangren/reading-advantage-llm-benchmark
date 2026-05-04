@@ -62,9 +62,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ## Upcoming Tracks
 
-- [x] **Track: CLI LLM Integration**
-  *Link: [./archive/cli_llm_integration_20260504/](./archive/cli_llm_integration_20260504/)*
-  *Status: Complete*
-  Replace mock LLM client with real OpenAI-compatible API integration
+- [x] **Track: Fix BulkOperations Test Warnings**
+  *Link: [./tracks/fix_bulkoperations_test_20260505/](./tracks/fix_bulkoperations_test_20260505/)*
+  *Replace setTimeout with waitFor in BulkOperations tests*
 
 ## Completed Tracks

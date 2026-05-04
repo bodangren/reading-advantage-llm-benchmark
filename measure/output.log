@@ -255,3 +255,310 @@ Route (app)
 ●  (SSG)      prerendered as static HTML (uses generateStaticParams)
 ƒ  (Dynamic)  server-rendered on demand
 [0m
+[0m$ [0mgit add -A && git commit -m "chore: full verification - 375 tests pass, build succeeds"
+[master 151d9d4] chore: full verification - 375 tests pass, build succeeds
+ 1 file changed, 115 insertions(+)
+[0m
+[0m$ [0mls -la app/
+total 76
+drwxrwxr-x  9 daniel-bo daniel-bo  4096 May  4 20:03 .
+drwxrwxr-x 17 daniel-bo daniel-bo  4096 May  4 20:09 ..
+drwxrwxr-x  4 daniel-bo daniel-bo  4096 May  4 01:36 api
+drwxrwxr-x  2 daniel-bo daniel-bo  4096 May  4 20:03 compare
+-rw-rw-r--  1 daniel-bo daniel-bo 25931 May  4 20:03 favicon.ico
+-rw-rw-r--  1 daniel-bo daniel-bo  3730 May  4 20:03 globals.css
+-rw-rw-r--  1 daniel-bo daniel-bo  1345 May  4 20:03 layout.tsx
+drwxrwxr-x  2 daniel-bo daniel-bo  4096 May  4 20:03 leaderboard
+drwxrwxr-x  2 daniel-bo daniel-bo  4096 May  4 20:03 methodology
+-rw-rw-r--  1 daniel-bo daniel-bo  3622 May  4 20:03 page.tsx
+drwxrwxr-x  3 daniel-bo daniel-bo  4096 May  4 20:03 runs
+drwxrwxr-x  3 daniel-bo daniel-bo  4096 May  4 20:03 tasks
+drwxrwxr-x  2 daniel-bo daniel-bo  4096 May  4 20:03 test-leaderboard
+[0m
+[0m$ [0mls -la src/app/
+total 72
+drwxrwxr-x 8 daniel-bo daniel-bo  4096 Apr 25 01:38 .
+drwxrwxr-x 5 daniel-bo daniel-bo  4096 Apr  4 17:27 ..
+drwxrwxr-x 2 daniel-bo daniel-bo  4096 Apr 25 01:40 compare
+-rw-rw-r-- 1 daniel-bo daniel-bo 25931 Apr  4 17:19 favicon.ico
+-rw-rw-r-- 1 daniel-bo daniel-bo  3730 Apr 25 07:35 globals.css
+-rw-rw-r-- 1 daniel-bo daniel-bo  1345 Apr  4 21:28 layout.tsx
+drwxrwxr-x 2 daniel-bo daniel-bo  4096 Apr  9 19:32 leaderboard
+drwxrwxr-x 2 daniel-bo daniel-bo  4096 Apr 10 19:40 methodology
+-rw-rw-r-- 1 daniel-bo daniel-bo  3622 Apr 14 19:33 page.tsx
+drwxrwxr-x 3 daniel-bo daniel-bo  4096 Apr 24 07:34 runs
+drwxrwxr-x 3 daniel-bo daniel-bo  4096 Apr  4 22:40 tasks
+drwxrwxr-x 2 daniel-bo daniel-bo  4096 Apr  5 07:27 test-leaderboard
+[0m
+[0m→ [0mRead README.md
+[0m
+[0m$ [0mls -la docs/
+total 20
+drwxrwxr-x  2 daniel-bo daniel-bo 4096 May  4 01:40 .
+drwxrwxr-x 17 daniel-bo daniel-bo 4096 May  4 20:09 ..
+-rw-rw-r--  1 daniel-bo daniel-bo 2296 May  4 01:40 api-reference.md
+-rw-rw-r--  1 daniel-bo daniel-bo 2178 Apr 18 20:22 dataset-versioning.md
+-rw-rw-r--  1 daniel-bo daniel-bo  591 May  4 01:32 regression-report.md
+[0m
+[0m$ [0mgit push
+To https://github.com/bodangren/reading-advantage-llm-benchmark.git
+   b802d8e..151d9d4  master -> master
+[0m
+[0m→ [0mRead measure/tech-debt.md
+[0m→ [0mRead measure/lessons-learned.md
+[0m
+[0m$ [0mmkdir -p measure/tracks/fix_bulkoperations_test_20260505
+(no output)
+[0m
+[0m✱ [0mGrep "BulkOperations"[90m 0 matches[0m
+[0m✱ [0mGrep "BulkOperations|intermittent|act\(\)"[90m 11 matches[0m
+[0m→ [0mRead tests/components/BulkOperations.test.tsx
+[0m
+[0m← [0mWrite measure/tracks/fix_bulkoperations_test_20260505/spec.md
+Wrote file successfully.
+[0m
+[0m← [0mWrite measure/tracks/fix_bulkoperations_test_20260505/plan.md
+Wrote file successfully.
+[0m
+[0m→ [0mRead measure/tracks.md
+[0m
+[0m← [0mEdit measure/tracks.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tracks.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tracks.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tracks.md
+@@ -61,10 +61,9 @@
+    Read-only API, CSV export, and summary statistics for benchmark data
+ 
+ ## Upcoming Tracks
+ 
+-- [x] **Track: CLI LLM Integration**
+-  *Link: [./archive/cli_llm_integration_20260504/](./archive/cli_llm_integration_20260504/)*
+-  *Status: Complete*
+-  Replace mock LLM client with real OpenAI-compatible API integration
++- [ ] **Track: Fix BulkOperations Test Warnings**
++  *Link: [./tracks/fix_bulkoperations_test_20260505/](./tracks/fix_bulkoperations_test_20260505/)*
++  *Replace setTimeout with waitFor in BulkOperations tests*
+ 
+ ## Completed Tracks
+
+[0m
+[0m← [0mEdit tests/components/BulkOperations.test.tsx
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/BulkOperations.test.tsx
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/BulkOperations.test.tsx
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/BulkOperations.test.tsx
+@@ -1,7 +1,7 @@
+ // @vitest-environment jsdom
+ import { describe, it, expect, vi } from "vitest"
+-import { render, screen, fireEvent } from "@testing-library/react"
++import { render, screen, fireEvent, waitFor } from "@testing-library/react"
+ import { BulkOperations } from "@/components/BulkOperations"
+ 
+ describe("BulkOperations", () => {
+   beforeEach(() => {
+
+[0m
+[0m← [0mEdit tests/components/BulkOperations.test.tsx
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/BulkOperations.test.tsx
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/BulkOperations.test.tsx
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/BulkOperations.test.tsx
+@@ -23,11 +23,11 @@
+   const file = new File(['[{invalid}]'], "tasks.json", { type: "application/json" })
+ 
+   fireEvent.change(input, { target: { files: [file] } })
+ 
+-  await new Promise(resolve => setTimeout(resolve, 100))
+-
+-  expect(screen.getByText(/Validation Errors/i)).toBeDefined()
++  await waitFor(() => {
++    expect(screen.getByText(/Validation Errors/i)).toBeDefined()
++  })
+ })
+ 
+ it("shows valid task count after successful import", async () => {
+   render(<BulkOperations />)
+
+[0m
+[0m← [0mEdit tests/components/BulkOperations.test.tsx
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/BulkOperations.test.tsx
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/BulkOperations.test.tsx
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/BulkOperations.test.tsx
+@@ -53,11 +53,11 @@
+   const file = new File([JSON.stringify(validTasks)], "tasks.json", { type: "application/json" })
+ 
+   fireEvent.change(input, { target: { files: [file] } })
+ 
+-  await new Promise(resolve => setTimeout(resolve, 100))
+-
+-  expect(screen.getByText(/2 valid/)).toBeDefined()
++  await waitFor(() => {
++    expect(screen.getByText(/2 valid/)).toBeDefined()
++  })
+ })
+ 
+ it("calls onImportComplete callback with valid tasks", async () => {
+   const onImportComplete = vi.fn()
+
+[0m
+[0m← [0mEdit tests/components/BulkOperations.test.tsx
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/BulkOperations.test.tsx
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/BulkOperations.test.tsx
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/BulkOperations.test.tsx
+@@ -77,11 +77,11 @@
+   const file = new File([JSON.stringify(validTasks)], "tasks.json", { type: "application/json" })
+ 
+   fireEvent.change(input, { target: { files: [file] } })
+ 
+-  await new Promise(resolve => setTimeout(resolve, 100))
+-
+-  expect(onImportComplete).toHaveBeenCalledWith(validTasks)
++  await waitFor(() => {
++    expect(onImportComplete).toHaveBeenCalledWith(validTasks)
++  })
+ })
+ 
+ it("shows error for non-array JSON", async () => {
+   render(<BulkOperations />)
+
+[0m
+[0m← [0mEdit tests/components/BulkOperations.test.tsx
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/BulkOperations.test.tsx
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/BulkOperations.test.tsx
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/BulkOperations.test.tsx
+@@ -90,9 +90,9 @@
+     const file = new File(['{"invalid": "format"}'], "tasks.json", { type: "application/json" })
+ 
+     fireEvent.change(input, { target: { files: [file] } })
+ 
+-    await new Promise(resolve => setTimeout(resolve, 100))
+-
+-    expect(screen.getByText(/Expected an array/)).toBeDefined()
++    await waitFor(() => {
++      expect(screen.getByText(/Expected an array/)).toBeDefined()
++    })
+   })
+ })
+\ No newline at end of file
+
+[0m
+[0m→ [0mRead tests/components/BulkOperations.test.tsx
+[0m
+[0m$ [0mtimeout 60 bun run test --run tests/components/BulkOperations.test.tsx 2>&1
+$ vitest --run tests/components/BulkOperations.test.tsx
+
+ RUN  v4.1.2 /home/daniel-bo/Desktop/reading-advantage-llm-benchmark
+
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  01:41:47
+   Duration  2.86s (transform 178ms, setup 0ms, import 678ms, tests 270ms, environment 1.61s)
+[0m
+[0m$ [0mtimeout 120 bun run test 2>&1 | tail -20
+$ vitest
+
+ RUN  v4.1.2 /home/daniel-bo/Desktop/reading-advantage-llm-benchmark
+
+
+ Test Files  47 passed (47)
+      Tests  375 passed (375)
+   Start at  01:41:58
+   Duration  37.34s (transform 2.84s, setup 0ms, import 18.92s, tests 21.57s, environment 44.46s)
+[0m
+[0m$ [0mbun run build 2>&1 | tail -30
+Running TypeScript ...
+  Finished TypeScript in 14.7s ...
+  Collecting page data using 3 workers ...
+  Generating static pages using 3 workers (0/13) ...
+  Generating static pages using 3 workers (3/13) 
+  Generating static pages using 3 workers (6/13) 
+  Generating static pages using 3 workers (9/13) 
+✓ Generating static pages using 3 workers (13/13) in 800ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/leaderboard
+├ ƒ /api/runs
+├ ○ /compare
+├ ○ /leaderboard
+├ ○ /methodology
+├ ○ /runs
+├ ● /runs/[id]
+│ └ /runs/blb-run-001
+├ ○ /tasks
+└ ● /tasks/[id]
+  └ /tasks/task_import_game_v1
+
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+[0m
+[0m← [0mEdit measure/tracks.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tracks.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tracks.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tracks.md
+@@ -61,9 +61,9 @@
+    Read-only API, CSV export, and summary statistics for benchmark data
+ 
+ ## Upcoming Tracks
+ 
+-- [ ] **Track: Fix BulkOperations Test Warnings**
++- [x] **Track: Fix BulkOperations Test Warnings**
+   *Link: [./tracks/fix_bulkoperations_test_20260505/](./tracks/fix_bulkoperations_test_20260505/)*
+   *Replace setTimeout with waitFor in BulkOperations tests*
+ 
+ ## Completed Tracks
+
+[0m
+[0m← [0mWrite measure/tracks/fix_bulkoperations_test_20260505/plan.md
+Wrote file successfully.
+[0m
+[0m← [0mEdit measure/tech-debt.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tech-debt.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tech-debt.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tech-debt.md
+@@ -19,6 +19,6 @@
+ | 2026-04-25 | model_comparison_reports_20260423 | ComparisonReport schema created for Phase 1 | Low | Resolved | NormalizedScoreSchema, ModelResultSchema, ComparisonReportSchema added to schemas.ts |
+ | 2026-04-25 | model_comparison_reports_20260423 | Duplicate TaskResult/ModelResult interfaces in 4 files | Medium | Resolved | schemas.ts exports ComparisonReport, ModelResult types; UI components use local interfaces by design (2026-05-02) |
+ | 2026-04-25 | visual_refresh_20260425 | CSS OKLCH values vs DESIGN.md hex tokens inconsistency | Low | Resolved | Synced globals.css with DESIGN.md hex tokens during Phase 2 |
+ | 2026-05-03 | task_authoring_interface_20260424 | Task versioning storage path needs manual directory creation | Low | Open | saveTaskVersion() creates versions dir recursively; may need cleanup job for old versions |
+-| 2026-05-03 | native_agent_track_b_20260503 | BulkOperations test intermittently fails with act() warnings | Low | Open | Test uses setTimeout(100) instead of proper waitFor; not wrapped in act() for async state updates |
++| 2026-05-03 | native_agent_track_b_20260503 | BulkOperations test intermittently fails with act() warnings | Low | Resolved | Replaced setTimeout with waitFor in BulkOperations.test.tsx (2026-05-05) |
+ | 2026-05-04 | automated_task_generation_20260503 | CLI uses mock LLM client instead of real API | Medium | Resolved | task-cli.ts now uses OpenAIClient; accepts --api-key and env vars OPENAI_API_KEY, LLM_API_BASE |
+
+[0m
+[0m← [0mEdit measure/lessons-learned.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+@@ -15,8 +15,9 @@
+ - shadcn Button does not support asChild prop - use plain anchor tags for download links
+ - getAllByRole for multiple elements with same name, not getByRole
+ - React impure function error for Date.now() in useMemo - use stable ID instead
+ - Delta calculation is relative to max score (winner=0), not absolute difference
++- Use `waitFor` from @testing-library/react instead of `setTimeout` for async state updates in tests
+ 
+ ## Patterns That Work
+ 
+ - TDD: tests before implementation caught issues early
+
+[0m
+[0m→ [0mRead measure/tracks.md
+[0m
+[0m$ [0mmkdir -p measure/archive/fix_bulkoperations_test_20260505
+(no output)
+[0m
+[0m$ [0mmv measure/tracks/fix_bulkoperations_test_20260505/* measure/archive/fix_bulkoperations_test_20260505/ && rmdir measure/tracks/fix_bulkoperations_test_20260505
+(no output)
+[0m

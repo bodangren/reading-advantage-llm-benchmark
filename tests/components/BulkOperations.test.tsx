@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi } from "vitest"
-import { render, screen, fireEvent } from "@testing-library/react"
+import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 import { BulkOperations } from "@/components/BulkOperations"
 
 describe("BulkOperations", () => {
@@ -24,9 +24,9 @@ describe("BulkOperations", () => {
 
     fireEvent.change(input, { target: { files: [file] } })
 
-    await new Promise(resolve => setTimeout(resolve, 100))
-
-    expect(screen.getByText(/Validation Errors/i)).toBeDefined()
+    await waitFor(() => {
+      expect(screen.getByText(/Validation Errors/i)).toBeDefined()
+    })
   })
 
   it("shows valid task count after successful import", async () => {
@@ -54,9 +54,9 @@ describe("BulkOperations", () => {
 
     fireEvent.change(input, { target: { files: [file] } })
 
-    await new Promise(resolve => setTimeout(resolve, 100))
-
-    expect(screen.getByText(/2 valid/)).toBeDefined()
+    await waitFor(() => {
+      expect(screen.getByText(/2 valid/)).toBeDefined()
+    })
   })
 
   it("calls onImportComplete callback with valid tasks", async () => {
@@ -78,9 +78,9 @@ describe("BulkOperations", () => {
 
     fireEvent.change(input, { target: { files: [file] } })
 
-    await new Promise(resolve => setTimeout(resolve, 100))
-
-    expect(onImportComplete).toHaveBeenCalledWith(validTasks)
+    await waitFor(() => {
+      expect(onImportComplete).toHaveBeenCalledWith(validTasks)
+    })
   })
 
   it("shows error for non-array JSON", async () => {
@@ -91,8 +91,8 @@ describe("BulkOperations", () => {
 
     fireEvent.change(input, { target: { files: [file] } })
 
-    await new Promise(resolve => setTimeout(resolve, 100))
-
-    expect(screen.getByText(/Expected an array/)).toBeDefined()
+    await waitFor(() => {
+      expect(screen.getByText(/Expected an array/)).toBeDefined()
+    })
   })
 })
