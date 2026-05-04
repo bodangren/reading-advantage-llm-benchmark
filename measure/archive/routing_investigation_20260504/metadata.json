@@ -1,0 +1,11 @@
+{
+  "track_id": "routing_investigation_20260504",
+  "type": "bug",
+  "status": "complete",
+  "created_at": "2026-05-04T19:48:00Z",
+  "updated_at": "2026-05-04T20:05:00Z",
+  "description": "Fix App Router Pages Discovery - build output only showed 4 routes instead of all pages",
+  "estimated_tasks": 5,
+  "actual_tasks": 5,
+  "deviation_notes": ""
+}
