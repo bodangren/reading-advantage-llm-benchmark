@@ -18,16 +18,15 @@ describe('Task CLI Integration', () => {
         json: () => Promise.resolve(mockResponse),
       } as Response);
 
-      let callCount = 0;
-      const mockLlmClient = async (prompt: string): Promise<string> => {
-        callCount++;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const mockLlmClient = async (_: string): Promise<string> => {
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer test-key',
           },
-          body: JSON.stringify({ model: mockModel, messages: [{ role: 'user', content: prompt }] }),
+          body: JSON.stringify({ model: mockModel, messages: [{ role: 'user', content: 'test prompt' }] }),
         });
         const data = await response.json() as typeof mockResponse;
         return data.choices[0].message.content;
@@ -57,7 +56,7 @@ describe('Task CLI Integration', () => {
         fs.mkdirSync(tempRepo, { recursive: true });
       }
 
-      const badClient = async (_prompt: string): Promise<string> => {
+      const badClient = async (): Promise<string> => {
         throw new Error('No API key provided');
       };
 

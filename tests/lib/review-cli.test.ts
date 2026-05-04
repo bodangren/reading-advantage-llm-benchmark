@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { listCandidates, saveCandidateTasks, updateCandidateStatus } from '../../src/lib/candidate-storage';
 import { TaskSpec } from '../../src/lib/task-generator';
 import fs from 'fs';
-import path from 'path';
 
 describe('Review CLI', () => {
   const testDir = '/tmp/test-review-cli';

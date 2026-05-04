@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { saveCandidateTasks, loadCandidateTasks, CandidateStatus, listCandidates, CandidateTask } from '../../src/lib/candidate-storage';
+import { saveCandidateTasks, loadCandidateTasks, listCandidates } from '../../src/lib/candidate-storage';
 import { TaskSpec } from '../../src/lib/task-generator';
 import fs from 'fs';
 import path from 'path';

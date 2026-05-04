@@ -1,14 +1,13 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { generateTasks } from '../../src/lib/task-generator';
-import { TaskSpec } from '../../src/lib/task-generator';
 import { saveCandidateTasks, listCandidates, updateCandidateStatus } from '../../src/lib/candidate-storage';
 import fs from 'fs';
-import path from 'path';
 
 describe('Task Generation Integration', () => {
   const testDir = '/tmp/test-integration-flow';
 
-  const mockLlmClient = async (prompt: string): Promise<string> => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const mockLlmClient = async (_: string): Promise<string> => {
     const tasks = [
       {
         id: `integration_task_${Date.now()}_1`,

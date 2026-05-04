@@ -370,7 +370,7 @@ describe('Runs Data Utilities', () => {
         },
         test_results: [],
         artifacts: [],
-        track: 'unknown' as Run['track']
+        track: 'unknown' as 'fixed' | 'native'
       };
 
       expect(() => validateRun(invalidTrackRun)).toThrow();

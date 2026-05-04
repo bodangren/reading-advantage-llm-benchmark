@@ -98,7 +98,7 @@ describe('API Routes', () => {
 
       expect(response.status).toBe(200);
       expect(data.count).toBe(2);
-      expect(data.runs.every((r) => r.model === 'gpt-4o')).toBe(true);
+      expect(data.runs.every((r: { model: string }) => r.model === 'gpt-4o')).toBe(true);
     });
 
     it('should filter runs by score range', async () => {
