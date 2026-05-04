@@ -63,7 +63,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## Upcoming Tracks
 
 - [x] **Track: Fix BulkOperations Test Warnings**
-  *Link: [./tracks/fix_bulkoperations_test_20260505/](./tracks/fix_bulkoperations_test_20260505/)*
-  *Replace setTimeout with waitFor in BulkOperations tests*
+   *Link: [./archive/fix_bulkoperations_test_20260505/](./archive/fix_bulkoperations_test_20260505/)*
+   *Status: Complete*
+   Replace setTimeout with waitFor in BulkOperations tests
 
 ## Completed Tracks

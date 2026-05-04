@@ -562,3 +562,38 @@ Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-l
 [0m$ [0mmv measure/tracks/fix_bulkoperations_test_20260505/* measure/archive/fix_bulkoperations_test_20260505/ && rmdir measure/tracks/fix_bulkoperations_test_20260505
 (no output)
 [0m
+[0m$ [0mgit add -A && git commit -m "fix(test): replace setTimeout with waitFor in BulkOperations tests
+
+- Resolved tech-debt: BulkOperations test intermittently failing with act() warnings
+- Added lesson: Use waitFor from @testing-library/react instead of setTimeout for async state updates
+- All 375 tests pass, build succeeds"
+[master 612d61b] fix(test): replace setTimeout with waitFor in BulkOperations tests
+ 7 files changed, 355 insertions(+), 18 deletions(-)
+ create mode 100644 measure/archive/fix_bulkoperations_test_20260505/plan.md
+ create mode 100644 measure/archive/fix_bulkoperations_test_20260505/spec.md
+[0m
+[0m$ [0mgit push
+To https://github.com/bodangren/reading-advantage-llm-benchmark.git
+   151d9d4..612d61b  master -> master
+[0m
+[0m← [0mEdit measure/tracks.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tracks.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tracks.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tracks.md
+@@ -62,8 +62,9 @@
+ 
+ ## Upcoming Tracks
+ 
+ - [x] **Track: Fix BulkOperations Test Warnings**
+-  *Link: [./tracks/fix_bulkoperations_test_20260505/](./tracks/fix_bulkoperations_test_20260505/)*
+-  *Replace setTimeout with waitFor in BulkOperations tests*
++   *Link: [./archive/fix_bulkoperations_test_20260505/](./archive/fix_bulkoperations_test_20260505/)*
++   *Status: Complete*
++   Replace setTimeout with waitFor in BulkOperations tests
+ 
+ ## Completed Tracks
+
+[0m
+[0m→ [0mRead measure/tech-debt.md
+[0m→ [0mRead measure/lessons-learned.md
