@@ -62,8 +62,9 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ## Upcoming Tracks
 
-- [ ] **Track: CLI LLM Integration**
-  *Link: [./tracks/cli_llm_integration_20260504/](./tracks/cli_llm_integration_20260504/)*
+- [x] **Track: CLI LLM Integration**
+  *Link: [./archive/cli_llm_integration_20260504/](./archive/cli_llm_integration_20260504/)*
+  *Status: Complete*
   Replace mock LLM client with real OpenAI-compatible API integration
 
 ## Completed Tracks
