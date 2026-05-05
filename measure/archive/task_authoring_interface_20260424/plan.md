@@ -25,7 +25,7 @@
 - [x] 4.4 Write integration tests for bulk operations
 
 ## Phase 5: Task Management
-- [ ] 5.1 Add task status management (draft, review, published)
-- [ ] 5.2 Implement task search and filtering
-- [ ] 5.3 Create task templates for common patterns
-- [ ] 5.4 Write end-to-end tests for full authoring workflow
+- [x] 5.1 Add task status management (draft, review, published)
+- [x] 5.2 Implement task search and filtering
+- [x] 5.3 Create task templates for common patterns
+- [x] 5.4 Write end-to-end tests for full authoring workflow

@@ -13,11 +13,14 @@ Tasks are currently authored as raw JSON files, requiring manual schema complian
 4. Bulk task import/export
 
 ## Acceptance Criteria
-- [ ] Form-based task editor with all required fields
-- [ ] Real-time schema validation with error messages
-- [ ] Markdown preview for task descriptions
-- [ ] Task version history with diff view
-- [ ] Bulk import/export functionality
+- [x] Form-based task editor with all required fields
+- [x] Real-time schema validation with error messages
+- [x] Markdown preview for task descriptions
+- [x] Task version history with diff view
+- [x] Bulk import/export functionality
+- [x] Task status management (draft, review, published)
+- [x] Task search and filtering
+- [x] Task templates for common patterns
 
 ## Technical Notes
 - Extend existing task schema with authoring metadata
