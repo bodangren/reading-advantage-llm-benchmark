@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { Task, TaskSchema, Run, RunSchema, LeaderboardEntry, LeaderboardSchema, DatasetVersion, DatasetVersionSchema, TaskVersion, TaskVersionSchema } from './schemas';
+import { Task, TaskSchema, Run, RunSchema, LeaderboardEntry, LeaderboardSchema, DatasetVersion, DatasetVersionSchema, TaskVersion, TaskVersionSchema, TaskTemplate, TaskTemplatesSchema } from './schemas';
 import { z } from 'zod';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
@@ -127,4 +127,19 @@ export async function saveTaskVersion(taskId: string, taskData: Task, changeSumm
   await fs.writeFile(filePath, JSON.stringify(taskVersion, null, 2));
 
   return taskVersion;
+}
+
+export async function getTaskTemplates(): Promise<TaskTemplate[]> {
+  try {
+    const filePath = path.join(DATA_DIR, 'templates', 'task_templates.json');
+    const content = await fs.readFile(filePath, 'utf-8');
+    const parsed = JSON.parse(content);
+    const result = TaskTemplatesSchema.safeParse(parsed);
+    if (result.success) {
+      return result.data.templates;
+    }
+    return [];
+  } catch {
+    return [];
+  }
 }

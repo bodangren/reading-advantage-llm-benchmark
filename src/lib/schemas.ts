@@ -13,6 +13,9 @@ export const RubricDimensionSchema = z.object({
   description: z.string(),
 });
 
+export const TaskStatusSchema = z.enum(['draft', 'review', 'published']);
+export type TaskStatus = z.infer<typeof TaskStatusSchema>;
+
 export const TaskFormDataSchema = z.object({
   id: z.string().min(1, "Task ID is required").regex(/^[a-z0-9_]+$/i, "Task ID must be alphanumeric with underscores only"),
   title: z.string().min(1, "Title is required"),
@@ -22,6 +25,7 @@ export const TaskFormDataSchema = z.object({
   repo_context: z.string(),
   acceptance_criteria: z.array(z.string()),
   structured_rubric: z.array(RubricDimensionSchema),
+  status: TaskStatusSchema.optional().default('draft'),
 }).refine(
   (data) => data.structured_rubric.reduce((sum, r) => sum + r.weight, 0) === 100,
   { message: "Rubric weights must sum to 100", path: ["structured_rubric"] }
@@ -40,6 +44,7 @@ export const TaskSchema = z.object({
   rubric: z.array(z.string()).optional(),
   structured_rubric: z.array(RubricDimensionSchema).optional(),
   version: z.string(),
+  status: TaskStatusSchema.optional().default('draft'),
 });
 
 export const TestResultSchema = z.object({
@@ -110,6 +115,7 @@ export const LeaderboardSchema = z.object({
 
 export type RubricDimension = z.infer<typeof RubricDimensionSchema>;
 export type Task = z.infer<typeof TaskSchema>;
+export type TaskStatus = z.infer<typeof TaskStatusSchema>;
 export type Run = z.infer<typeof RunSchema>;
 export type RunDetail = z.infer<typeof RunDetailSchema>;
 export type LeaderboardEntry = z.infer<typeof LeaderboardSchema>;
@@ -200,3 +206,21 @@ export const TrackConfigSchema = z.discriminatedUnion('track', [
 
 export type AgentConfig = z.infer<typeof AgentConfigSchema>;
 export type TrackConfig = z.infer<typeof TrackConfigSchema>;
+
+export const TaskTemplateSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  difficulty: z.enum(["easy", "medium", "hard"]),
+  domain: z.string(),
+  structured_rubric: z.array(RubricDimensionSchema),
+  example_acceptance_criteria: z.array(z.string()),
+});
+
+export type TaskTemplate = z.infer<typeof TaskTemplateSchema>;
+
+export const TaskTemplatesSchema = z.object({
+  templates: z.array(TaskTemplateSchema),
+});
+
+export type TaskTemplates = z.infer<typeof TaskTemplatesSchema>;

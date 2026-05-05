@@ -1,0 +1,79 @@
+{
+  "templates": [
+    {
+      "id": "feature_addition",
+      "name": "Feature Addition",
+      "description": "Add a new feature to an existing codebase following project patterns",
+      "difficulty": "medium",
+      "domain": "Web App",
+      "structured_rubric": [
+        { "label": "Functional correctness", "weight": 40, "description": "Feature works as specified and meets acceptance criteria" },
+        { "label": "Code quality", "weight": 25, "description": "Follows existing patterns, proper error handling, no code smells" },
+        { "label": "Testing", "weight": 20, "description": "New tests pass, existing tests still pass" },
+        { "label": "Documentation", "weight": 10, "description": "Code is self-documenting, comments added where helpful" },
+        { "label": "Minimality", "weight": 5, "description": "No over-engineering, minimal changes to achieve goal" }
+      ],
+      "example_acceptance_criteria": [
+        "Feature is accessible via UI",
+        "Feature state persists across sessions",
+        "All edge cases handled"
+      ]
+    },
+    {
+      "id": "bug_fix",
+      "name": "Bug Fix",
+      "description": "Identify and fix a bug in existing functionality",
+      "difficulty": "easy",
+      "domain": "General",
+      "structured_rubric": [
+        { "label": "Bug identification", "weight": 30, "description": "Correct root cause identified" },
+        { "label": "Fix correctness", "weight": 35, "description": "Fix resolves the issue without introducing new problems" },
+        { "label": "Testing", "weight": 25, "description": "Test case added or existing tests verify fix" },
+        { "label": "Code quality", "weight": 10, "description": "Minimal change, no side effects" }
+      ],
+      "example_acceptance_criteria": [
+        "Bug no longer reproduces",
+        "No regression in related functionality",
+        "Edge cases handled"
+      ]
+    },
+    {
+      "id": "refactoring",
+      "name": "Code Refactoring",
+      "description": "Improve code structure without changing external behavior",
+      "difficulty": "medium",
+      "domain": "General",
+      "structured_rubric": [
+        { "label": "Behavior preservation", "weight": 40, "description": "All existing tests pass, behavior unchanged" },
+        { "label": "Code quality improvement", "weight": 25, "description": "Better organization, reduced duplication, clearer naming" },
+        { "label": "Performance", "weight": 15, "description": "No performance regression" },
+        { "label": "Documentation", "weight": 10, "description": "Comments or docs updated if needed" },
+        { "label": "Minimality", "weight": 10, "description": "Targeted changes only" }
+      ],
+      "example_acceptance_criteria": [
+        "All existing tests continue to pass",
+        "No change in external API or behavior",
+        "Code is more maintainable"
+      ]
+    },
+    {
+      "id": "api_integration",
+      "name": "API Integration",
+      "description": "Integrate with an external API or service",
+      "difficulty": "hard",
+      "domain": "API",
+      "structured_rubric": [
+        { "label": "Functional correctness", "weight": 35, "description": "API calls work correctly, data handled properly" },
+        { "label": "Error handling", "weight": 25, "description": "Network errors, rate limits, invalid responses handled" },
+        { "label": "Security", "weight": 20, "description": "API keys secured, no sensitive data logged" },
+        { "label": "Testing", "weight": 15, "description": "Integration works, mocked tests pass" },
+        { "label": "Documentation", "weight": 5, "description": "API usage documented" }
+      ],
+      "example_acceptance_criteria": [
+        "API integration works end-to-end",
+        "Error states handled gracefully",
+        "API keys/config not hardcoded"
+      ]
+    }
+  ]
+}

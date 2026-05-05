@@ -55,4 +55,21 @@ describe('TaskCard Component', () => {
     render(<TaskCard task={mockTask} />);
     expect(screen.getByText('View Task')).toBeDefined();
   });
+
+  it('should render draft status badge by default', () => {
+    render(<TaskCard task={mockTask} />);
+    expect(screen.getByText('draft')).toBeDefined();
+  });
+
+  it('should render published status badge', () => {
+    const publishedTask = { ...mockTask, status: 'published' as const };
+    render(<TaskCard task={publishedTask} />);
+    expect(screen.getByText('published')).toBeDefined();
+  });
+
+  it('should render review status badge', () => {
+    const reviewTask = { ...mockTask, status: 'review' as const };
+    render(<TaskCard task={reviewTask} />);
+    expect(screen.getByText('review')).toBeDefined();
+  });
 });

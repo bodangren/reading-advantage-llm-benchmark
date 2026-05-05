@@ -9,7 +9,16 @@ interface TaskCardProps {
   runCount?: number;
 }
 
+const STATUS_COLORS = {
+  draft: 'secondary',
+  review: 'warning',
+  published: 'default',
+} as const;
+
 export function TaskCard({ task, runCount = 0 }: TaskCardProps) {
+  const status = task.status || 'draft';
+  const statusColor = STATUS_COLORS[status] || 'secondary';
+
   return (
     <Card className="flex flex-col h-full hover:border-primary hover:shadow-lg hover:scale-[1.02] transition-all cursor-pointer">
       <CardHeader>
@@ -21,6 +30,9 @@ export function TaskCard({ task, runCount = 0 }: TaskCardProps) {
             {task.domain && (
               <Badge variant="outline">{task.domain}</Badge>
             )}
+            <Badge variant={statusColor} className="capitalize">
+              {status}
+            </Badge>
           </div>
           <span className="text-xs text-muted-foreground">v{task.version}</span>
         </div>
