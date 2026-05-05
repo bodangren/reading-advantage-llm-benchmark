@@ -71,9 +71,9 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ## Upcoming Tracks
 
-- [ ] **Track: Task Domain Expansion — Mobile & React Native**
-  *Link: [./tracks/task_domain_expansion_mobile_20260506/](./tracks/task_domain_expansion_mobile_20260506/)*
-  Add React Native brownfield tasks to the benchmark catalog.
+- [x] **Track: Task Domain Expansion — Mobile & React Native**
+   *Link: [./tracks/task_domain_expansion_mobile_20260506/](./tracks/task_domain_expansion_mobile_20260506/)*
+   Add React Native brownfield tasks to the benchmark catalog.
 
 - [ ] **Track: Automated Benchmark Scheduling**
   *Link: [./tracks/automated_benchmark_scheduling_20260506/](./tracks/automated_benchmark_scheduling_20260506/)*

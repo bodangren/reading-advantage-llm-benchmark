@@ -28,5 +28,101 @@
     ],
     "version": "1.0",
     "status": "published"
+  },
+  {
+    "id": "task_react_native_module_v1",
+    "title": "Native Module Integration",
+    "difficulty": "hard",
+    "domain": "Mobile & React Native",
+    "description": "Integrate a native iOS/Android module with React Native bridge. Create a native module that exposes device info (model, OS version) and implement a bridge to call it from JavaScript.",
+    "repo_context": "React Native 0.76+ project with TypeScript. Uses CocoaPods for iOS dependencies and Gradle for Android. Project structure: ios/ for iOS native code, android/ for Android native code, src/ for JS/TS code.",
+    "acceptance_criteria": [
+      "Native module bridge is properly configured for iOS",
+      "Native module bridge is properly configured for Android",
+      "JavaScript can call native methods to get device info",
+      "Permissions are declared in Info.plist for iOS",
+      "Permissions are declared in AndroidManifest.xml for Android",
+      "All existing tests continue to pass"
+    ],
+    "structured_rubric": [
+      { "label": "Functional correctness", "weight": 35, "description": "Native methods callable from JS; device info returned correctly" },
+      { "label": "Platform parity", "weight": 20, "description": "Works on both iOS and Android with consistent API" },
+      { "label": "Permission handling", "weight": 15, "description": "Permissions properly declared in platform manifests" },
+      { "label": "Regression safety", "weight": 20, "description": "No existing functionality broken; no gradle/cocoapod conflicts" },
+      { "label": "Minimality", "weight": 10, "description": "No unnecessary native code; clean module structure" }
+    ],
+    "rubric": [
+      "Functional correctness (35)",
+      "Platform parity (20)",
+      "Permission handling (15)",
+      "Regression safety (20)",
+      "Minimality (10)"
+    ],
+    "version": "1.0",
+    "status": "published"
+  },
+  {
+    "id": "task_react_native_navigation_v1",
+    "title": "Navigation Refactor",
+    "difficulty": "medium",
+    "domain": "Mobile & React Native",
+    "description": "Migrate from React Navigation v5 to v6 with typed routes. Update navigation structure to use the latest React Navigation APIs with full TypeScript type safety for route params.",
+    "repo_context": "React Native project using React Navigation v5 with TypeScript. Uses @react-navigation/native, @react-navigation/stack, and @react-navigation/bottom-tabs. Navigation config is in src/navigation/ directory.",
+    "acceptance_criteria": [
+      "Routes are properly typed using TypeScript",
+      "Navigation state persists across app restart",
+      "Deep linking works for both iOS and Android",
+      "All existing navigation flows continue to work",
+      "Tab bar and stack navigation render correctly",
+      "All existing tests continue to pass"
+    ],
+    "structured_rubric": [
+      { "label": "Functional correctness", "weight": 35, "description": "All navigation flows work; no runtime errors" },
+      { "label": "Type safety", "weight": 25, "description": "Routes are fully typed; no 'any' types for route params" },
+      { "label": "Deep linking", "weight": 15, "description": "URLs open correct screens on both platforms" },
+      { "label": "Regression safety", "weight": 15, "description": "Existing navigation patterns preserved" },
+      { "label": "Minimality", "weight": 10, "description": "Minimal code changes; no unnecessary refactoring" }
+    ],
+    "rubric": [
+      "Functional correctness (35)",
+      "Type safety (25)",
+      "Deep linking (15)",
+      "Regression safety (15)",
+      "Minimality (10)"
+    ],
+    "version": "1.0",
+    "status": "published"
+  },
+  {
+    "id": "task_react_native_storage_v1",
+    "title": "Async Storage Migration",
+    "difficulty": "medium",
+    "domain": "Mobile & React Native",
+    "description": "Migrate from legacy AsyncStorage to @react-native-async-storage/async-storage. Ensure all existing stored data is migrated correctly and the new API is used consistently throughout the codebase.",
+    "repo_context": "React Native 0.72+ project. Previously used react-native AsyncStorage API. New storage should use @react-native-async-storage/async-storage which is the community recommended solution.",
+    "acceptance_criteria": [
+      "All data migrations complete successfully on first launch",
+      "Existing user data is preserved after migration",
+      "Storage quota errors are handled gracefully",
+      "All storage operations use the new API consistently",
+      "Migration does not cause performance regression",
+      "All existing tests continue to pass"
+    ],
+    "structured_rubric": [
+      { "label": "Functional correctness", "weight": 30, "description": "Data persists correctly; no data loss" },
+      { "label": "Migration completeness", "weight": 25, "description": "All legacy data migrated; no orphaned storage keys" },
+      { "label": "Error handling", "weight": 20, "description": "Quota errors handled gracefully; fallback behavior defined" },
+      { "label": "Regression safety", "weight": 15, "description": "Existing features unaffected by migration" },
+      { "label": "Minimality", "weight": 10, "description": "Clean migration path; no duplicated storage logic" }
+    ],
+    "rubric": [
+      "Functional correctness (30)",
+      "Migration completeness (25)",
+      "Error handling (20)",
+      "Regression safety (15)",
+      "Minimality (10)"
+    ],
+    "version": "1.0",
+    "status": "published"
   }
 ]
