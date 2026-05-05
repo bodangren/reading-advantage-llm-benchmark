@@ -107,6 +107,36 @@ export async function getTaskVersions(taskId: string): Promise<TaskVersion[]> {
   }
 }
 
+export async function cleanupTaskVersions(taskId: string, maxVersions: number = 50): Promise<number> {
+  const versionsDir = path.join(DATA_DIR, 'tasks', 'versions', taskId);
+  try {
+    const files = await fs.readdir(versionsDir);
+    const versionFiles = files.filter(f => f.endsWith('.json'));
+
+    const versions: { filePath: string; created_at: Date }[] = [];
+    for (const file of versionFiles) {
+      const filePath = path.join(versionsDir, file);
+      const content = await fs.readFile(filePath, 'utf-8');
+      const parsed = JSON.parse(content);
+      const result = TaskVersionSchema.safeParse(parsed);
+      if (result.success) {
+        versions.push({ filePath, created_at: new Date(result.data.created_at) });
+      }
+    }
+
+    versions.sort((a, b) => b.created_at.getTime() - a.created_at.getTime());
+
+    const toDelete = versions.slice(maxVersions);
+    for (const { filePath } of toDelete) {
+      await fs.unlink(filePath);
+    }
+
+    return toDelete.length;
+  } catch {
+    return 0;
+  }
+}
+
 export async function saveTaskVersion(taskId: string, taskData: Task, changeSummary?: string): Promise<TaskVersion> {
   const versionsDir = path.join(DATA_DIR, 'tasks', 'versions', taskId);
   await fs.mkdir(versionsDir, { recursive: true });

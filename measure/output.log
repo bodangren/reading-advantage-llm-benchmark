@@ -13,3 +13,1266 @@
 M measure/output.log
 [0m
 [0m✱ [0mGlob "measure/tracks/*/metadata.json"[90m 1 match[0m
+[0m
+[0m$ [0mgit add measure/output.log && git commit -m "chore: checkpoint output log"
+[master 3de6917] chore: checkpoint output log
+ 1 file changed, 3 insertions(+), 971 deletions(-)
+[0m
+All tracks complete. Only open tech-debt item: task versioning storage path cleanup. Creating new track.
+[0m# [0mTodos
+[ ] Create track for task versioning storage cleanup
+[ ] Implement versioning storage cleanup
+[ ] Verify implementation
+[ ] Finalize and commit
+[0m
+[0m✱ [0mGrep "versions dir|saveTaskVersion"[90m 1 match[0m
+[0m→ [0mRead src/lib/data.ts[90m [limit=60, offset=100][0m
+[0m
+[0m$ [0mls data/versions 2>/dev/null | head -20 || echo "Directory does not exist"
+(no output)
+[0m
+[0m$ [0mls -la data/versions 2>/dev/null || echo "Not found"; ls -la data/tasks/versions 2>/dev/null | head -20 || echo "Not found"
+Not found
+[0m
+[0m→ [0mRead measure/archive/task_authoring_interface_20260424/plan.md
+[0m→ [0mRead src/lib/data.ts[90m [limit=50, offset=80][0m
+Let me create the track for versioning storage cleanup.
+[0m
+[0m$ [0mmkdir -p measure/tracks/version_cleanup_20260505
+(no output)
+[0m
+[0m← [0mWrite measure/tracks/version_cleanup_20260505/spec.md
+Wrote file successfully.
+[0m
+[0m← [0mWrite measure/tracks/version_cleanup_20260505/plan.md
+Wrote file successfully.
+[0m
+[0m← [0mWrite measure/tracks/version_cleanup_20260505/metadata.json
+Wrote file successfully.
+[0m
+[0m# [0mTodos
+[x] Create track for task versioning storage cleanup
+[ ] Implement cleanupTaskVersions function in data.ts
+[ ] Add unit tests for cleanup function
+[ ] Verify implementation
+[ ] Finalize and commit
+[0m
+[0m→ [0mRead src/lib/data.ts
+[0m
+[0m← [0mEdit src/lib/data.ts
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/lib/data.ts
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/lib/data.ts
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/lib/data.ts
+@@ -106,8 +106,38 @@
+     return [];
+   }
+ }
+ 
++export async function cleanupTaskVersions(taskId: string, maxVersions: number = 50): Promise<number> {
++  const versionsDir = path.join(DATA_DIR, 'tasks', 'versions', taskId);
++  try {
++    const files = await fs.readdir(versionsDir);
++    const versionFiles = files.filter(f => f.endsWith('.json'));
++
++    const versions: { filePath: string; created_at: Date }[] = [];
++    for (const file of versionFiles) {
++      const filePath = path.join(versionsDir, file);
++      const content = await fs.readFile(filePath, 'utf-8');
++      const parsed = JSON.parse(content);
++      const result = TaskVersionSchema.safeParse(parsed);
++      if (result.success) {
++        versions.push({ filePath, created_at: new Date(result.data.created_at) });
++      }
++    }
++
++    versions.sort((a, b) => b.created_at.getTime() - a.created_at.getTime());
++
++    const toDelete = versions.slice(maxVersions);
++    for (const { filePath } of toDelete) {
++      await fs.unlink(filePath);
++    }
++
++    return toDelete.length;
++  } catch {
++    return 0;
++  }
++}
++
+ export async function saveTaskVersion(taskId: string, taskData: Task, changeSummary?: string): Promise<TaskVersion> {
+   const versionsDir = path.join(DATA_DIR, 'tasks', 'versions', taskId);
+   await fs.mkdir(versionsDir, { recursive: true });
+ 
+
+[0m
+[0m✱ [0mGlob "**/data.test.ts"[90m 1 match[0m
+[0m→ [0mRead tests/lib/data.test.ts
+[0m
+[0m← [0mEdit tests/lib/data.test.ts
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/lib/data.test.ts
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/lib/data.test.ts
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/lib/data.test.ts
+@@ -1,7 +1,7 @@
+ import { describe, it, expect, vi, beforeEach } from 'vitest';
+ import fs from 'fs/promises';
+-import { getTasks, getTaskById, getRuns, getRunById, getLeaderboard, getCurrentDatasetVersion } from '../../src/lib/data';
++import { getTasks, getTaskById, getRuns, getRunById, getLeaderboard, getCurrentDatasetVersion, cleanupTaskVersions } from '../../src/lib/data';
+ 
+ vi.mock('fs/promises');
+ 
+ describe('Data Utilities', () => {
+
+[0m
+[0m← [0mEdit tests/lib/data.test.ts
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/lib/data.test.ts
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/lib/data.test.ts
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/lib/data.test.ts
+@@ -245,5 +245,51 @@
+       expect(runs).toHaveLength(1);
+       expect(runs[0].dataset_version).toBe('2026-04-07');
+     });
+   });
++
++  describe('cleanupTaskVersions', () => {
++    it('should delete versions beyond maxVersions limit', async () => {
++      const mockVersions = [
++        { version: '1.0', created_at: '2026-05-01T10:00:00Z', task_id: 'task-1', task_data: { id: 'task-1', title: 'T', difficulty: 'easy', description: 'D', version: '1.0', status: 'draft' } },
++        { version: '1.1', created_at: '2026-05-02T10:00:00Z', task_id: 'task-1', task_data: { id: 'task-1', title: 'T', difficulty: 'easy', description: 'D', version: '1.1', status: 'draft' } },
++        { version: '1.2', created_at: '2026-05-03T10:00:00Z', task_id: 'task-1', task_data: { id: 'task-1', title: 'T', difficulty: 'easy', description: 'D', version: '1.2', status: 'draft' } },
++      ];
++      vi.mocked(fs.readdir).mockResolvedValueOnce(['1.0_1.json', '1.1_2.json', '1.2_3.json'] as unknown as Awaited<ReturnType<typeof fs.readdir>>);
++      vi.mocked(fs.readFile)
++        .mockResolvedValueOnce(JSON.stringify(mockVersions[0]))
++        .mockResolvedValueOnce(JSON.stringify(mockVersions[1]))
++        .mockResolvedValueOnce(JSON.stringify(mockVersions[2]));
++      vi.mocked(fs.unlink).mockResolvedValueOnce(undefined);
++
++      const deleted = await cleanupTaskVersions('task-1', 2);
++      expect(deleted).toBe(1);
++      expect(fs.unlink).toHaveBeenCalledTimes(1);
++    });
++
++    it('should return 0 when fewer versions than maxVersions', async () => {
++      const mockVersions = [
++        { version: '1.0', created_at: '2026-05-01T10:00:00Z', task_id: 'task-1', task_data: { id: 'task-1', title: 'T', difficulty: 'easy', description: 'D', version: '1.0', status: 'draft' } },
++      ];
++      vi.mocked(fs.readdir).mockResolvedValueOnce(['1.0_1.json'] as unknown as Awaited<ReturnType<typeof fs.readdir>>);
++      vi.mocked(fs.readFile).mockResolvedValueOnce(JSON.stringify(mockVersions[0]));
++
++      const deleted = await cleanupTaskVersions('task-1', 10);
++      expect(deleted).toBe(0);
++      expect(fs.unlink).not.toHaveBeenCalled();
++    });
++
++    it('should return 0 when directory does not exist', async () => {
++      vi.mocked(fs.readdir).mockRejectedValueOnce(new Error('ENOENT'));
++
++      const deleted = await cleanupTaskVersions('nonexistent', 10);
++      expect(deleted).toBe(0);
++    });
++
++    it('should use default maxVersions of 50', async () => {
++      vi.mocked(fs.readdir).mockResolvedValueOnce([] as unknown as Awaited<ReturnType<typeof fs.readdir>>);
++
++      const deleted = await cleanupTaskVersions('task-1');
++      expect(deleted).toBe(0);
++    });
++  });
+ });
+\ No newline at end of file
+
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && bun test tests/lib/data.test.ts
+bun test v1.3.11 (af24e281)
+
+tests/lib/data.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+1 | import { describe, it, expect, vi, beforeEach } from 'vitest';
+2 | import fs from 'fs/promises';
+3 | import { getTasks, getTaskById, getRuns, getRunById, getLeaderboard, getCurrentDatasetVersion, cleanupTaskVersions } from '../../src/lib/data';
+4 | 
+5 | vi.mock('fs/promises');
+       ^
+TypeError: mock(module, fn) requires a function
+      at /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/lib/data.test.ts:5:4
+      at loadAndEvaluateModule (2:1)
+-------------------------------
+
+
+ 0 pass
+ 1 fail
+ 1 error
+Ran 1 test across 1 file. [105.00ms]
+[0m
+[0m→ [0mRead tests/lib/data.test.ts[90m [limit=10][0m
+[0m
+[0m← [0mEdit tests/lib/data.test.ts
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/lib/data.test.ts
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/lib/data.test.ts
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/lib/data.test.ts
+@@ -1,7 +1,7 @@
+ import { describe, it, expect, vi, beforeEach } from 'vitest';
+ import fs from 'fs/promises';
+-import { getTasks, getTaskById, getRuns, getRunById, getLeaderboard, getCurrentDatasetVersion, cleanupTaskVersions } from '../../src/lib/data';
++import { getTasks, getTaskById, getRuns, getRunById, getLeaderboard, getCurrentDatasetVersion } from '../../src/lib/data';
+ 
+ vi.mock('fs/promises');
+ 
+ describe('Data Utilities', () => {
+
+[0m
+[0m→ [0mRead tests/lib/data.test.ts[90m [limit=20, offset=245][0m
+[0m→ [0mRead tests/lib/data.test.ts[90m [limit=50, offset=260][0m
+[0m
+[0m← [0mEdit tests/lib/data.test.ts
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/lib/data.test.ts
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/lib/data.test.ts
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/lib/data.test.ts
+@@ -260,8 +260,9 @@
+       .mockResolvedValueOnce(JSON.stringify(mockVersions[1]))
+       .mockResolvedValueOnce(JSON.stringify(mockVersions[2]));
+     vi.mocked(fs.unlink).mockResolvedValueOnce(undefined);
+ 
++    const { cleanupTaskVersions } = await import('../../src/lib/data');
+     const deleted = await cleanupTaskVersions('task-1', 2);
+     expect(deleted).toBe(1);
+     expect(fs.unlink).toHaveBeenCalledTimes(1);
+   });
+@@ -272,23 +273,26 @@
+     ];
+     vi.mocked(fs.readdir).mockResolvedValueOnce(['1.0_1.json'] as unknown as Awaited<ReturnType<typeof fs.readdir>>);
+     vi.mocked(fs.readFile).mockResolvedValueOnce(JSON.stringify(mockVersions[0]));
+ 
++    const { cleanupTaskVersions } = await import('../../src/lib/data');
+     const deleted = await cleanupTaskVersions('task-1', 10);
+     expect(deleted).toBe(0);
+     expect(fs.unlink).not.toHaveBeenCalled();
+   });
+ 
+   it('should return 0 when directory does not exist', async () => {
+     vi.mocked(fs.readdir).mockRejectedValueOnce(new Error('ENOENT'));
+ 
++    const { cleanupTaskVersions } = await import('../../src/lib/data');
+     const deleted = await cleanupTaskVersions('nonexistent', 10);
+     expect(deleted).toBe(0);
+   });
+ 
+   it('should use default maxVersions of 50', async () => {
+     vi.mocked(fs.readdir).mockResolvedValueOnce([] as unknown as Awaited<ReturnType<typeof fs.readdir>>);
+ 
++    const { cleanupTaskVersions } = await import('../../src/lib/data');
+     const deleted = await cleanupTaskVersions('task-1');
+     expect(deleted).toBe(0);
+   });
+ });
+
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && bun test tests/lib/data.test.ts
+bun test v1.3.11 (af24e281)
+
+tests/lib/data.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+1 | import { describe, it, expect, vi, beforeEach } from 'vitest';
+2 | import fs from 'fs/promises';
+3 | import { getTasks, getTaskById, getRuns, getRunById, getLeaderboard, getCurrentDatasetVersion } from '../../src/lib/data';
+4 | 
+5 | vi.mock('fs/promises');
+       ^
+TypeError: mock(module, fn) requires a function
+      at /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/lib/data.test.ts:5:4
+      at loadAndEvaluateModule (2:1)
+-------------------------------
+
+
+ 0 pass
+ 1 fail
+ 1 error
+Ran 1 test across 1 file. [104.00ms]
+[0m
+[0m✱ [0mGrep "vi\.mock.*fs"[90m 53 matches[0m
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && bun test
+...output truncated...
+
+Full output saved to: /home/daniel-bo/.local/share/opencode/tool-output/tool_df7ebba64001UG5Hgth6hnWuEy
+
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskCard.test.tsx:45:5)
+(fail) TaskCard Component > should render greyed badge for zero runs
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskCard.test.tsx:50:5)
+(fail) TaskCard Component > should render singular run count
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskCard.test.tsx:55:5)
+(fail) TaskCard Component > should render View Task link
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskCard.test.tsx:60:5)
+(fail) TaskCard Component > should render draft status badge by default [1.00ms]
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskCard.test.tsx:66:5)
+(fail) TaskCard Component > should render published status badge
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskCard.test.tsx:72:5)
+(fail) TaskCard Component > should render review status badge
+
+tests/components/TaskVersionDiff.test.tsx:
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskVersionDiff.test.tsx:25:5)
+(fail) TaskVersionDiff > shows message when less than 2 versions [2.00ms]
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskVersionDiff.test.tsx:34:5)
+(fail) TaskVersionDiff > renders field differences between versions
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskVersionDiff.test.tsx:44:5)
+(fail) TaskVersionDiff > shows change summary when present [3.00ms]
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskVersionDiff.test.tsx:53:5)
+(fail) TaskVersionDiff > detects difficulty changes [1.00ms]
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskVersionDiff.test.tsx:62:5)
+(fail) TaskVersionDiff > detects description changes
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskVersionDiff.test.tsx:71:5)
+(fail) TaskVersionDiff > shows no changes message when versions are identical
+
+tests/components/DiffViewer.test.tsx:
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/DiffViewer.test.tsx:8:5)
+(fail) DiffViewer > should render "No diff available" when diff is empty [1.00ms]
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/DiffViewer.test.tsx:13:5)
+(fail) DiffViewer > should render "No diff available" when diff is undefined [1.00ms]
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/DiffViewer.test.tsx:18:5)
+(fail) DiffViewer > should render "No changes detected" when diff has no valid files
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/DiffViewer.test.tsx:30:5)
+(fail) DiffViewer > should parse and display a simple diff
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/DiffViewer.test.tsx:47:5)
+(fail) DiffViewer > should show expand/collapse for files
+
+tests/components/LeaderboardTable.test.tsx:
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/LeaderboardTable.test.tsx:35:5)
+(fail) LeaderboardTable Component > renders the leaderboard table with data [1.00ms]
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/LeaderboardTable.test.tsx:45:5)
+(fail) LeaderboardTable Component > renders dataset version column header
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/LeaderboardTable.test.tsx:50:5)
+(fail) LeaderboardTable Component > renders dataset version values in rows
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/LeaderboardTable.test.tsx:55:5)
+(fail) LeaderboardTable Component > renders dash for missing dataset version [1.00ms]
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/LeaderboardTable.test.tsx:61:5)
+(fail) LeaderboardTable Component > sorts by score by default (descending)
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/LeaderboardTable.test.tsx:70:5)
+(fail) LeaderboardTable Component > changes sort when clicking header
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/LeaderboardTable.test.tsx:88:5)
+(fail) LeaderboardTable Component > renders "No results" when data is empty
+
+tests/components/TestResultsTable.test.tsx:
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TestResultsTable.test.tsx:9:5)
+(fail) TestResultsTable > should render "No test results" when empty [7.00ms]
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TestResultsTable.test.tsx:14:5)
+(fail) TestResultsTable > should render "No test results" when undefined [1.00ms]
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TestResultsTable.test.tsx:24:5)
+(fail) TestResultsTable > should show pass/fail counts
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TestResultsTable.test.tsx:35:5)
+(fail) TestResultsTable > should group tests by suite
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TestResultsTable.test.tsx:44:5)
+(fail) TestResultsTable > should show pass badge for passing tests
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TestResultsTable.test.tsx:52:5)
+(fail) TestResultsTable > should show skip badge for skipped tests
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TestResultsTable.test.tsx:60:5)
+(fail) TestResultsTable > should display error messages for failed tests
+
+tests/components/ArtifactLinks.test.tsx:
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/ArtifactLinks.test.tsx:8:5)
+(fail) ArtifactLinks > should render "No artifacts" when empty [2.00ms]
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/ArtifactLinks.test.tsx:13:5)
+(fail) ArtifactLinks > should render "No artifacts" when undefined
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/ArtifactLinks.test.tsx:22:5)
+(fail) ArtifactLinks > should display artifact names
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/ArtifactLinks.test.tsx:31:5)
+(fail) ArtifactLinks > should display download links [1.00ms]
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/ArtifactLinks.test.tsx:41:5)
+(fail) ArtifactLinks > should format bytes correctly
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/ArtifactLinks.test.tsx:53:5)
+(fail) ArtifactLinks > should display artifact types
+
+tests/components/TaskListWithFilters.test.tsx:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find module '@/components/ui/input' from '/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/src/components/TaskListWithFilters.tsx'
+-------------------------------
+
+
+tests/components/TaskPreview.test.tsx:
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskPreview.test.tsx:8:5)
+(fail) TaskPreview > renders task title [2.00ms]
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskPreview.test.tsx:13:5)
+(fail) TaskPreview > renders difficulty badge
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskPreview.test.tsx:18:5)
+(fail) TaskPreview > renders domain badge when present
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskPreview.test.tsx:23:5)
+(fail) TaskPreview > renders description with markdown rendering
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskPreview.test.tsx:29:5)
+(fail) TaskPreview > shows placeholder when no description
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskPreview.test.tsx:34:5)
+(fail) TaskPreview > renders acceptance criteria
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskPreview.test.tsx:47:5)
+(fail) TaskPreview > filters empty acceptance criteria
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskPreview.test.tsx:60:5)
+(fail) TaskPreview > renders structured rubric with weights
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskPreview.test.tsx:77:5)
+(fail) TaskPreview > calculates total rubric weight
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskPreview.test.tsx:92:5)
+(fail) TaskPreview > renders repo context in code block
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/TaskPreview.test.tsx:104:5)
+(fail) TaskPreview > handles empty task gracefully
+
+tests/components/BulkOperations.test.tsx:
+ 5 | 
+ 6 | describe("BulkOperations", () => {
+ 7 |   beforeEach(() => {
+ 8 |     vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:mock-url")
+ 9 |     vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {})
+10 |     HTMLAnchorElement.prototype.click = vi.fn()
+         ^
+ReferenceError: HTMLAnchorElement is not defined
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/BulkOperations.test.tsx:10:5)
+(fail) BulkOperations > renders upload area [1.00ms]
+ 5 | 
+ 6 | describe("BulkOperations", () => {
+ 7 |   beforeEach(() => {
+ 8 |     vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:mock-url")
+ 9 |     vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {})
+10 |     HTMLAnchorElement.prototype.click = vi.fn()
+         ^
+ReferenceError: HTMLAnchorElement is not defined
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/BulkOperations.test.tsx:10:5)
+(fail) BulkOperations > validates JSON and shows errors for invalid data
+ 5 | 
+ 6 | describe("BulkOperations", () => {
+ 7 |   beforeEach(() => {
+ 8 |     vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:mock-url")
+ 9 |     vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {})
+10 |     HTMLAnchorElement.prototype.click = vi.fn()
+         ^
+ReferenceError: HTMLAnchorElement is not defined
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/BulkOperations.test.tsx:10:5)
+(fail) BulkOperations > shows valid task count after successful import
+ 5 | 
+ 6 | describe("BulkOperations", () => {
+ 7 |   beforeEach(() => {
+ 8 |     vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:mock-url")
+ 9 |     vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {})
+10 |     HTMLAnchorElement.prototype.click = vi.fn()
+         ^
+ReferenceError: HTMLAnchorElement is not defined
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/BulkOperations.test.tsx:10:5)
+(fail) BulkOperations > calls onImportComplete callback with valid tasks
+ 5 | 
+ 6 | describe("BulkOperations", () => {
+ 7 |   beforeEach(() => {
+ 8 |     vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:mock-url")
+ 9 |     vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {})
+10 |     HTMLAnchorElement.prototype.click = vi.fn()
+         ^
+ReferenceError: HTMLAnchorElement is not defined
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/components/BulkOperations.test.tsx:10:5)
+(fail) BulkOperations > shows error for non-array JSON
+
+tests/app/leaderboard/page.test.tsx:
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/leaderboard/page.test.tsx:26:5)
+(fail) Leaderboard Page > renders the page title [1.00ms]
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/leaderboard/page.test.tsx:31:5)
+(fail) Leaderboard Page > renders Track A (Fixed Harness) tab by default [1.00ms]
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/leaderboard/page.test.tsx:37:5)
+(fail) Leaderboard Page > renders Track A leaderboard data by default
+
+tests/app/tasks/page.test.tsx:
+
+# Unhandled error between tests
+-------------------------------
+-------------------------------
+
+
+tests/app/methodology/page.test.tsx:
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/methodology/page.test.tsx:8:5)
+(fail) Methodology Page > renders the page title [2.00ms]
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/methodology/page.test.tsx:13:27)
+(fail) Methodology Page > does not render its own header - should use shared Header from layout [2.00ms]
+251 |     throw error;
+252 |   }
+253 |   if (!baseElement) {
+254 |     // default to document.body instead of documentElement to avoid output of potentially-large
+255 |     // head elements (such as JSS style blocks) in debug output
+256 |     baseElement = document.body;
+                        ^
+ReferenceError: document is not defined
+      at render (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/node_modules/@testing-library/react/dist/pure.js:256:19)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/methodology/page.test.tsx:19:5)
+(fail) Methodology Page > renders benchmark philosophy section [1.00ms]
+
+tests/app/api/routes.test.ts:
+75 |   });
+76 | 
+77 |   describe('GET /api/runs', () => {
+78 |     it('should return all runs when no filters provided', async () => {
+79 |       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+80 |       vi.mocked(getAllRuns).mockResolvedValue(mockRuns as any);
+              ^
+TypeError: vi.mocked is not a function. (In 'vi.mocked(getAllRuns)', 'vi.mocked' is undefined)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/api/routes.test.ts:80:10)
+(fail) API Routes > GET /api/runs > should return all runs when no filters provided
+88 |       expect(data.runs).toHaveLength(3);
+89 |     });
+90 | 
+91 |     it('should filter runs by model', async () => {
+92 |       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+93 |       vi.mocked(getAllRuns).mockResolvedValue(mockRuns as any);
+              ^
+TypeError: vi.mocked is not a function. (In 'vi.mocked(getAllRuns)', 'vi.mocked' is undefined)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/api/routes.test.ts:93:10)
+(fail) API Routes > GET /api/runs > should filter runs by model
+101 |       expect(data.runs.every((r: { model: string }) => r.model === 'gpt-4o')).toBe(true);
+102 |     });
+103 | 
+104 |     it('should filter runs by score range', async () => {
+105 |       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+106 |       vi.mocked(getAllRuns).mockResolvedValue(mockRuns as any);
+               ^
+TypeError: vi.mocked is not a function. (In 'vi.mocked(getAllRuns)', 'vi.mocked' is undefined)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/api/routes.test.ts:106:10)
+(fail) API Routes > GET /api/runs > should filter runs by score range [1.00ms]
+115 |   });
+116 | 
+117 |   describe('GET /api/leaderboard', () => {
+118 |     it('should return leaderboard with stats sorted by mean score', async () => {
+119 |       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+120 |       vi.mocked(getAllRuns).mockResolvedValue(mockRuns as any);
+               ^
+TypeError: vi.mocked is not a function. (In 'vi.mocked(getAllRuns)', 'vi.mocked' is undefined)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/api/routes.test.ts:120:10)
+(fail) API Routes > GET /api/leaderboard > should return leaderboard with stats sorted by mean score
+
+tests/app/tasks/task_detail/page.test.tsx:
+33 | };
+34 | 
+35 | describe('Task Detail Page', () => {
+36 |   it('should call getTaskById and return rendered task details', async () => {
+37 |     const mockTask = { id: '1', title: 'Task 1', difficulty: 'easy', description: 'Desc 1', rubric: ['Point 1'], version: '1.0' };
+38 |     vi.mocked(data.getTaskById).mockResolvedValueOnce(mockTask);
+            ^
+TypeError: vi.mocked is not a function. (In 'vi.mocked(data.getTaskById)', 'vi.mocked' is undefined)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/tasks/task_detail/page.test.tsx:38:8)
+(fail) Task Detail Page > should call getTaskById and return rendered task details
+42 |     expect(data.getTaskById).toHaveBeenCalledWith('1');
+43 |   });
+44 | 
+45 |   it('should call getTasks in generateStaticParams', async () => {
+46 |     const mockTasks = [{ id: '1', title: 'Task 1', difficulty: 'easy', description: 'Desc', rubric: [], version: '1.0' }, { id: '2', title: 'Task 2', difficulty: 'easy', description: 'Desc', rubric: [], version: '1.0' }] as Awaited<ReturnType<typeof data.getTasks>>;
+47 |     vi.mocked(data.getTasks).mockResolvedValueOnce(mockTasks);
+            ^
+TypeError: vi.mocked is not a function. (In 'vi.mocked(data.getTasks)', 'vi.mocked' is undefined)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/tasks/task_detail/page.test.tsx:47:8)
+(fail) Task Detail Page > should call getTasks in generateStaticParams [1.00ms]
+50 |     expect(params).toEqual([{ id: '1' }, { id: '2' }]);
+51 |     expect(data.getTasks).toHaveBeenCalled();
+52 |   });
+53 | 
+54 |   it('should render acceptance criteria as checklist', async () => {
+55 |     vi.mocked(data.getTaskById).mockResolvedValueOnce(fullTask as ReturnType<typeof data.getTaskById> extends Promise<infer T> ? Exclude<T, undefined> : never);
+            ^
+TypeError: vi.mocked is not a function. (In 'vi.mocked(data.getTaskById)', 'vi.mocked' is undefined)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/tasks/task_detail/page.test.tsx:55:8)
+(fail) Task Detail Page > should render acceptance criteria as checklist
+58 |     expect(screen.getByText('Game component is registered')).toBeDefined();
+59 |     expect(screen.getByText('Vocabulary pipeline is connected')).toBeDefined();
+60 |   });
+61 | 
+62 |   it('should render structured rubric table with weights', async () => {
+63 |     vi.mocked(data.getTaskById).mockResolvedValueOnce(fullTask as ReturnType<typeof data.getTaskById> extends Promise<infer T> ? Exclude<T, undefined> : never);
+            ^
+TypeError: vi.mocked is not a function. (In 'vi.mocked(data.getTaskById)', 'vi.mocked' is undefined)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/tasks/task_detail/page.test.tsx:63:8)
+(fail) Task Detail Page > should render structured rubric table with weights
+67 |     expect(screen.getByText('40')).toBeDefined();
+68 |     expect(screen.getByText('Works end-to-end')).toBeDefined();
+69 |   });
+70 | 
+71 |   it('should render repo context section', async () => {
+72 |     vi.mocked(data.getTaskById).mockResolvedValueOnce(fullTask as ReturnType<typeof data.getTaskById> extends Promise<infer T> ? Exclude<T, undefined> : never);
+            ^
+TypeError: vi.mocked is not a function. (In 'vi.mocked(data.getTaskById)', 'vi.mocked' is undefined)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/tasks/task_detail/page.test.tsx:72:8)
+(fail) Task Detail Page > should render repo context section [1.00ms]
+74 |     expect(screen.getByText('Repository Context')).toBeDefined();
+75 |     expect(screen.getByText('Next.js App Router with React-Konva for game rendering.')).toBeDefined();
+76 |   });
+77 | 
+78 |   it('should render breadcrumb back to tasks', async () => {
+79 |     vi.mocked(data.getTaskById).mockResolvedValueOnce(fullTask as ReturnType<typeof data.getTaskById> extends Promise<infer T> ? Exclude<T, undefined> : never);
+            ^
+TypeError: vi.mocked is not a function. (In 'vi.mocked(data.getTaskById)', 'vi.mocked' is undefined)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/tasks/task_detail/page.test.tsx:79:8)
+(fail) Task Detail Page > should render breadcrumb back to tasks
+81 |     expect(screen.getByText('Back to Tasks')).toBeDefined();
+82 |   });
+83 | 
+84 |   it('should not render optional sections when absent', async () => {
+85 |     const minimalTask = { id: '1', title: 'Task 1', difficulty: 'easy', description: 'Desc', version: '1.0' };
+86 |     vi.mocked(data.getTaskById).mockResolvedValueOnce(minimalTask as ReturnType<typeof data.getTaskById> extends Promise<infer T> ? Exclude<T, undefined> : never);
+            ^
+TypeError: vi.mocked is not a function. (In 'vi.mocked(data.getTaskById)', 'vi.mocked' is undefined)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/tasks/task_detail/page.test.tsx:86:8)
+(fail) Task Detail Page > should not render optional sections when absent
+
+tests/app/runs/index/page.test.tsx:
+54 |   }
+55 | ];
+56 | 
+57 | describe('Runs Index Page', () => {
+58 |   it('should render runs list', async () => {
+59 |     vi.mocked(runs.getAllRuns).mockResolvedValueOnce(mockRuns);
+            ^
+TypeError: vi.mocked is not a function. (In 'vi.mocked(runs.getAllRuns)', 'vi.mocked' is undefined)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/runs/index/page.test.tsx:59:8)
+(fail) Runs Index Page > should render runs list
+64 |     expect(screen.getByText('gpt-5.4')).toBeDefined();
+65 |     expect(screen.getByText('claude-4')).toBeDefined();
+66 |   });
+67 | 
+68 |   it('should render empty state when no runs', async () => {
+69 |     vi.mocked(runs.getAllRuns).mockResolvedValueOnce([]);
+            ^
+TypeError: vi.mocked is not a function. (In 'vi.mocked(runs.getAllRuns)', 'vi.mocked' is undefined)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/runs/index/page.test.tsx:69:8)
+(fail) Runs Index Page > should render empty state when no runs [1.00ms]
+72 | 
+73 |     expect(screen.getByText(/No runs found/i)).toBeDefined();
+74 |   });
+75 | 
+76 |   it('should render task links', async () => {
+77 |     vi.mocked(runs.getAllRuns).mockResolvedValueOnce(mockRuns);
+            ^
+TypeError: vi.mocked is not a function. (In 'vi.mocked(runs.getAllRuns)', 'vi.mocked' is undefined)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/runs/index/page.test.tsx:77:8)
+(fail) Runs Index Page > should render task links
+82 |     expect(taskLinks.length).toBe(2);
+83 |     expect(taskLinks[0].getAttribute('href')).toBe('/tasks/task_import_game_v1');
+84 |   });
+85 | 
+86 | it('should render run detail links', async () => {
+87 |     vi.mocked(runs.getAllRuns).mockResolvedValueOnce(mockRuns);
+            ^
+TypeError: vi.mocked is not a function. (In 'vi.mocked(runs.getAllRuns)', 'vi.mocked' is undefined)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/runs/index/page.test.tsx:87:8)
+(fail) Runs Index Page > should render run detail links
+91 |     const rows = screen.getAllByRole('row');
+92 |     expect(rows.length).toBe(3);
+93 |   });
+94 | 
+95 |   it('should display score badges', async () => {
+96 |     vi.mocked(runs.getAllRuns).mockResolvedValueOnce([mockRuns[0]]);
+            ^
+TypeError: vi.mocked is not a function. (In 'vi.mocked(runs.getAllRuns)', 'vi.mocked' is undefined)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/runs/index/page.test.tsx:96:8)
+(fail) Runs Index Page > should display score badges
+
+tests/app/runs/run_detail/page.test.tsx:
+37 |   ]
+38 | };
+39 | 
+40 | describe('Run Detail Page', () => {
+41 |   it('should call getRunById and return rendered run details', async () => {
+42 |     vi.mocked(runs.getRunById).mockResolvedValueOnce(mockRunDetail);
+            ^
+TypeError: vi.mocked is not a function. (In 'vi.mocked(runs.getRunById)', 'vi.mocked' is undefined)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/runs/run_detail/page.test.tsx:42:8)
+(fail) Run Detail Page > should call getRunById and return rendered run details
+46 |     expect(runs.getRunById).toHaveBeenCalledWith('blb-run-001');
+47 |   });
+48 | 
+49 |   it('should call getAllRuns in generateStaticParams', async () => {
+50 |     const mockRuns = [mockRunDetail];
+51 |     vi.mocked(runs.getAllRuns).mockResolvedValueOnce(mockRuns);
+            ^
+TypeError: vi.mocked is not a function. (In 'vi.mocked(runs.getAllRuns)', 'vi.mocked' is undefined)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/runs/run_detail/page.test.tsx:51:8)
+(fail) Run Detail Page > should call getAllRuns in generateStaticParams [1.00ms]
+54 |     expect(params).toEqual([{ id: 'blb-run-001' }]);
+55 |     expect(runs.getAllRuns).toHaveBeenCalled();
+56 |   });
+57 | 
+58 |   it('should render dataset version when present', async () => {
+59 |     vi.mocked(runs.getRunById).mockResolvedValueOnce(mockRunDetail);
+            ^
+TypeError: vi.mocked is not a function. (In 'vi.mocked(runs.getRunById)', 'vi.mocked' is undefined)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/runs/run_detail/page.test.tsx:59:8)
+(fail) Run Detail Page > should render dataset version when present
+63 |     expect(screen.getByText('2026-04-07')).toBeDefined();
+64 |   });
+65 | 
+66 |   it('should not render dataset version when absent', async () => {
+67 |     const runWithoutDataset = { ...mockRunDetail, dataset_version: undefined };
+68 |     vi.mocked(runs.getRunById).mockResolvedValueOnce(runWithoutDataset);
+            ^
+TypeError: vi.mocked is not a function. (In 'vi.mocked(runs.getRunById)', 'vi.mocked' is undefined)
+      at <anonymous> (/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/app/runs/run_detail/page.test.tsx:68:8)
+(fail) Run Detail Page > should not render dataset version when absent
+
+ 240 pass
+ 104 fail
+ 4 errors
+ 474 expect() calls
+Ran 344 tests across 47 files. [7.44s]
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && bun test tests/lib/data.test.ts 2>&1 | tail -30
+bun test v1.3.11 (af24e281)
+
+tests/lib/data.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+1 | import { describe, it, expect, vi, beforeEach } from 'vitest';
+2 | import fs from 'fs/promises';
+3 | import { getTasks, getTaskById, getRuns, getRunById, getLeaderboard, getCurrentDatasetVersion } from '../../src/lib/data';
+4 | 
+5 | vi.mock('fs/promises');
+       ^
+TypeError: mock(module, fn) requires a function
+      at /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/lib/data.test.ts:5:4
+      at loadAndEvaluateModule (2:1)
+-------------------------------
+
+
+ 0 pass
+ 1 fail
+ 1 error
+Ran 1 test across 1 file. [107.00ms]
+[0m
+[0m→ [0mRead tests/lib/runs.test.ts[90m [limit=15][0m
+[0m
+[0m← [0mWrite tests/lib/cleanup.test.ts
+Wrote file successfully.
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && bun test tests/lib/cleanup.test.ts
+bun test v1.3.11 (af24e281)
+
+tests/lib/cleanup.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+1 | import { describe, it, expect, vi, beforeEach } from 'vitest';
+2 | import fs from 'fs/promises';
+3 | 
+4 | vi.mock('fs/promises');
+       ^
+TypeError: mock(module, fn) requires a function
+      at /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/tests/lib/cleanup.test.ts:4:4
+      at loadAndEvaluateModule (2:1)
+-------------------------------
+
+
+ 0 pass
+ 1 fail
+ 1 error
+Ran 1 test across 1 file. [29.00ms]
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && rm tests/lib/cleanup.test.ts && bun run build 2>&1 | tail -20
+[90m7 |[0m
+  [90m8 |[0m [36minterface[0m [33mTaskListWithFiltersProps[0m {
+  [90m9 |[0m   tasks: [33mTask[0m[];
+
+Import map: aliased to relative './src/components/ui/input' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./src/components/TaskListWithFilters.tsx
+    ./app/tasks/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (./src/components/TaskListWithFilters.tsx:7:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/components/TaskListWithFilters.tsx:6:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+error: script "build" exited with code 1
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && rm -f tests/lib/cleanup.test.ts && bun run lint 2>&1 | tail -10
+$ eslint
+
+/home/daniel-bo/Desktop/reading-advantage-llm-benchmark/coverage/block-navigation.js
+  1:1  warning  Unused eslint-disable directive (no problems were reported)
+
+✖ 1 problem (0 errors, 1 warning)
+  0 errors and 1 warning potentially fixable with the `--fix` option.
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && git diff --stat HEAD
+measure/output.log     | 1257 ++++++++++++++++++++++++++++++++++++++++++++++++
+ src/lib/data.ts        |   30 ++
+ tests/lib/data.test.ts |   50 ++
+ 3 files changed, 1337 insertions(+)
+[0m
