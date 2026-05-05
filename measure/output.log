@@ -608,3 +608,67 @@ Untracked files:
 
 no changes added to commit (use "git add" and/or "git commit -a")
 [0m
+[0m$ [0mgit add src/components/ui/input.tsx src/components/TaskEditor.tsx src/lib/schemas.ts tests/components/BulkOperations.test.tsx tests/components/TaskListWithFilters.test.tsx measure/output.log && git commit -m "Fix test and type errors: add missing Input component, fix TaskStatus duplicate type, add status field to TaskEditor, fix test assertions"
+[master 78fbd13] Fix test and type errors: add missing Input component, fix TaskStatus duplicate type, add status field to TaskEditor, fix test assertions
+ 6 files changed, 615 insertions(+), 6 deletions(-)
+ create mode 100644 src/components/ui/input.tsx
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && bun run test --run 2>&1 | tail -5
+Test Files  47 passed (47)
+      Tests  387 passed (387)
+   Start at  01:47:29
+   Duration  32.55s (transform 2.63s, setup 0ms, import 16.04s, tests 18.19s, environment 40.83s)
+[0m
+[0m$ [0mgit push
+To https://github.com/bodangren/reading-advantage-llm-benchmark.git
+   054a0e6..78fbd13  master -> master
+[0m
+[0m→ [0mRead measure/tech-debt.md
+[0m→ [0mRead measure/lessons-learned.md
+[0m
+[0m$ [0mls src/app/
+compare
+favicon.ico
+globals.css
+layout.tsx
+leaderboard
+methodology
+page.tsx
+runs
+tasks
+test-leaderboard
+[0m
+[0m$ [0mls app/
+api
+compare
+favicon.ico
+globals.css
+layout.tsx
+leaderboard
+methodology
+page.tsx
+runs
+tasks
+test-leaderboard
+[0m
+[0m✱ [0mGrep "TODO|Next|in progress|upcoming"[90m in measure · 13 matches[0m
+[0m
+[0m$ [0mls src/app/
+compare
+favicon.ico
+globals.css
+layout.tsx
+leaderboard
+methodology
+page.tsx
+runs
+tasks
+test-leaderboard
+[0m
+[0m$ [0mls src/app/api/
+ls: cannot access 'src/app/api/': No such file or directory
+[0m
+[0m$ [0mls app/api/
+leaderboard
+runs
+[0m
