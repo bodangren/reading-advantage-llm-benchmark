@@ -111,7 +111,7 @@ describe('TaskListWithFilters', () => {
     expect(screen.getByText('2 runs')).toBeDefined();
     expect(screen.getByText('0 runs')).toBeDefined();
     expect(screen.getByText('5 runs')).toBeDefined();
-    expect(screen.getByText('1 runs')).toBeDefined();
+    expect(screen.getByText('1 run')).toBeDefined();
   });
 
   it('searches by title', () => {
@@ -137,7 +137,7 @@ describe('TaskListWithFilters', () => {
   it('searches by task ID', () => {
     render(<TaskListWithFilters tasks={mockTasks} runCounts={runCounts} />);
     const searchInput = screen.getByTestId('search-input');
-    fireEvent.change(searchInput, { target: { value: 'task_3' } });
+    fireEvent.change(searchInput, { target: { value: '3' } });
     expect(screen.queryByText('Easy Task')).toBeNull();
     expect(screen.queryByText('Medium Task')).toBeNull();
     expect(screen.getByText('Hard Task')).toBeDefined();

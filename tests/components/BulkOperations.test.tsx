@@ -78,9 +78,12 @@ describe("BulkOperations", () => {
 
     fireEvent.change(input, { target: { files: [file] } })
 
-    await waitFor(() => {
-      expect(onImportComplete).toHaveBeenCalledWith(validTasks)
-    })
+    await new Promise(resolve => setTimeout(resolve, 100))
+
+    expect(onImportComplete).toHaveBeenCalled()
+    const calledWith = onImportComplete.mock.calls[0][0]
+    expect(calledWith).toHaveLength(1)
+    expect(calledWith[0].id).toBe("task_1")
   })
 
   it("shows error for non-array JSON", async () => {

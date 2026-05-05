@@ -14,7 +14,6 @@ export const RubricDimensionSchema = z.object({
 });
 
 export const TaskStatusSchema = z.enum(['draft', 'review', 'published']);
-export type TaskStatus = z.infer<typeof TaskStatusSchema>;
 
 export const TaskFormDataSchema = z.object({
   id: z.string().min(1, "Task ID is required").regex(/^[a-z0-9_]+$/i, "Task ID must be alphanumeric with underscores only"),

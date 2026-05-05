@@ -35,6 +35,7 @@ export function TaskEditor({ initialTask, onSave, onCancel }: TaskEditorProps) {
       { label: "Minimality", weight: 10, description: "" },
       { label: "Process quality", weight: 5, description: "" },
     ],
+    status: "draft",
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
