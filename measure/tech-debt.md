@@ -22,3 +22,6 @@
 | 2026-05-03 | task_authoring_interface_20260424 | Task versioning storage path needs manual directory creation | Low | Open | saveTaskVersion() creates versions dir recursively; may need cleanup job for old versions |
 | 2026-05-03 | native_agent_track_b_20260503 | BulkOperations test intermittently fails with act() warnings | Low | Resolved | Replaced setTimeout with waitFor in BulkOperations.test.tsx (2026-05-05) |
 | 2026-05-04 | automated_task_generation_20260503 | CLI uses mock LLM client instead of real API | Medium | Resolved | task-cli.ts now uses OpenAIClient; accepts --api-key and env vars OPENAI_API_KEY, LLM_API_BASE |
+| 2026-05-05 | task_authoring_interface_20260424 | Task status management - Phase 5.1 complete | Low | Resolved | Added TaskStatusSchema (draft/review/published) to TaskSchema; status filter in TaskListWithFilters; status badge in TaskCard |
+| 2026-05-05 | task_authoring_interface_20260424 | Task search - Phase 5.2 complete | Low | Resolved | Added text search by title/description/ID to TaskListWithFilters; search is case-insensitive |
+| 2026-05-05 | task_authoring_interface_20260424 | Task templates - Phase 5.3 complete | Low | Resolved | Created data/templates/task_templates.json with 4 common patterns (feature_addition, bug_fix, refactoring, api_integration) |
