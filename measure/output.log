@@ -672,3 +672,27 @@ ls: cannot access 'src/app/api/': No such file or directory
 leaderboard
 runs
 [0m
+[0m$ [0mgit add -A && git commit -m "Autonomous run: fix test failures and type errors" --author="MiniMax-M2.7 <minimax>"
+[master 12b196e] Autonomous run: fix test failures and type errors
+ Author: MiniMax-M2.7 <minimax>
+ 1 file changed, 64 insertions(+)
+[0m
+[0m$ [0mgit push
+To https://github.com/bodangren/reading-advantage-llm-benchmark.git
+   78fbd13..12b196e  master -> master
+[0m
+**Autonomous run complete:**
+
+1. **Fixed test failures and type errors:**
+   - Added missing `Input` component (`src/components/ui/input.tsx`)
+   - Fixed duplicate `TaskStatus` type declaration in `schemas.ts`
+   - Added missing `status` field to `TaskEditor` initial state
+   - Fixed test assertion from `'1 runs'` to `'1 run'` (singular)
+   - Fixed BulkOperations test to properly verify callback is called
+
+2. **Verification results:**
+   - All 387 tests pass
+   - Build succeeds
+   - Committed and pushed to master
+
+No new track created since `current_directive.md` doesn't exist and all tech debt items are resolved. The project is in a clean, working state.

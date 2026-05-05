@@ -63,8 +63,26 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## Upcoming Tracks
 
 - [x] **Track: Task Versioning Storage Cleanup**
-   *Link: [./tracks/version_cleanup_20260505/](./tracks/version_cleanup_20260505/)*
+   *Link: [./archive/version_cleanup_20260505/](./archive/version_cleanup_20260505/)*
    *Status: Complete*
    Cleanup utility for task version files with retention limits
 
 ## Completed Tracks
+
+## Upcoming Tracks
+
+- [ ] **Track: Task Domain Expansion — Mobile & React Native**
+  *Link: [./tracks/task_domain_expansion_mobile_20260506/](./tracks/task_domain_expansion_mobile_20260506/)*
+  Add React Native brownfield tasks to the benchmark catalog.
+
+- [ ] **Track: Automated Benchmark Scheduling**
+  *Link: [./tracks/automated_benchmark_scheduling_20260506/](./tracks/automated_benchmark_scheduling_20260506/)*
+  Cron-based recurring benchmark runs with automatic result archiving.
+
+- [ ] **Track: Public API for Third-Party Integrations**
+  *Link: [./tracks/public_api_third_party_20260506/](./tracks/public_api_third_party_20260506/)*
+  Read-only REST API with key auth and rate limiting for external researchers.
+
+- [ ] **Track: Benchmark Result Analytics & Trending**
+  *Link: [./tracks/benchmark_analytics_trending_20260506/](./tracks/benchmark_analytics_trending_20260506/)*
+  Time-series charts, regression detection, and historical model comparison.
