@@ -1,4 +1,4 @@
-import { ScheduleConfig, ScheduleFrequency, ScheduleLogEntry, ScheduleConfigSchema, ScheduleLogEntrySchema, Run } from './schemas';
+import { ScheduleConfig, ScheduleLogEntry, ScheduleConfigSchema, ScheduleLogEntrySchema, Run } from './schemas';
 import fs from 'fs/promises';
 import path from 'path';
 

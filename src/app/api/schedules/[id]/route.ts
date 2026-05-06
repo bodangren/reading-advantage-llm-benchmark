@@ -15,7 +15,7 @@ export async function GET(
     }
 
     return NextResponse.json(schedule)
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch schedule' }, { status: 500 })
   }
 }
@@ -35,7 +35,7 @@ export async function PUT(
 
     await saveSchedule(parsed.data)
     return NextResponse.json(parsed.data)
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to update schedule' }, { status: 500 })
   }
 }
@@ -48,7 +48,7 @@ export async function DELETE(
     const { id } = await params
     await deleteSchedule(id)
     return NextResponse.json({ success: true })
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to delete schedule' }, { status: 500 })
   }
 }

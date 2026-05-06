@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSchedules, saveSchedule, deleteSchedule } from '@/lib/scheduler'
+import { getSchedules, saveSchedule } from '@/lib/scheduler'
 import { ScheduleConfigSchema } from '@/lib/schemas'
 
 function generateId(): string {
@@ -10,7 +10,7 @@ export async function GET() {
   try {
     const schedules = await getSchedules()
     return NextResponse.json(schedules)
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch schedules' }, { status: 500 })
   }
 }
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 
     await saveSchedule(schedule)
     return NextResponse.json(schedule, { status: 201 })
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to create schedule' }, { status: 500 })
   }
 }

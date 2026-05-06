@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { detectRepoType, RepoDetectionResult } from '../../src/lib/utils';
+import { detectRepoType } from '../../src/lib/utils';
 
 describe('Repo Detection', () => {
   describe('detectRepoType', () => {

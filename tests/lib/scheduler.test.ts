@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
   calculateNextRun,
   getCronFields,
@@ -355,34 +355,6 @@ describe('Scheduler', () => {
   describe('processDueSchedules', () => {
     it('should process multiple due schedules', async () => {
       vi.setSystemTime(new Date('2026-05-06T10:05:00Z'));
-
-      const config1: ScheduleConfig = {
-        id: 'due-schedule-1',
-        name: 'Due Schedule 1',
-        frequency: 'daily',
-        hour: 10,
-        minute: 0,
-        modelId: 'gpt-4',
-        datasetVersion: '2026-05-06',
-        enabled: true,
-        createdAt: '2026-05-06T00:00:00Z',
-        status: 'active',
-        nextRunAt: '2026-05-06T10:00:00Z',
-      };
-
-      const config2: ScheduleConfig = {
-        id: 'due-schedule-2',
-        name: 'Due Schedule 2',
-        frequency: 'daily',
-        hour: 10,
-        minute: 0,
-        modelId: 'claude-3',
-        datasetVersion: '2026-05-06',
-        enabled: true,
-        createdAt: '2026-05-06T00:00:00Z',
-        status: 'active',
-        nextRunAt: '2026-05-06T10:00:00Z',
-      };
 
       const mockRunEval = vi.fn().mockResolvedValue(mockRun);
 
