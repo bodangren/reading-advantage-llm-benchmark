@@ -75,9 +75,9 @@ This file tracks all major tracks for the project. Each track has its own detail
    *Link: [./tracks/task_domain_expansion_mobile_20260506/](./tracks/task_domain_expansion_mobile_20260506/)*
    Add React Native brownfield tasks to the benchmark catalog.
 
-- [ ] **Track: Automated Benchmark Scheduling**
-  *Link: [./tracks/automated_benchmark_scheduling_20260506/](./tracks/automated_benchmark_scheduling_20260506/)*
-  Cron-based recurring benchmark runs with automatic result archiving.
+- [x] **Track: Automated Benchmark Scheduling**
+   *Link: [./archive/automated_benchmark_scheduling_20260506/](./archive/automated_benchmark_scheduling_20260506/)*
+   Cron-based recurring benchmark runs with automatic result archiving.
 
 - [ ] **Track: Public API for Third-Party Integrations**
   *Link: [./tracks/public_api_third_party_20260506/](./tracks/public_api_third_party_20260506/)*

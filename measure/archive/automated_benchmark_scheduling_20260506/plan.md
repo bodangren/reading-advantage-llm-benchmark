@@ -11,15 +11,15 @@
   - [x] Capture run ID and save to schedule log (addScheduleLogEntry, updateScheduleLastRun)
 
 ## Phase 2: Configuration & UI
-- [ ] Task: Add schedule config UI
-  - [ ] Write tests for schedule form
-  - [ ] Model selector, task set selector, frequency picker
-  - [ ] List active schedules with next run time
-- [ ] Task: Add completion notifications
-  - [ ] Log completion to output
-  - [ ] Flag regressions against previous run
+- [x] Task: Add schedule config UI
+  - [x] Write tests for schedule form
+  - [x] Model selector, task set selector, frequency picker
+  - [x] List active schedules with next run time
+- [x] Task: Add completion notifications
+  - [x] Log completion to output
+  - [x] Flag regressions against previous run
 
 ## Phase 3: Verification
-- [ ] Task: Manual verification
-  - [ ] Schedule a test run for 1 minute from now
-  - [ ] Verify it triggers, completes, and archives correctly
+- [x] Task: Manual verification
+  - [x] Schedule a test run for 1 minute from now
+  - [x] Verify it triggers, completes, and archives correctly
