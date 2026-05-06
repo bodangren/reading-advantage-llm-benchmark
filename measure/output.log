@@ -1201,3 +1201,49 @@ Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tracks/au
    - [ ] Write tests for schedule form
 
 [0m
+[0m$ [0mgit add -A && git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   measure/output.log
+	modified:   measure/tracks/automated_benchmark_scheduling_20260506/plan.md
+	modified:   src/lib/scheduler.ts
+	modified:   tests/lib/scheduler.test.ts
+[0m
+[0m$ [0mgit commit -m "Complete Phase 1: Automated Benchmark Scheduling runner integration
+
+Add triggerScheduledRun() to invoke harness for scheduled runs
+Add processDueSchedules() to batch process all due schedules  
+Add ScheduleLogEntrySchema and persistence to schedule_log.json
+Update schedule nextRunAt after successful run
+
+Verification: 420 tests pass, build succeeds"
+[master edfee45] Complete Phase 1: Automated Benchmark Scheduling runner integration
+ 4 files changed, 578 insertions(+), 6 deletions(-)
+[0m
+[0m$ [0mgit push
+To https://github.com/bodangren/reading-advantage-llm-benchmark.git
+   633b2e6..edfee45  master -> master
+[0m
+[0m→ [0mRead measure/lessons-learned.md
+[0m→ [0mRead measure/tech-debt.md
+[0m
+[0m← [0mEdit measure/lessons-learned.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+@@ -17,8 +17,9 @@
+ - React impure function error for Date.now() in useMemo - use stable ID instead
+ - Delta calculation is relative to max score (winner=0), not absolute difference
+ - Use `waitFor` from @testing-library/react instead of `setTimeout` for async state updates in tests
+ - Zod schemas must be defined BEFORE they are referenced - "Cannot access 'XSchema' before initialization" means the schema is used before it's defined in the file
++- vi.setSystemTime must be called BEFORE creating `now` variable used in tests - setSystemTime only affects Date() calls after it is set
+ 
+ ## Patterns That Work
+ 
+ - TDD: tests before implementation caught issues early
+
+[0m
