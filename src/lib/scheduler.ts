@@ -1,4 +1,4 @@
-import { ScheduleConfig, ScheduleFrequency, ScheduleLogEntry, ScheduleConfigSchema, ScheduleLogEntrySchema } from './schemas';
+import { ScheduleConfig, ScheduleFrequency, ScheduleLogEntry, ScheduleConfigSchema, ScheduleLogEntrySchema, Run } from './schemas';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -162,4 +162,79 @@ export function formatCronExpression(config: ScheduleConfig): string {
     const dayName = days[dayOfWeek ?? 0];
     return `Weekly on ${dayName} at ${time}`;
   }
+}
+
+export interface TriggerResult {
+  scheduleId: string;
+  runId?: string;
+  success: boolean;
+  error?: string;
+}
+
+export type EvaluationFunction = (
+  modelId: string,
+  datasetVersion: string
+) => Promise<Run>;
+
+export async function triggerScheduledRun(
+  schedule: ScheduleConfig,
+  runEval: EvaluationFunction
+): Promise<TriggerResult> {
+  const triggeredAt = new Date().toISOString();
+
+  const logEntry: ScheduleLogEntry = {
+    scheduleId: schedule.id,
+    runId: '',
+    triggeredAt,
+    completedAt: undefined,
+    status: 'running',
+    errorMessage: undefined,
+  };
+
+  try {
+    const run = await runEval(schedule.modelId, schedule.datasetVersion);
+
+    logEntry.runId = run.id;
+    logEntry.status = 'completed';
+    logEntry.completedAt = new Date().toISOString();
+
+    await addScheduleLogEntry(logEntry);
+
+    const nextRun = calculateNextRun(schedule);
+    if (nextRun) {
+      await updateScheduleLastRun(schedule.id, triggeredAt, nextRun.toISOString());
+    }
+
+    return {
+      scheduleId: schedule.id,
+      runId: run.id,
+      success: true,
+    };
+  } catch (error) {
+    logEntry.status = 'failed';
+    logEntry.errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    logEntry.completedAt = new Date().toISOString();
+
+    await addScheduleLogEntry(logEntry);
+
+    return {
+      scheduleId: schedule.id,
+      success: false,
+      error: logEntry.errorMessage,
+    };
+  }
+}
+
+export async function processDueSchedules(
+  runEval: EvaluationFunction
+): Promise<TriggerResult[]> {
+  const dueSchedules = await getDueSchedules();
+  const results: TriggerResult[] = [];
+
+  for (const schedule of dueSchedules) {
+    const result = await triggerScheduledRun(schedule, runEval);
+    results.push(result);
+  }
+
+  return results;
 }

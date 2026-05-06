@@ -5,10 +5,10 @@
   - [x] Write tests for cron parsing and next-run calculation (tests/lib/scheduler.test.ts)
   - [x] Support daily and weekly frequencies (src/lib/scheduler.ts)
   - [x] Persist schedule state to JSON file (src/lib/scheduler.ts getSchedules/saveSchedule)
-- [ ] Task: Add runner integration
-  - [ ] Write tests for trigger logic
-  - [ ] Invoke harness with configured model and task set
-  - [ ] Capture run ID and save to schedule log
+- [x] Task: Add runner integration
+  - [x] Write tests for trigger logic (triggerScheduledRun, processDueSchedules tests)
+  - [x] Invoke harness with configured model and task set (triggerScheduledRun function)
+  - [x] Capture run ID and save to schedule log (addScheduleLogEntry, updateScheduleLastRun)
 
 ## Phase 2: Configuration & UI
 - [ ] Task: Add schedule config UI

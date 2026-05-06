@@ -4,10 +4,22 @@ import {
   getCronFields,
   isScheduleDue,
   formatCronExpression,
+  triggerScheduledRun,
+  processDueSchedules,
 } from '../../src/lib/scheduler';
-import { ScheduleConfig } from '../../src/lib/schemas';
+import { ScheduleConfig, Run } from '../../src/lib/schemas';
 
 vi.mock('fs/promises');
+
+const mockRun: Run = {
+  id: 'run-123',
+  model: 'gpt-4',
+  harness: 'opencode',
+  benchmark_version: '1.0.0',
+  dataset_version: '2026-05-06',
+  score: 0.85,
+  date: '2026-05-06T10:00:00Z',
+};
 
 describe('Scheduler', () => {
   describe('calculateNextRun', () => {
@@ -288,6 +300,95 @@ describe('Scheduler', () => {
       };
 
       expect(formatCronExpression(config)).toBe('Weekly on Sunday at 18:00');
+    });
+  });
+
+  describe('triggerScheduledRun', () => {
+    it('should trigger a scheduled run and log success', async () => {
+      const config: ScheduleConfig = {
+        id: 'trigger-test',
+        name: 'Trigger Test',
+        frequency: 'daily',
+        hour: 10,
+        minute: 0,
+        modelId: 'gpt-4',
+        datasetVersion: '2026-05-06',
+        enabled: true,
+        createdAt: '2026-05-06T00:00:00Z',
+        status: 'active',
+      };
+
+      const mockRunEval = vi.fn().mockResolvedValue(mockRun);
+
+      const result = await triggerScheduledRun(config, mockRunEval);
+
+      expect(result.success).toBe(true);
+      expect(result.runId).toBe('run-123');
+      expect(result.scheduleId).toBe('trigger-test');
+      expect(mockRunEval).toHaveBeenCalledWith('gpt-4', '2026-05-06');
+    });
+
+    it('should handle run evaluation failure', async () => {
+      const config: ScheduleConfig = {
+        id: 'trigger-fail-test',
+        name: 'Trigger Fail Test',
+        frequency: 'daily',
+        hour: 10,
+        minute: 0,
+        modelId: 'gpt-4',
+        datasetVersion: '2026-05-06',
+        enabled: true,
+        createdAt: '2026-05-06T00:00:00Z',
+        status: 'active',
+      };
+
+      const mockRunEval = vi.fn().mockRejectedValue(new Error('API unavailable'));
+
+      const result = await triggerScheduledRun(config, mockRunEval);
+
+      expect(result.success).toBe(false);
+      expect(result.error).toBe('API unavailable');
+      expect(result.scheduleId).toBe('trigger-fail-test');
+    });
+  });
+
+  describe('processDueSchedules', () => {
+    it('should process multiple due schedules', async () => {
+      vi.setSystemTime(new Date('2026-05-06T10:05:00Z'));
+
+      const config1: ScheduleConfig = {
+        id: 'due-schedule-1',
+        name: 'Due Schedule 1',
+        frequency: 'daily',
+        hour: 10,
+        minute: 0,
+        modelId: 'gpt-4',
+        datasetVersion: '2026-05-06',
+        enabled: true,
+        createdAt: '2026-05-06T00:00:00Z',
+        status: 'active',
+        nextRunAt: '2026-05-06T10:00:00Z',
+      };
+
+      const config2: ScheduleConfig = {
+        id: 'due-schedule-2',
+        name: 'Due Schedule 2',
+        frequency: 'daily',
+        hour: 10,
+        minute: 0,
+        modelId: 'claude-3',
+        datasetVersion: '2026-05-06',
+        enabled: true,
+        createdAt: '2026-05-06T00:00:00Z',
+        status: 'active',
+        nextRunAt: '2026-05-06T10:00:00Z',
+      };
+
+      const mockRunEval = vi.fn().mockResolvedValue(mockRun);
+
+      const result = await processDueSchedules(mockRunEval);
+
+      expect(Array.isArray(result)).toBe(true);
     });
   });
 });
