@@ -25,3 +25,5 @@
 | 2026-05-05 | task_authoring_interface_20260424 | Task status management - Phase 5.1 complete | Low | Resolved | Added TaskStatusSchema (draft/review/published) to TaskSchema; status filter in TaskListWithFilters; status badge in TaskCard |
 | 2026-05-05 | task_authoring_interface_20260424 | Task search - Phase 5.2 complete | Low | Resolved | Added text search by title/description/ID to TaskListWithFilters; search is case-insensitive |
 | 2026-05-05 | task_authoring_interface_20260424 | Task templates - Phase 5.3 complete | Low | Resolved | Created data/templates/task_templates.json with 4 common patterns (feature_addition, bug_fix, refactoring, api_integration) |
+| 2026-05-07 | public_api_third_party_20260506 | Added API key auth middleware with rate limiting | Medium | Resolved | Created api-keys.ts (in-memory store), rate-limit.ts (100 req/hour), api-auth.ts (validation) |
+| 2026-05-07 | public_api_third_party_20260506 | Extended existing API endpoints with new features | Low | Resolved | Added pagination to /api/runs, provider filter to /api/leaderboard, difficulty filter to /api/tasks |
