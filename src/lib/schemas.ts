@@ -223,3 +223,40 @@ export const TaskTemplatesSchema = z.object({
 });
 
 export type TaskTemplates = z.infer<typeof TaskTemplatesSchema>;
+
+export const ScheduleFrequencySchema = z.enum(['daily', 'weekly']);
+
+export type ScheduleFrequency = z.infer<typeof ScheduleFrequencySchema>;
+
+export const ScheduleStatusSchema = z.enum(['active', 'paused', 'completed']);
+
+export type ScheduleStatus = z.infer<typeof ScheduleStatusSchema>;
+
+export const ScheduleConfigSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  frequency: ScheduleFrequencySchema,
+  hour: z.number().int().min(0).max(23),
+  minute: z.number().int().min(0).max(59),
+  dayOfWeek: z.number().int().min(0).max(6).optional(),
+  modelId: z.string(),
+  datasetVersion: z.string(),
+  enabled: z.boolean().default(true),
+  createdAt: z.string(),
+  lastRunAt: z.string().optional(),
+  nextRunAt: z.string().optional(),
+  status: ScheduleStatusSchema.default('active'),
+});
+
+export type ScheduleConfig = z.infer<typeof ScheduleConfigSchema>;
+
+export const ScheduleLogEntrySchema = z.object({
+  scheduleId: z.string(),
+  runId: z.string(),
+  triggeredAt: z.string(),
+  completedAt: z.string().optional(),
+  status: z.enum(['running', 'completed', 'failed']),
+  errorMessage: z.string().optional(),
+});
+
+export type ScheduleLogEntry = z.infer<typeof ScheduleLogEntrySchema>;

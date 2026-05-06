@@ -1,10 +1,10 @@
 # Implementation Plan: Automated Benchmark Scheduling
 
 ## Phase 1: Scheduler Core
-- [ ] Task: Build schedule engine
-  - [ ] Write tests for cron parsing and next-run calculation
-  - [ ] Support daily and weekly frequencies
-  - [ ] Persist schedule state to JSON file
+- [x] Task: Build schedule engine
+  - [x] Write tests for cron parsing and next-run calculation (tests/lib/scheduler.test.ts)
+  - [x] Support daily and weekly frequencies (src/lib/scheduler.ts)
+  - [x] Persist schedule state to JSON file (src/lib/scheduler.ts getSchedules/saveSchedule)
 - [ ] Task: Add runner integration
   - [ ] Write tests for trigger logic
   - [ ] Invoke harness with configured model and task set
