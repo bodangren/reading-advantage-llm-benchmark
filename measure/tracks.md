@@ -72,7 +72,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## Upcoming Tracks
 
 - [x] **Track: Task Domain Expansion — Mobile & React Native**
-   *Link: [./tracks/task_domain_expansion_mobile_20260506/](./tracks/task_domain_expansion_mobile_20260506/)*
+   *Link: [./archive/task_domain_expansion_mobile_20260506/](./archive/task_domain_expansion_mobile_20260506/)*
    Add React Native brownfield tasks to the benchmark catalog.
 
 - [x] **Track: Automated Benchmark Scheduling**
@@ -86,3 +86,11 @@ This file tracks all major tracks for the project. Each track has its own detail
 - [ ] **Track: Benchmark Result Analytics & Trending**
   *Link: [./tracks/benchmark_analytics_trending_20260506/](./tracks/benchmark_analytics_trending_20260506/)*
   Time-series charts, regression detection, and historical model comparison.
+
+- [ ] **Track: Task Difficulty Calibration**
+  *Link: [./tracks/task_difficulty_calibration_20260507/](./tracks/task_difficulty_calibration_20260507/)*
+  Data-driven difficulty scoring from historical pass rates; auto-reclassifies tasks and surfaces calibration health.
+
+- [ ] **Track: Benchmark Version Migration**
+  *Link: [./tracks/benchmark_version_migration_20260507/](./tracks/benchmark_version_migration_20260507/)*
+  Version-aware leaderboard filtering, cross-version score normalization, and version history page for fair comparison across benchmark iterations.
