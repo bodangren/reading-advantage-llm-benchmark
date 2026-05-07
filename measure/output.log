@@ -398,3 +398,53 @@ Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tracks/be
    - [ ] Write tests for chart data formatting
 
 [0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && git add -A && git commit -m "Phase 1: Analytics core - time series grouping, moving average, regression detection
+
+- Added src/lib/analytics.ts with groupRunsByPeriod(), calculateMovingAverage(), detectRegressions()
+- Added tests/lib/analytics.test.ts with 10 tests covering:
+  - Week/month grouping of runs
+  - Moving average calculation with variable window sizes
+  - Regression detection with configurable threshold
+- All 454 tests passing
+- Build succeeds
+
+Model: MiniMax-M2.7"
+[master 19461db] Phase 1: Analytics core - time series grouping, moving average, regression detection
+ 4 files changed, 622 insertions(+), 4 deletions(-)
+ create mode 100644 src/lib/analytics.ts
+ create mode 100644 tests/lib/analytics.test.ts
+[0m
+[0m$ [0mcurl -s http://localhost:3000 >/dev/null && echo "App running on 3000" || echo "App not responding"
+App running on 3000
+[0m
+[0m$ [0mgit push
+To https://github.com/bodangren/reading-advantage-llm-benchmark.git
+   e1c356c..19461db  master -> master
+[0m
+[0m$ [0mpkill -f "next dev" 2>/dev/null; echo "Dev server stopped"
+(no output)
+
+<shell_metadata>
+shell tool terminated command after exceeding timeout 120000 ms. If this command is expected to take longer and is not waiting for interactive input, retry with a larger timeout value in milliseconds.
+</shell_metadata>
+[0m
+[0m→ [0mRead measure/tech-debt.md
+[0m→ [0mRead measure/lessons-learned.md
+[0m
+[0m← [0mEdit measure/lessons-learned.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+@@ -44,5 +44,6 @@
+ - Fetch retry: `attempt < this.maxRetries` check BEFORE incrementing attempt
+ - API Client: reads from env vars `OPENAI_API_KEY` and `LLM_API_BASE`
+ - Next.js 16: root `app/` takes precedence over `src/app/` - both exist = only root used
+ - detectRepoType() identifies react-native via dependencies['react-native'] presence
+-- Rate limiting: in-memory Map works for single-instance; use Redis for multi-instance deployments
+\ No newline at end of file
++- Rate limiting: in-memory Map works for single-instance; use Redis for multi-instance deployments
++- Week grouping uses Sunday as start (getDay()), so Monday dates fall into previous week's period
+\ No newline at end of file
+
+[0m

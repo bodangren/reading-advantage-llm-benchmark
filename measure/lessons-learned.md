@@ -46,3 +46,4 @@
 - Next.js 16: root `app/` takes precedence over `src/app/` - both exist = only root used
 - detectRepoType() identifies react-native via dependencies['react-native'] presence
 - Rate limiting: in-memory Map works for single-instance; use Redis for multi-instance deployments
+- Week grouping uses Sunday as start (getDay()), so Monday dates fall into previous week's period
