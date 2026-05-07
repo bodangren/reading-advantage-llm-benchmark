@@ -2,8 +2,9 @@
 
 import { useState, useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
-import { ChartDataPoint, ScoreType, getScoreTypeLabel, RegressionAlert, groupRegressionsByModel } from '@/lib/analytics';
+import { ChartDataPoint, ScoreType, getScoreTypeLabel, RegressionAlert, groupRegressionsByModel, exportTrendDataToCSV } from '@/lib/analytics';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 interface AnalyticsClientProps {
   chartData: Record<string, ChartDataPoint[]>;
@@ -168,6 +169,24 @@ export function AnalyticsClient({
             </LineChart>
           </ResponsiveContainer>
         </div>
+      </div>
+
+      <div className="flex justify-end">
+        <Button
+          variant="outline"
+          onClick={() => {
+            const csv = exportTrendDataToCSV(chartData);
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `benchmark-trends-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+          }}
+        >
+          Export CSV
+        </Button>
       </div>
     </div>
   );

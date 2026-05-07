@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { TrendDataPoint, formatChartData, groupRegressionsByModel, getScoreTypeLabel } from '@/lib/analytics';
+import { groupRunsByPeriod, calculateMovingAverage, formatChartData, groupRegressionsByModel, getScoreTypeLabel, detectRegressions, exportTrendDataToCSV, TrendDataPoint } from '@/lib/analytics';
 
 describe('Chart Data Formatting', () => {
   describe('formatChartData', () => {
@@ -104,5 +104,50 @@ describe('Multi-Model Chart Data', () => {
     expect(chartB[0].model).toBe('Model B');
     expect(chartA[0].score).toBe(75);
     expect(chartB[0].score).toBe(80);
+  });
+});
+
+describe('CSV Export', () => {
+  it('should export trend data to CSV format', () => {
+    const chartData = {
+      'Model A': [
+        { period: '2026-04-01', score: 75, model: 'Model A', movingAvg: null },
+        { period: '2026-04-08', score: 78, model: 'Model A', movingAvg: 76.5 },
+      ],
+      'Model B': [
+        { period: '2026-04-01', score: 80, model: 'Model B', movingAvg: null },
+        { period: '2026-04-08', score: 79, model: 'Model B', movingAvg: 79.5 },
+      ],
+    };
+
+    const csv = exportTrendDataToCSV(chartData);
+    const lines = csv.split('\n');
+
+    expect(lines[0]).toBe('period,Model A,Model B');
+    expect(lines[1]).toBe('2026-04-01,75,80');
+    expect(lines[2]).toBe('2026-04-08,78,79');
+  });
+
+  it('should handle missing periods for some models', () => {
+    const chartData = {
+      'Model A': [
+        { period: '2026-04-01', score: 75, model: 'Model A', movingAvg: null },
+      ],
+      'Model B': [
+        { period: '2026-04-08', score: 79, model: 'Model B', movingAvg: null },
+      ],
+    };
+
+    const csv = exportTrendDataToCSV(chartData);
+    const lines = csv.split('\n');
+
+    expect(lines[0]).toBe('period,Model A,Model B');
+    expect(lines[1]).toBe('2026-04-01,75,');
+    expect(lines[2]).toBe('2026-04-08,,79');
+  });
+
+  it('should handle empty chart data', () => {
+    const csv = exportTrendDataToCSV({});
+    expect(csv).toBe('period');
   });
 });

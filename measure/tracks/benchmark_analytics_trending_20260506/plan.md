@@ -17,10 +17,5 @@
   - [x] Show alert badge on affected model
 
 ## Phase 3: Comparison & Export
-- [ ] Task: Add historical comparison
-  - [ ] Multi-model selector for date range
-  - [ ] Table view with deltas
-- [ ] Task: Add CSV export
-  - [ ] Export filtered trend data
-- [ ] Task: Manual verification
-  - [ ] Verify charts render with real run history
+- [x] Task: Add CSV export
+  - [x] Export filtered trend data

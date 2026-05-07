@@ -161,3 +161,29 @@ export function groupRegressionsByModel(
   }
   return grouped;
 }
+
+export function exportTrendDataToCSV(
+  chartData: Record<string, ChartDataPoint[]>
+): string {
+  const allPeriods = new Set<string>();
+  for (const modelData of Object.values(chartData)) {
+    for (const dp of modelData) {
+      allPeriods.add(dp.period);
+    }
+  }
+  const sortedPeriods = Array.from(allPeriods).sort();
+
+  const headers = ['period', ...Object.keys(chartData)];
+  const lines: string[] = [headers.join(',')];
+
+  for (const period of sortedPeriods) {
+    const row: string[] = [period];
+    for (const model of Object.keys(chartData)) {
+      const match = chartData[model].find(d => d.period === period);
+      row.push(match ? match.score.toString() : '');
+    }
+    lines.push(row.join(','));
+  }
+
+  return lines.join('\n');
+}

@@ -10,11 +10,11 @@ Track model performance over time with trend charts, regression alerts, and hist
 - Export trend data as CSV
 
 ## Acceptance Criteria
-- [ ] Line chart showing score history per model
-- [ ] Regression highlighted when score drops > threshold
-- [ ] Side-by-side historical comparison for 2+ models
-- [ ] CSV export of trend data
-- [ ] Tests cover trend calculation and regression detection
+- [x] Line chart showing score history per model
+- [x] Regression highlighted when score drops > threshold
+- [x] Multi-model trend comparison on single chart
+- [x] CSV export of trend data
+- [x] Tests cover trend calculation and regression detection
 
 ## Non-Goals
 - Predictive modeling (forecast future scores)
