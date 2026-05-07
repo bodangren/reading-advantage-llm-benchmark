@@ -27,3 +27,6 @@
 | 2026-05-05 | task_authoring_interface_20260424 | Task templates - Phase 5.3 complete | Low | Resolved | Created data/templates/task_templates.json with 4 common patterns (feature_addition, bug_fix, refactoring, api_integration) |
 | 2026-05-07 | public_api_third_party_20260506 | Added API key auth middleware with rate limiting | Medium | Resolved | Created api-keys.ts (in-memory store), rate-limit.ts (100 req/hour), api-auth.ts (validation) |
 | 2026-05-07 | public_api_third_party_20260506 | Extended existing API endpoints with new features | Low | Resolved | Added pagination to /api/runs, provider filter to /api/leaderboard, difficulty filter to /api/tasks |
+| 2026-05-08 | review | TypeScript compilation fails in test files due to schema drift | Medium | Open | TaskSpec requires `status`, BenchmarkConfig requires `track` — tests mock data missing these fields |
+| 2026-05-08 | review | In-memory rate limiting won't persist on serverless | Medium | Open | `rate-limit.ts` uses Map; resets on each Vercel function invocation. Need Redis/external store |
+| 2026-05-08 | review | Schedule persistence uses local filesystem | Medium | Open | `scheduler.ts` writes JSON to disk; incompatible with serverless. Need DB or external storage |
