@@ -866,3 +866,42 @@ Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tracks/be
  - Real-time streaming charts
 
 [0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && git add -A && git commit -m "phase 3 complete: CSV export for trend data"
+[master e1c0707] phase 3 complete: CSV export for trend data
+ 6 files changed, 381 insertions(+), 14 deletions(-)
+[0m
+[0m← [0mEdit measure/tracks.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tracks.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tracks.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tracks.md
+@@ -83,11 +83,12 @@
+    *Link: [./tracks/public_api_third_party_20260506/](./tracks/public_api_third_party_20260506/)*
+    *Status: Complete*
+    Read-only REST API with key auth and rate limiting for external researchers.
+ 
+-- [ ] **Track: Benchmark Result Analytics & Trending**
+-  *Link: [./tracks/benchmark_analytics_trending_20260506/](./tracks/benchmark_analytics_trending_20260506/)*
+-  Time-series charts, regression detection, and historical model comparison.
++- [x] **Track: Benchmark Result Analytics & Trending**
++   *Link: [./tracks/benchmark_analytics_trending_20260506/](./tracks/benchmark_analytics_trending_20260506/)*
++   *Status: Complete*
++   Time-series charts, regression detection, and historical model comparison.
+ 
+ - [ ] **Track: Task Difficulty Calibration**
+   *Link: [./tracks/task_difficulty_calibration_20260507/](./tracks/task_difficulty_calibration_20260507/)*
+   Data-driven difficulty scoring from historical pass rates; auto-reclassifies tasks and surfaces calibration health.
+
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && bun run test --run 2>&1 | tail -10
+$ vitest --run
+
+ RUN  v4.1.2 /home/daniel-bo/Desktop/reading-advantage-llm-benchmark
+
+
+ Test Files  51 passed (51)
+      Tests  456 passed (456)
+   Start at  19:50:44
+   Duration  31.01s (transform 2.69s, setup 0ms, import 16.10s, tests 17.96s, environment 36.06s)
+[0m
+[0m→ [0mRead measure/lessons-learned.md
