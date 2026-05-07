@@ -89,9 +89,10 @@ This file tracks all major tracks for the project. Each track has its own detail
    *Status: Complete*
    Time-series charts, regression detection, and historical model comparison.
 
-- [ ] **Track: Task Difficulty Calibration**
-  *Link: [./tracks/task_difficulty_calibration_20260507/](./tracks/task_difficulty_calibration_20260507/)*
-  Data-driven difficulty scoring from historical pass rates; auto-reclassifies tasks and surfaces calibration health.
+- [x] **Track: Task Difficulty Calibration**
+   *Link: [./tracks/task_difficulty_calibration_20260507/](./tracks/task_difficulty_calibration_20260507/)*
+   *Status: Phase 1-2 complete (calibration engine + CLI)*
+   Data-driven difficulty scoring from historical pass rates; auto-reclassifies tasks and surfaces calibration health.
 
 - [ ] **Track: Benchmark Version Migration**
   *Link: [./tracks/benchmark_version_migration_20260507/](./tracks/benchmark_version_migration_20260507/)*

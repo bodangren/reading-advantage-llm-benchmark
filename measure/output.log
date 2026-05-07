@@ -1386,3 +1386,48 @@ Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-l
 [0m$ [0mwc -l /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
 50 /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
 [0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && git add -A && git commit -m "Checkpoint: Phases 1-2 complete, calibration engine and CLI done
+
+MiniMax-M2.7: Task Difficulty Calibration - Phases 1 & 2
+
+Phase 1 - Calibration Engine:
+- calibration.ts with calculatePassRate, computeDifficultyScore, classifyDifficulty
+- computeDifficultyPercentile for percentile ranking
+- generateCalibrationReport for over/under-rated detection
+
+Phase 2 - Reclassification & Persistence:
+- calibration-cli.ts with calibrate and apply commands
+- saveCalibrationData/loadCalibrationData for JSON persistence
+- Dry-run mode for reclassification proposals
+
+All 487 tests pass, build succeeds."
+[master e5e4318] Checkpoint: Phases 1-2 complete, calibration engine and CLI done
+ 2 files changed, 155 insertions(+), 4 deletions(-)
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && git push 2>&1
+To https://github.com/bodangren/reading-advantage-llm-benchmark.git
+   8c947b2..e5e4318  master -> master
+[0m
+[0m← [0mEdit measure/tracks.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tracks.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tracks.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/tracks.md
+@@ -88,11 +88,12 @@
+    *Link: [./tracks/benchmark_analytics_trending_20260506/](./tracks/benchmark_analytics_trending_20260506/)*
+    *Status: Complete*
+    Time-series charts, regression detection, and historical model comparison.
+ 
+-- [ ] **Track: Task Difficulty Calibration**
+-  *Link: [./tracks/task_difficulty_calibration_20260507/](./tracks/task_difficulty_calibration_20260507/)*
+-  Data-driven difficulty scoring from historical pass rates; auto-reclassifies tasks and surfaces calibration health.
++- [x] **Track: Task Difficulty Calibration**
++   *Link: [./tracks/task_difficulty_calibration_20260507/](./tracks/task_difficulty_calibration_20260507/)*
++   *Status: Phase 1-2 complete (calibration engine + CLI)*
++   Data-driven difficulty scoring from historical pass rates; auto-reclassifies tasks and surfaces calibration health.
+ 
+ - [ ] **Track: Benchmark Version Migration**
+   *Link: [./tracks/benchmark_version_migration_20260507/](./tracks/benchmark_version_migration_20260507/)*
+   Version-aware leaderboard filtering, cross-version score normalization, and version history page for fair comparison across benchmark iterations.
+
+[0m
