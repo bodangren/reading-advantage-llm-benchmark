@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { groupRunsByPeriod, calculateMovingAverage, formatChartData, groupRegressionsByModel, getScoreTypeLabel, detectRegressions, exportTrendDataToCSV, TrendDataPoint } from '@/lib/analytics';
+import { formatChartData, groupRegressionsByModel, getScoreTypeLabel, exportTrendDataToCSV } from '@/lib/analytics';
 
 describe('Chart Data Formatting', () => {
   describe('formatChartData', () => {

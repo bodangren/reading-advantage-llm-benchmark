@@ -4,7 +4,7 @@ import { GET as runsIdHandler } from '../../../app/api/runs/[id]/route';
 import { GET as leaderboardHandler } from '../../../app/api/leaderboard/route';
 import { GET as tasksHandler } from '../../../app/api/tasks/route';
 import { GET as tasksIdHandler } from '../../../app/api/tasks/[id]/route';
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 vi.mock('@/lib/runs', () => ({
   getAllRuns: vi.fn(),
@@ -16,16 +16,16 @@ vi.mock('@/lib/data', () => ({
   getTaskById: vi.fn(),
 }));
 
-vi.mock('@/lib/api-auth', () => ({
+  vi.mock('@/lib/api-auth', () => ({
   validateAuth: vi.fn().mockReturnValue({ allowed: true }),
-  authResponse: vi.fn().mockImplementation((error, status) => {
-    return new (require('next/server').NextResponse)(JSON.stringify({ error }), { status });
+  authResponse: vi.fn().mockImplementation((error: string, status: number) => {
+    return new NextResponse(JSON.stringify({ error }), { status });
   }),
 }));
 
 import { getAllRuns, getRunById } from '@/lib/runs';
 import { getTasks, getTaskById } from '@/lib/data';
-import { validateAuth, authResponse } from '@/lib/api-auth';
+import { validateAuth } from '@/lib/api-auth';
 
 const mockRuns = [
   {

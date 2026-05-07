@@ -161,7 +161,7 @@ async function main() {
   const { command, options } = parseArgs(args);
 
   if (command === 'apply') {
-    await applyReclassification(options.dryRun || true);
+    await applyReclassification(options.dryRun ?? false);
   } else {
     await runCalibration(options);
   }

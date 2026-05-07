@@ -57,6 +57,7 @@ export function classifyDifficulty(difficultyScore: number): 'easy' | 'medium' |
 
 export function computeDifficultyPercentile(allScores: number[], score: number): number {
   if (allScores.length === 0) return 0;
+  if (allScores.length === 1) return allScores[0] >= score ? 0 : 100;
   const sorted = [...allScores].sort((a, b) => a - b);
   const rank = sorted.findIndex(s => s >= score);
   if (rank === -1) return 100;

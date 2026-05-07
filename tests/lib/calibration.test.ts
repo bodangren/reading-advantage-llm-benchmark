@@ -185,6 +185,11 @@ describe('Difficulty Calibration', () => {
       expect(computeDifficultyPercentile(scores, 30)).toBe(50);
       expect(computeDifficultyPercentile(scores, 90)).toBe(100);
     });
+
+    it('should handle single-element array without division by zero', () => {
+      expect(computeDifficultyPercentile([50], 50)).toBe(0);
+      expect(computeDifficultyPercentile([50], 60)).toBe(100);
+    });
   });
 
   describe('generateCalibrationReport', () => {
