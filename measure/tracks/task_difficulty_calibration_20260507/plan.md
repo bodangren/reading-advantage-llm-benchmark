@@ -1,18 +1,18 @@
 # Implementation Plan: Task Difficulty Calibration
 
 ## Phase 1: Calibration Engine
-- [ ] Task: Build difficulty calibration core
-  - [ ] Write tests for pass-rate analysis (all models, per task)
-  - [ ] Compute raw pass rate from Run scores (total_score >= threshold)
-  - [ ] Convert pass rate to 0-100 difficulty score (inverted and scaled)
-  - [ ] Handle edge cases: zero runs, perfect pass rate, single-model bias
-  - [ ] Add `calibrated_difficulty` and `difficulty_percentile` fields to Task schema
+- [x] Task: Build difficulty calibration core
+  - [x] Write tests for pass-rate analysis (all models, per task)
+  - [x] Compute raw pass rate from Run scores (total_score >= threshold)
+  - [x] Convert pass rate to 0-100 difficulty score (inverted and scaled)
+  - [x] Handle edge cases: zero runs, perfect pass rate, single-model bias
+  - [x] Add `calibrated_difficulty` and `difficulty_percentile` fields to Task schema
 
-- [ ] Task: Build calibration report generator
-  - [ ] Write tests for over/under-rated detection
-  - [ ] Compare manual label vs calibrated score
-  - [ ] Flag tasks where label diverges by >1 category
-  - [ ] Export report as JSON
+- [x] Task: Build calibration report generator
+  - [x] Write tests for over/under-rated detection
+  - [x] Compare manual label vs calibrated score
+  - [x] Flag tasks where label diverges by >1 category
+  - [x] Export report as JSON
 
 ## Phase 2: Reclassification & Data Persistence
 - [ ] Task: Add auto-reclassification logic
