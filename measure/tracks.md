@@ -61,6 +61,7 @@ This file tracks all major tracks for the project. Each track has its own detail
    Read-only API, CSV export, and summary statistics for benchmark data
 
 ## Upcoming Tracks
+- [ ] **Track: Backend/API Task Domain Expansion** *Link: [./tracks/backend_task_domain_expansion_20260508/](./tracks/backend_task_domain_expansion_20260508/)* — Add backend tasks (DB, API, auth, service refactor) to the benchmark catalog with adapted scoring rubric
 
 - [x] **Track: Task Versioning Storage Cleanup**
    *Link: [./archive/version_cleanup_20260505/](./archive/version_cleanup_20260505/)*
@@ -70,6 +71,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## Completed Tracks
 
 ## Upcoming Tracks
+- [ ] **Track: Backend/API Task Domain Expansion** *Link: [./tracks/backend_task_domain_expansion_20260508/](./tracks/backend_task_domain_expansion_20260508/)* — Add backend tasks (DB, API, auth, service refactor) to the benchmark catalog with adapted scoring rubric
 
 - [x] **Track: Task Domain Expansion — Mobile & React Native**
    *Link: [./archive/task_domain_expansion_mobile_20260506/](./archive/task_domain_expansion_mobile_20260506/)*
@@ -80,20 +82,28 @@ This file tracks all major tracks for the project. Each track has its own detail
    Cron-based recurring benchmark runs with automatic result archiving.
 
 - [x] **Track: Public API for Third-Party Integrations**
-   *Link: [./tracks/public_api_third_party_20260506/](./tracks/public_api_third_party_20260506/)*
+   *Link: [./archive/public_api_third_party_20260506/](./archive/public_api_third_party_20260506/)*
    *Status: Complete*
    Read-only REST API with key auth and rate limiting for external researchers.
 
 - [x] **Track: Benchmark Result Analytics & Trending**
-   *Link: [./tracks/benchmark_analytics_trending_20260506/](./tracks/benchmark_analytics_trending_20260506/)*
+   *Link: [./archive/benchmark_analytics_trending_20260506/](./archive/benchmark_analytics_trending_20260506/)*
    *Status: Complete*
    Time-series charts, regression detection, and historical model comparison.
 
 - [x] **Track: Task Difficulty Calibration**
-   *Link: [./tracks/task_difficulty_calibration_20260507/](./tracks/task_difficulty_calibration_20260507/)*
+   *Link: [./archive/task_difficulty_calibration_20260507/](./archive/task_difficulty_calibration_20260507/)*
    *Status: Phase 1-2 complete (calibration engine + CLI)*
    Data-driven difficulty scoring from historical pass rates; auto-reclassifies tasks and surfaces calibration health.
 
 - [ ] **Track: Benchmark Version Migration**
   *Link: [./tracks/benchmark_version_migration_20260507/](./tracks/benchmark_version_migration_20260507/)*
   Version-aware leaderboard filtering, cross-version score normalization, and version history page for fair comparison across benchmark iterations.
+
+- [ ] **Track: Fix Test Schema Drift**
+  *Link: [./tracks/fix_test_schema_drift_20260508/](./tracks/fix_test_schema_drift_20260508/)*
+  Systematically repair test mock data to align with current `TaskSpec` and `BenchmarkConfig` schemas, then add a CI type-check gate to prevent future drift.
+
+- [ ] **Track: Serverless-Compatible Persistence Layer**
+  *Link: [./tracks/serverless_persistence_layer_20260508/](./tracks/serverless_persistence_layer_20260508/)*
+  Replace in-memory rate limiting and filesystem-based scheduler persistence with Redis-backed adapters for serverless deployments, with local-dev fallback.
