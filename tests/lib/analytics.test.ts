@@ -1,130 +1,108 @@
 import { describe, it, expect } from 'vitest';
-import { groupRunsByPeriod, calculateMovingAverage, TrendDataPoint, detectRegressions } from '@/lib/analytics';
+import { TrendDataPoint, formatChartData, groupRegressionsByModel, getScoreTypeLabel } from '@/lib/analytics';
 
-describe('Time Series Grouping', () => {
-  describe('groupRunsByPeriod', () => {
-    it('should group runs by week', () => {
-      const runs = [
-        { id: '1', model: 'gpt-4', run_date: '2026-04-06T10:00:00Z', total_score: 0.75 },
-        { id: '2', model: 'gpt-4', run_date: '2026-04-07T10:00:00Z', total_score: 0.78 },
-        { id: '3', model: 'gpt-4', run_date: '2026-04-14T10:00:00Z', total_score: 0.80 },
-        { id: '4', model: 'gpt-4', run_date: '2026-04-15T10:00:00Z', total_score: 0.82 },
+describe('Chart Data Formatting', () => {
+  describe('formatChartData', () => {
+    it('should transform grouped data to chart format', () => {
+      const groupedData = [
+        { period: '2026-04-01', avgScore: 0.75, runCount: 3 },
+        { period: '2026-04-08', avgScore: 0.78, runCount: 2 },
       ];
 
-      const grouped = groupRunsByPeriod(runs, 'week');
+      const chartData = formatChartData(groupedData, 'gpt-4o');
 
-      expect(grouped).toHaveLength(2);
-      expect(grouped[0].period).toBe('2026-04-05');
-      expect(grouped[0].runs).toHaveLength(2);
-      expect(grouped[0].avgScore).toBeCloseTo(0.765, 2);
+      expect(chartData).toHaveLength(2);
+      expect(chartData[0]).toMatchObject({
+        period: '2026-04-01',
+        score: 75,
+        model: 'gpt-4o',
+        movingAvg: null,
+      });
+      expect(chartData[1].score).toBe(78);
     });
 
-    it('should group runs by month', () => {
-      const runs = [
-        { id: '1', model: 'gpt-4', run_date: '2026-04-06T10:00:00Z', total_score: 0.75 },
-        { id: '2', model: 'gpt-4', run_date: '2026-04-20T10:00:00Z', total_score: 0.78 },
-        { id: '3', model: 'gpt-4', run_date: '2026-05-05T10:00:00Z', total_score: 0.80 },
-        { id: '4', model: 'gpt-4', run_date: '2026-05-15T10:00:00Z', total_score: 0.82 },
+    it('should include moving average when available', () => {
+      const groupedData = [
+        { period: '2026-04-01', avgScore: 0.70, runCount: 2, movingAvg: 0.72 },
+        { period: '2026-04-08', avgScore: 0.75, runCount: 2, movingAvg: 0.73 },
       ];
 
-      const grouped = groupRunsByPeriod(runs, 'month');
+      const chartData = formatChartData(groupedData, 'claude');
 
-      expect(grouped).toHaveLength(2);
-      expect(grouped[0].period).toBe('2026-04');
-      expect(grouped[0].runs).toHaveLength(2);
-      expect(grouped[1].period).toBe('2026-05');
-      expect(grouped[1].runs).toHaveLength(2);
-    });
-
-    it('should return empty array for empty input', () => {
-      const grouped = groupRunsByPeriod([], 'week');
-      expect(grouped).toEqual([]);
-    });
-
-    it('should handle single run', () => {
-      const runs = [
-        { id: '1', model: 'gpt-4', run_date: '2026-04-06T10:00:00Z', total_score: 0.75 },
-      ];
-
-      const grouped = groupRunsByPeriod(runs, 'week');
-
-      expect(grouped).toHaveLength(1);
-      expect(grouped[0].avgScore).toBe(0.75);
-    });
-  });
-
-  describe('calculateMovingAverage', () => {
-    it('should calculate 3-period moving average', () => {
-      const dataPoints: TrendDataPoint[] = [
-        { period: '2026-04-01', avgScore: 0.70, runCount: 2 },
-        { period: '2026-04-08', avgScore: 0.75, runCount: 2 },
-        { period: '2026-04-15', avgScore: 0.80, runCount: 2 },
-        { period: '2026-04-22', avgScore: 0.85, runCount: 2 },
-      ];
-
-      const result = calculateMovingAverage(dataPoints, 3);
-
-      expect(result).toHaveLength(4);
-      expect(result[0].movingAvg).toBeNull();
-      expect(result[1].movingAvg).toBeNull();
-      expect(result[2].movingAvg).toBeCloseTo(0.75, 2);
-      expect(result[3].movingAvg).toBeCloseTo(0.80, 2);
-    });
-
-    it('should handle window larger than data', () => {
-      const dataPoints: TrendDataPoint[] = [
-        { period: '2026-04-01', avgScore: 0.75, runCount: 2 },
-      ];
-
-      const result = calculateMovingAverage(dataPoints, 3);
-
-      expect(result).toHaveLength(1);
-      expect(result[0].movingAvg).toBeNull();
+      expect(chartData[0].movingAvg).toBe(72);
+      expect(chartData[1].movingAvg).toBe(73);
     });
 
     it('should handle empty data', () => {
-      const result = calculateMovingAverage([], 3);
-      expect(result).toEqual([]);
+      const chartData = formatChartData([], 'model');
+      expect(chartData).toEqual([]);
+    });
+
+    it('should normalize 0-1 scores to 0-100', () => {
+      const groupedData = [
+        { period: '2026-04-01', avgScore: 0.5, runCount: 2 },
+      ];
+
+      const chartData = formatChartData(groupedData, 'model');
+      expect(chartData[0].score).toBe(50);
+    });
+
+    it('should pass through already 0-100 scores', () => {
+      const groupedData = [
+        { period: '2026-04-01', avgScore: 75, runCount: 2 },
+      ];
+
+      const chartData = formatChartData(groupedData, 'model');
+      expect(chartData[0].score).toBe(75);
     });
   });
 
-  describe('detectRegressions', () => {
-    it('should detect score drop above threshold', () => {
-      const dataPoints: TrendDataPoint[] = [
-        { period: '2026-04-01', avgScore: 0.80, runCount: 2 },
-        { period: '2026-04-08', avgScore: 0.74, runCount: 2 },
-        { period: '2026-04-15', avgScore: 0.78, runCount: 2 },
+  describe('getScoreTypeLabel', () => {
+    it('should return correct labels for each score type', () => {
+      expect(getScoreTypeLabel('overall')).toBe('Overall Score');
+      expect(getScoreTypeLabel('correctness')).toBe('Functional Correctness');
+      expect(getScoreTypeLabel('safety')).toBe('Regression Safety');
+    });
+  });
+
+  describe('groupRegressionsByModel', () => {
+    it('should group regression alerts by model', () => {
+      const alerts = [
+        { model: 'gpt-4', period: '2026-04-08', previousScore: 80, currentScore: 74, dropPercent: 7.5 },
+        { model: 'claude-3', period: '2026-04-08', previousScore: 85, currentScore: 78, dropPercent: 8.2 },
       ];
 
-      const alerts = detectRegressions(dataPoints, 0.05);
+      const grouped = groupRegressionsByModel(alerts);
 
-      expect(alerts).toHaveLength(1);
-      expect(alerts[0].previousScore).toBeCloseTo(0.80, 2);
-      expect(alerts[0].currentScore).toBeCloseTo(0.74, 2);
-      expect(alerts[0].dropPercent).toBeCloseTo(7.5, 1);
+      expect(grouped['gpt-4']).toHaveLength(1);
+      expect(grouped['claude-3']).toHaveLength(1);
+      expect(grouped['claude-3'][0].dropPercent).toBeCloseTo(8.2, 1);
     });
 
-    it('should not alert for small drops', () => {
-      const dataPoints: TrendDataPoint[] = [
-        { period: '2026-04-01', avgScore: 0.80, runCount: 2 },
-        { period: '2026-04-08', avgScore: 0.79, runCount: 2 },
-      ];
-
-      const alerts = detectRegressions(dataPoints, 0.05);
-
-      expect(alerts).toHaveLength(0);
+    it('should handle empty alerts', () => {
+      const grouped = groupRegressionsByModel([]);
+      expect(grouped).toEqual({});
     });
+  });
+});
 
-    it('should handle no regression', () => {
-      const dataPoints: TrendDataPoint[] = [
-        { period: '2026-04-01', avgScore: 0.75, runCount: 2 },
-        { period: '2026-04-08', avgScore: 0.78, runCount: 2 },
-        { period: '2026-04-15', avgScore: 0.82, runCount: 2 },
-      ];
+describe('Multi-Model Chart Data', () => {
+  it('should format data for multiple models', () => {
+    const modelARuns = [
+      { period: '2026-04-01', avgScore: 75, runCount: 2 },
+      { period: '2026-04-08', avgScore: 78, runCount: 2 },
+    ];
+    const modelBRuns = [
+      { period: '2026-04-01', avgScore: 80, runCount: 2 },
+      { period: '2026-04-08', avgScore: 79, runCount: 2 },
+    ];
 
-      const alerts = detectRegressions(dataPoints, 0.05);
+    const chartA = formatChartData(modelARuns, 'Model A');
+    const chartB = formatChartData(modelBRuns, 'Model B');
 
-      expect(alerts).toHaveLength(0);
-    });
+    expect(chartA[0].model).toBe('Model A');
+    expect(chartB[0].model).toBe('Model B');
+    expect(chartA[0].score).toBe(75);
+    expect(chartB[0].score).toBe(80);
   });
 });

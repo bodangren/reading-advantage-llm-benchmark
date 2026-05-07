@@ -108,3 +108,56 @@ export function detectRegressions(
 
   return alerts;
 }
+
+export interface ChartDataPoint {
+  period: string;
+  score: number;
+  model: string;
+  movingAvg: number | null;
+}
+
+interface GroupedWithMA {
+  period: string;
+  avgScore: number;
+  runCount: number;
+  movingAvg?: number | null;
+}
+
+export function formatChartData(
+  groupedData: GroupedWithMA[],
+  model: string
+): ChartDataPoint[] {
+  return groupedData.map((d) => {
+    const score = d.avgScore > 1 ? d.avgScore : d.avgScore * 100;
+    return {
+      period: d.period,
+      score,
+      model,
+      movingAvg: d.movingAvg != null ? (d.movingAvg > 1 ? d.movingAvg : d.movingAvg * 100) : null,
+    };
+  });
+}
+
+export type ScoreType = 'overall' | 'correctness' | 'safety';
+
+export function getScoreTypeLabel(type: ScoreType): string {
+  const labels: Record<ScoreType, string> = {
+    overall: 'Overall Score',
+    correctness: 'Functional Correctness',
+    safety: 'Regression Safety',
+  };
+  return labels[type];
+}
+
+export function groupRegressionsByModel(
+  alerts: RegressionAlert[]
+): Record<string, RegressionAlert[]> {
+  const grouped: Record<string, RegressionAlert[]> = {};
+  for (const alert of alerts) {
+    if (!grouped[alert.model]) {
+      grouped[alert.model] = [];
+    }
+    grouped[alert.model].push(alert);
+  }
+  return grouped;
+}
