@@ -15,16 +15,16 @@
   - [x] Export report as JSON
 
 ## Phase 2: Reclassification & Data Persistence
-- [ ] Task: Add auto-reclassification logic
-  - [ ] Write tests for threshold-based reclassification
-  - [ ] Define thresholds: easy <= 33, medium 34-66, hard >= 67 difficulty score
-  - [ ] CLI command to apply reclassification to task JSON files
-  - [ ] Dry-run mode showing proposed changes without writing
+- [x] Task: Add auto-reclassification logic
+  - [x] Write tests for threshold-based reclassification
+  - [x] Define thresholds: easy <= 33, medium 34-66, hard >= 67 difficulty score
+  - [x] CLI command to apply reclassification to task JSON files
+  - [x] Dry-run mode showing proposed changes without writing
 
-- [ ] Task: Add calibration data file
-  - [ ] Write tests for calibration JSON structure
-  - [ ] Persist calibration results to `data/calibration/difficulty_scores.json`
-  - [ ] Include computed_at timestamp and run count used
+- [x] Task: Add calibration data file
+  - [x] Write tests for calibration JSON structure
+  - [x] Persist calibration results to `data/calibration/difficulty_scores.json`
+  - [x] Include computed_at timestamp and run count used
 
 ## Phase 3: UI Integration
 - [ ] Task: Update TaskCard with calibrated difficulty

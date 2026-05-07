@@ -1,3 +1,5 @@
+import fs from 'fs/promises';
+import path from 'path';
 import { RunDetail } from './schemas';
 
 export const PASS_RATE_THRESHOLD = 0.7;
@@ -15,6 +17,26 @@ export interface CalibrationReport {
   overRated: Array<TaskCalibrationData & { suggestedLabel: string }>;
   underRated: Array<TaskCalibrationData & { suggestedLabel: string }>;
   correctlyRated: TaskCalibrationData[];
+}
+
+export interface CalibrationResult {
+  taskId: string;
+  label: string;
+  suggestedLabel: string;
+  calibratedScore: number;
+  passRate: number;
+  runCount: number;
+}
+
+export interface CalibrationMetadata {
+  computed_at: string;
+  run_count: number;
+  threshold: number;
+}
+
+export interface CalibrationDataFile {
+  metadata: CalibrationMetadata;
+  calibrations: TaskCalibrationData[];
 }
 
 export function calculatePassRate(runs: RunDetail[], threshold: number = PASS_RATE_THRESHOLD): number {
@@ -39,6 +61,10 @@ export function computeDifficultyPercentile(allScores: number[], score: number):
   const rank = sorted.findIndex(s => s >= score);
   if (rank === -1) return 100;
   return Math.round((rank / (sorted.length - 1)) * 100);
+}
+
+export function getSuggestedLabel(calibratedScore: number): 'easy' | 'medium' | 'hard' {
+  return classifyDifficulty(calibratedScore);
 }
 
 export function generateCalibrationReport(data: TaskCalibrationData[]): CalibrationReport {
@@ -83,4 +109,40 @@ export function calibrateTask(
     passRate,
     runCount: runs.length,
   };
+}
+
+export function getReclassificationResults(tasks: TaskCalibrationData[]): CalibrationResult[] {
+  return tasks.map(task => ({
+    taskId: task.taskId,
+    label: task.label,
+    suggestedLabel: getSuggestedLabel(task.calibratedScore),
+    calibratedScore: task.calibratedScore,
+    passRate: task.passRate,
+    runCount: task.runCount,
+  }));
+}
+
+export async function saveCalibrationData(
+  calibrations: TaskCalibrationData[],
+  outputPath: string
+): Promise<void> {
+  const data: CalibrationDataFile = {
+    metadata: {
+      computed_at: new Date().toISOString(),
+      run_count: calibrations.reduce((sum, c) => sum + c.runCount, 0),
+      threshold: PASS_RATE_THRESHOLD,
+    },
+    calibrations,
+  };
+  await fs.mkdir(path.dirname(outputPath), { recursive: true });
+  await fs.writeFile(outputPath, JSON.stringify(data, null, 2), 'utf-8');
+}
+
+export async function loadCalibrationData(inputPath: string): Promise<CalibrationDataFile | null> {
+  try {
+    const content = await fs.readFile(inputPath, 'utf-8');
+    return JSON.parse(content) as CalibrationDataFile;
+  } catch {
+    return null;
+  }
 }

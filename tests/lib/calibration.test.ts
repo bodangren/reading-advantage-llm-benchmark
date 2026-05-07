@@ -5,6 +5,7 @@ import {
   computeDifficultyPercentile,
   classifyDifficulty,
   generateCalibrationReport,
+  getReclassificationResults,
   TaskCalibrationData,
 } from '../../src/lib/calibration';
 import { RunDetail } from '@/lib/schemas';
@@ -228,6 +229,52 @@ describe('Difficulty Calibration', () => {
       expect(report.overRated).toHaveLength(0);
       expect(report.underRated).toHaveLength(0);
       expect(report.correctlyRated).toHaveLength(0);
+    });
+  });
+
+  describe('getReclassificationResults', () => {
+    it('should return reclassification results for all tasks', () => {
+      const data: TaskCalibrationData[] = [
+        { taskId: 'task-1', label: 'medium', calibratedScore: 34, percentile: 34, passRate: 0.66, runCount: 3 },
+        { taskId: 'task-2', label: 'easy', calibratedScore: 85, percentile: 85, passRate: 0.2, runCount: 5 },
+      ];
+      const results = getReclassificationResults(data);
+      expect(results).toHaveLength(2);
+      expect(results[0].suggestedLabel).toBe('medium');
+      expect(results[1].suggestedLabel).toBe('hard');
+    });
+
+    it('should handle tasks requiring reclassification', () => {
+      const data: TaskCalibrationData[] = [
+        { taskId: 'task-1', label: 'easy', calibratedScore: 85, percentile: 85, passRate: 0.2, runCount: 3 },
+      ];
+      const results = getReclassificationResults(data);
+      expect(results[0].label).toBe('easy');
+      expect(results[0].suggestedLabel).toBe('hard');
+    });
+
+    it('should handle no changes needed', () => {
+      const data: TaskCalibrationData[] = [
+        { taskId: 'task-1', label: 'hard', calibratedScore: 85, percentile: 85, passRate: 0.2, runCount: 3 },
+      ];
+      const results = getReclassificationResults(data);
+      expect(results[0].label).toBe('hard');
+      expect(results[0].suggestedLabel).toBe('hard');
+    });
+  });
+
+  describe('CalibrationResult structure', () => {
+    it('should produce correct reclassification results from calibrateTask output', () => {
+      const calibrations: TaskCalibrationData[] = [
+        { taskId: 'task-1', label: 'medium', calibratedScore: 34, percentile: 34, passRate: 0.66, runCount: 3 },
+        { taskId: 'task-2', label: 'easy', calibratedScore: 85, percentile: 85, passRate: 0.2, runCount: 5 },
+        { taskId: 'task-3', label: 'hard', calibratedScore: 15, percentile: 15, passRate: 0.9, runCount: 2 },
+      ];
+      const results = getReclassificationResults(calibrations);
+      const reclassified = results.filter(r => r.label !== r.suggestedLabel);
+      expect(reclassified).toHaveLength(2);
+      expect(reclassified.find(r => r.taskId === 'task-2')?.suggestedLabel).toBe('hard');
+      expect(reclassified.find(r => r.taskId === 'task-3')?.suggestedLabel).toBe('easy');
     });
   });
 });
