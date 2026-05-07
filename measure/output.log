@@ -1237,3 +1237,152 @@ Untracked files:
 
 no changes added to commit (use "git add" and/or "git commit -a")
 [0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && git add -A && git commit -m "Phase 2: Reclassification CLI and calibration persistence
+
+- Added calibration-cli.ts with calibrate and apply commands
+- calibrate: analyze runs, compute difficulty, dry-run or save to JSON
+- apply: dry-run showing reclassification proposals
+- saveCalibrationData/loadCalibrationData for JSON persistence
+- CalibrationDataFile with metadata (computed_at, run_count, threshold)
+- All 487 tests pass, build succeeds"
+[master 8c947b2] Phase 2: Reclassification CLI and calibration persistence
+ 5 files changed, 1024 insertions(+), 10 deletions(-)
+ create mode 100644 scripts/calibration-cli.ts
+[0m
+[0m→ [0mRead measure/tech-debt.md
+[0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && git push 2>&1
+To https://github.com/bodangren/reading-advantage-llm-benchmark.git
+   7ef2c19..8c947b2  master -> master
+[0m
+[0m# [0mTodos
+[x] Write tests for pass-rate analysis (calibration.test.ts)
+[x] Compute raw pass rate from Run scores
+[x] Convert pass rate to 0-100 difficulty score
+[x] Handle edge cases: zero runs, perfect pass rate, single-model bias
+[x] Add calibrated difficulty fields to Task schema
+[x] Build calibration report generator with over/under-rated detection
+[x] Write tests for threshold-based reclassification
+[x] Build CLI command for reclassification with dry-run mode
+[x] Run tests and verify all pass
+[x] Commit changes
+[ ] Finalize: update tech-debt and lessons-learned, commit checkpoint
+[0m
+[0m→ [0mRead measure/lessons-learned.md
+[0m
+[0m← [0mEdit measure/lessons-learned.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+@@ -45,5 +45,11 @@
+ - API Client: reads from env vars `OPENAI_API_KEY` and `LLM_API_BASE`
+ - Next.js 16: root `app/` takes precedence over `src/app/` - both exist = only root used
+ - detectRepoType() identifies react-native via dependencies['react-native'] presence
+ - Rate limiting: in-memory Map works for single-instance; use Redis for multi-instance deployments
+-- Week grouping uses Sunday as start (getDay()), so Monday dates fall into previous week's period
+\ No newline at end of file
++- Week grouping uses Sunday as start (getDay()), so Monday dates fall into previous week's period
++
++## Difficulty Calibration
++
++- Difficulty score = (1 - passRate) * 100; inverts pass/fail to easy/hard
++- Thresholds: easy <= 33, medium 34-66, hard >= 67
++- Calibration report: over-rated (label easier than actual), under-rated (label harder than actual)
+\ No newline at end of file
+
+[0m
+[0m$ [0mwc -l /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+54 /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+[0m
+[0m← [0mEdit measure/lessons-learned.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+@@ -47,9 +47,8 @@
+ - detectRepoType() identifies react-native via dependencies['react-native'] presence
+ - Rate limiting: in-memory Map works for single-instance; use Redis for multi-instance deployments
+ - Week grouping uses Sunday as start (getDay()), so Monday dates fall into previous week's period
+ 
+-## Difficulty Calibration
++## Calibration
+ 
+-- Difficulty score = (1 - passRate) * 100; inverts pass/fail to easy/hard
+-- Thresholds: easy <= 33, medium 34-66, hard >= 67
+-- Calibration report: over-rated (label easier than actual), under-rated (label harder than actual)
+\ No newline at end of file
++- Difficulty score = (1 - passRate) * 100; thresholds: easy <= 33, medium 34-66, hard >= 67
++- Report flags over-rated (label easier than actual) and under-rated (label harder than actual)
+\ No newline at end of file
+
+[0m
+[0m$ [0mwc -l /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+53 /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+[0m
+[0m← [0mEdit measure/lessons-learned.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+@@ -49,6 +49,6 @@
+ - Week grouping uses Sunday as start (getDay()), so Monday dates fall into previous week's period
+ 
+ ## Calibration
+ 
+-- Difficulty score = (1 - passRate) * 100; thresholds: easy <= 33, medium 34-66, hard >= 67
+-- Report flags over-rated (label easier than actual) and under-rated (label harder than actual)
+\ No newline at end of file
++- Difficulty = (1 - passRate) * 100; thresholds: easy <= 33, medium 34-66, hard >= 67
++- Report flags over-rated and under-rated tasks vs their manual labels
+\ No newline at end of file
+
+[0m
+[0m$ [0mwc -l /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+53 /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+[0m
+[0m→ [0mRead measure/lessons-learned.md
+[0m
+[0m← [0mEdit measure/lessons-learned.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+@@ -49,6 +49,5 @@
+ - Week grouping uses Sunday as start (getDay()), so Monday dates fall into previous week's period
+ 
+ ## Calibration
+ 
+-- Difficulty = (1 - passRate) * 100; thresholds: easy <= 33, medium 34-66, hard >= 67
+-- Report flags over-rated and under-rated tasks vs their manual labels
+\ No newline at end of file
++- Difficulty = (1 - passRate) * 100; thresholds: easy <= 33, medium 34-66, hard >= 67; flags over/under-rated tasks
+\ No newline at end of file
+
+[0m
+[0m$ [0mwc -l /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+52 /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+[0m
+[0m← [0mEdit measure/lessons-learned.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+@@ -25,11 +25,9 @@
+ - TDD: tests before implementation caught issues early
+ - `cn()` utility for conditional classes
+ - Phase verification: tests + lint + build all pass before checkpoint
+ - Zod omit({}) trick to create variant schemas
+-- Immutability patterns (createSpendWindow returns new window)
+-- Externalized constants for data that may change
+-- JSON config file with getXxx() function that caches loaded data (pricing.ts pattern)
++- Immutability patterns (createSpendWindow returns new window); JSON config with getXxx() caching
+ - Test boundary conditions explicitly (at vs over threshold)
+ - Score normalization: `normalizeScore()` handles 0-1→0-100 and pass-through
+ - Use `.min(1)` on array schemas to prevent empty arrays
+ - Client component pattern with CompareClient for interactive selection
+
+[0m
+[0m$ [0mwc -l /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+50 /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+[0m

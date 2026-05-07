@@ -26,9 +26,7 @@
 - `cn()` utility for conditional classes
 - Phase verification: tests + lint + build all pass before checkpoint
 - Zod omit({}) trick to create variant schemas
-- Immutability patterns (createSpendWindow returns new window)
-- Externalized constants for data that may change
-- JSON config file with getXxx() function that caches loaded data (pricing.ts pattern)
+- Immutability patterns (createSpendWindow returns new window); JSON config with getXxx() caching
 - Test boundary conditions explicitly (at vs over threshold)
 - Score normalization: `normalizeScore()` handles 0-1→0-100 and pass-through
 - Use `.min(1)` on array schemas to prevent empty arrays
@@ -47,3 +45,7 @@
 - detectRepoType() identifies react-native via dependencies['react-native'] presence
 - Rate limiting: in-memory Map works for single-instance; use Redis for multi-instance deployments
 - Week grouping uses Sunday as start (getDay()), so Monday dates fall into previous week's period
+
+## Calibration
+
+- Difficulty = (1 - passRate) * 100; thresholds: easy <= 33, medium 34-66, hard >= 67; flags over/under-rated tasks
