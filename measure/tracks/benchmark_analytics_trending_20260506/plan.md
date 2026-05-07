@@ -1,10 +1,10 @@
 # Implementation Plan: Benchmark Analytics & Trending
 
 ## Phase 1: Trend Data
-- [ ] Task: Build trend aggregation
-  - [ ] Write tests for time-series grouping
-  - [ ] Aggregate run scores by week/month per model
-  - [ ] Calculate moving average
+- [x] Task: Build trend aggregation
+  - [x] Write tests for time-series grouping
+  - [x] Aggregate run scores by week/month per model
+  - [x] Calculate moving average
 
 ## Phase 2: Charts & UI
 - [ ] Task: Add trend line chart
