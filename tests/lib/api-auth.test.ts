@@ -87,7 +87,7 @@ describe('Auth Middleware', () => {
   describe('validateAuth', () => {
     it('should reject requests without API key', async () => {
       const request = new NextRequest('http://localhost/api/leaderboard');
-      const result = validateAuth(request);
+      const result = await validateAuth(request);
 
       expect(result.allowed).toBe(false);
       expect(result.status).toBe(401);
@@ -96,7 +96,7 @@ describe('Auth Middleware', () => {
     it('should accept requests with valid demo key', async () => {
       const request = new NextRequest('http://localhost/api/leaderboard');
       request.headers.set('x-api-key', 'demo_key_for_testing_12345');
-      const result = validateAuth(request);
+      const result = await validateAuth(request);
 
       expect(result.allowed).toBe(true);
     });
@@ -113,7 +113,7 @@ describe('Auth Middleware', () => {
         checkRateLimit(testRateKey);
       }
 
-      const result = validateAuth(request);
+      const result = await validateAuth(request);
       expect(result.allowed).toBe(false);
       expect(result.status).toBe(429);
     });

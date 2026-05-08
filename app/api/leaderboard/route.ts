@@ -4,7 +4,7 @@ import { runsToLeaderboardFormat } from '@/lib/export';
 import { validateAuth, authResponse } from '@/lib/api-auth';
 
 export async function GET(request: NextRequest) {
-  const authResult = validateAuth(request);
+  const authResult = await validateAuth(request);
   if (!authResult.allowed && authResult.status) {
     return authResponse(authResult.error!, authResult.status);
   }

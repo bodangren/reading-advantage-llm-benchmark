@@ -3,18 +3,18 @@ interface RateLimitEntry {
   resetAt: number;
 }
 
-const rateLimitStore = new Map<string, RateLimitEntry>();
+const memoryStore = new Map<string, RateLimitEntry>();
 
 const WINDOW_MS = 60 * 60 * 1000;
 const MAX_REQUESTS = 100;
 
 export function checkRateLimit(key: string): { allowed: boolean; remaining: number; resetAt: number } {
   const now = Date.now();
-  const entry = rateLimitStore.get(key);
+  const entry = memoryStore.get(key);
 
   if (!entry || now > entry.resetAt) {
     const resetAt = now + WINDOW_MS;
-    rateLimitStore.set(key, { count: 1, resetAt });
+    memoryStore.set(key, { count: 1, resetAt });
     return { allowed: true, remaining: MAX_REQUESTS - 1, resetAt };
   }
 
@@ -27,7 +27,7 @@ export function checkRateLimit(key: string): { allowed: boolean; remaining: numb
 }
 
 export function getRateLimitStatus(key: string): { count: number; remaining: number; resetAt: number } | null {
-  const entry = rateLimitStore.get(key);
+  const entry = memoryStore.get(key);
   if (!entry) return null;
   const now = Date.now();
   if (now > entry.resetAt) return null;
@@ -39,5 +39,12 @@ export function getRateLimitStatus(key: string): { count: number; remaining: num
 }
 
 export function resetRateLimit(key: string): void {
-  rateLimitStore.delete(key);
+  memoryStore.delete(key);
+}
+
+export async function checkRateLimitAsync(key: string): Promise<{ allowed: boolean; remaining: number; resetAt: number }> {
+  const { getRateLimitAdapter } = await import('./adapters/legacy-wrappers');
+  const adapter = getRateLimitAdapter();
+  await adapter.connect();
+  return adapter.checkLimit(key);
 }

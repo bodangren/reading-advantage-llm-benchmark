@@ -282,7 +282,7 @@ describe('API Routes', () => {
 
   describe('Auth Requirements', () => {
     it('should reject requests without valid API key', async () => {
-      vi.mocked(validateAuth).mockReturnValueOnce({ allowed: false, error: 'Invalid API key', status: 401 });
+      vi.mocked(validateAuth).mockResolvedValueOnce({ allowed: false, error: 'Invalid API key', status: 401 });
 
       const request = new NextRequest('http://localhost/api/runs');
       const response = await runsHandler(request);
@@ -291,7 +291,7 @@ describe('API Routes', () => {
     });
 
     it('should reject requests that exceed rate limit', async () => {
-      vi.mocked(validateAuth).mockReturnValueOnce({ allowed: false, error: 'Rate limit exceeded', status: 429 });
+      vi.mocked(validateAuth).mockResolvedValueOnce({ allowed: false, error: 'Rate limit exceeded', status: 429 });
 
       const request = new NextRequest('http://localhost/api/runs');
       const response = await runsHandler(request);

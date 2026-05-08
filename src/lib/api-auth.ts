@@ -8,7 +8,7 @@ export interface AuthResult {
   status?: number;
 }
 
-export function validateAuth(request: NextRequest): AuthResult {
+export async function validateAuth(request: NextRequest): Promise<AuthResult> {
   const apiKey = request.headers.get('x-api-key');
 
   if (!isValidApiKey(apiKey)) {
@@ -19,7 +19,7 @@ export function validateAuth(request: NextRequest): AuthResult {
     };
   }
 
-  const rateLimitResult = checkRateLimit(apiKey!);
+  const rateLimitResult = await checkRateLimit(apiKey!);
 
   if (!rateLimitResult.allowed) {
     const retryAfter = Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000);

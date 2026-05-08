@@ -44,7 +44,7 @@
 - API Client: reads from env vars `OPENAI_API_KEY` and `LLM_API_BASE`
 - Next.js 16: root `app/` takes precedence over `src/app/` - both exist = only root used
 - detectRepoType() identifies react-native via dependencies['react-native'] presence
-- Rate limiting: in-memory Map works for single-instance; use Redis for multi-instance deployments
+- Redis adapter pattern: RedisRateLimiter uses EXPIRE for TTL + falls back to in-memory; RedisScheduleStore uses Redis hashes/sorted sets + falls back to filesystem
 - Mock factories should NOT include optional fields by default - only add them when explicitly provided in overrides
 
 ## Calibration

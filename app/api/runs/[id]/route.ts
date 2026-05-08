@@ -6,7 +6,7 @@ export async function GET(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
-  const authResult = validateAuth(request);
+  const authResult = await validateAuth(request);
   if (!authResult.allowed && authResult.status) {
     return authResponse(authResult.error!, authResult.status);
   }
