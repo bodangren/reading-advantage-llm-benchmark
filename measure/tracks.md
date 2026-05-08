@@ -100,8 +100,12 @@ This file tracks all major tracks for the project. Each track has its own detail
   *Link: [./tracks/benchmark_version_migration_20260507/](./tracks/benchmark_version_migration_20260507/)*
   Version-aware leaderboard filtering, cross-version score normalization, and version history page for fair comparison across benchmark iterations.
 
-- [x] **Track: Fix Test Schema Drift** *Link: [./tracks/fix_test_schema_drift_20260508/](./tracks/fix_test_schema_drift_20260508/)* — Systematically repair test mock data to align with current TaskSpec and BenchmarkConfig schemas, then add a CI type-check gate to prevent future drift.
+- [x] **Track: Fix Test Schema Drift** *Link: [./archive/fix_test_schema_drift_20260508/](./archive/fix_test_schema_drift_20260508/)* — Systematically repair test mock data to align with current TaskSpec and BenchmarkConfig schemas, then add a CI type-check gate to prevent future drift.
 
 - [ ] **Track: Serverless-Compatible Persistence Layer**
   *Link: [./tracks/serverless_persistence_layer_20260508/](./tracks/serverless_persistence_layer_20260508/)*
   Replace in-memory rate limiting and filesystem-based scheduler persistence with Redis-backed adapters for serverless deployments, with local-dev fallback.
+
+- [ ] **Track: Redis Serverless Adapter for Rate Limiting and Scheduling**
+  *Link: [./tracks/redis_serverless_adapter_20260509/](./tracks/redis_serverless_adapter_20260509/)*
+  Implement Redis-backed rate limiter and schedule store with local-dev fallback.

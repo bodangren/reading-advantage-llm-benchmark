@@ -1,0 +1,8 @@
+{
+  "id": "redis_serverless_adapter_20260509",
+  "title": "Redis Serverless Adapter for Rate Limiting and Scheduling",
+  "status": "planned",
+  "priority": "high",
+  "type": "feature",
+  "created": "2026-05-09"
+}
