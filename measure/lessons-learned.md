@@ -32,6 +32,7 @@
 - Use `.min(1)` on array schemas to prevent empty arrays
 - Client component pattern with CompareClient for interactive selection
 - Export module separates Markdown and PDF generation for testability
+- Mock factories with Zod parse() guarantee validity at build time
 
 ## Key Implementation Notes
 
@@ -44,7 +45,7 @@
 - Next.js 16: root `app/` takes precedence over `src/app/` - both exist = only root used
 - detectRepoType() identifies react-native via dependencies['react-native'] presence
 - Rate limiting: in-memory Map works for single-instance; use Redis for multi-instance deployments
-- Week grouping uses Sunday as start (getDay()), so Monday dates fall into previous week's period
+- Mock factories should NOT include optional fields by default - only add them when explicitly provided in overrides
 
 ## Calibration
 
