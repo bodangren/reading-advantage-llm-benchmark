@@ -3,13 +3,14 @@ import { describe, it, expect } from "vitest"
 import { render, screen } from "@testing-library/react"
 import { TaskVersionDiff } from "@/components/TaskVersionDiff"
 import type { TaskVersion } from "@/lib/schemas"
+import { createMockTask } from "../../test/factories"
 
 describe("TaskVersionDiff", () => {
   const createMockTaskVersion = (version: string, title: string): TaskVersion => ({
     version,
     created_at: "2026-05-03T10:00:00Z",
     task_id: "test_task",
-    task_data: {
+    task_data: createMockTask({
       id: "test_task",
       title,
       difficulty: "medium",
@@ -17,7 +18,7 @@ describe("TaskVersionDiff", () => {
       version,
       acceptance_criteria: ["Criterion 1"],
       structured_rubric: [],
-    },
+    }),
     change_summary: "Test change",
   })
 

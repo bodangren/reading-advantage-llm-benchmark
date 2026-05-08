@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TaskGenerator, TaskSpec, generateTasks } from '../../src/lib/task-generator';
 import { TaskSchema } from '../../src/lib/schemas';
+import { createMockTask, createMockTaskSpec } from '../../test/factories';
 
 describe('TaskGenerator', () => {
   beforeEach(() => {
@@ -9,15 +10,12 @@ describe('TaskGenerator', () => {
 
   describe('TaskSpec shape', () => {
     it('should have required metadata fields for generated tasks', () => {
-      const spec: TaskSpec = {
+      const spec: TaskSpec = createMockTaskSpec({
         id: 'test-task',
         title: 'Test Task',
         difficulty: 'medium',
         description: 'A test task description',
-        generatedBy: 'test-model',
-        generationPrompt: 'Generate a test task',
-        version: '1.0.0',
-      };
+      });
 
       expect(spec.generatedBy).toBeDefined();
       expect(spec.generationPrompt).toBeDefined();

@@ -3,6 +3,7 @@ import { describe, it, expect } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import { TaskListWithFilters } from '@/components/TaskListWithFilters';
 import { Task } from '@/lib/schemas';
+import { createMockTask } from '../../test/factories';
 
 function getFilterButtons() {
   return within(screen.getByTestId('difficulty-filter')).getAllByRole('button');
@@ -22,10 +23,10 @@ function getStatusButtons() {
 
 describe('TaskListWithFilters', () => {
   const mockTasks: Task[] = [
-    { id: '1', title: 'Easy Task', difficulty: 'easy', domain: 'Web App', description: 'Desc 1', rubric: [], version: '1.0', status: 'published' },
-    { id: '2', title: 'Medium Task', difficulty: 'medium', domain: 'API', description: 'Desc 2', rubric: [], version: '1.0', status: 'draft' },
-    { id: '3', title: 'Hard Task', difficulty: 'hard', domain: 'Web App', description: 'Desc 3', rubric: [], version: '1.0', status: 'review' },
-    { id: '4', title: 'Another Easy Task', difficulty: 'easy', domain: 'API', description: 'Desc 4', rubric: [], version: '1.0' },
+    createMockTask({ id: '1', title: 'Easy Task', difficulty: 'easy', domain: 'Web App', description: 'Desc 1', status: 'published' }),
+    createMockTask({ id: '2', title: 'Medium Task', difficulty: 'medium', domain: 'API', description: 'Desc 2', status: 'draft' }),
+    createMockTask({ id: '3', title: 'Hard Task', difficulty: 'hard', domain: 'Web App', description: 'Desc 3', status: 'review' }),
+    createMockTask({ id: '4', title: 'Another Easy Task', difficulty: 'easy', domain: 'API', description: 'Desc 4' }),
   ];
   const runCounts = { '1': 2, '2': 0, '3': 5, '4': 1 };
 

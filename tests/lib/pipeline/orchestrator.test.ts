@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { executePipeline, executeModelRun } from '../../../src/lib/pipeline/orchestrator';
 import { ModelMatrix, ModelConfig, HarnessConfig, Run } from '../../../src/lib/pipeline';
+import { createMockModelMatrix } from '../../../test/factories';
 
 describe('Pipeline Orchestrator', () => {
   beforeEach(() => {
@@ -85,14 +86,12 @@ describe('Pipeline Orchestrator', () => {
         .mockResolvedValueOnce(mockRun1)
         .mockResolvedValueOnce(mockRun2);
 
-      const matrix: ModelMatrix = {
-        dataset_version: '2026-04-07',
+      const matrix: ModelMatrix = createMockModelMatrix({
         models: [
           { model_id: 'gemini-2.5-pro', provider: 'google', enabled: true },
           { model_id: 'gpt-5', provider: 'openai', enabled: true },
         ],
-        harness: { harness_id: 'opencode', temperature: 0.0, max_tokens: 2048 },
-      };
+      });
 
       const result = await executePipeline(matrix, runEval);
 
@@ -115,14 +114,12 @@ describe('Pipeline Orchestrator', () => {
         .mockResolvedValueOnce(mockRun)
         .mockRejectedValueOnce(new Error('API error'));
 
-      const matrix: ModelMatrix = {
-        dataset_version: '2026-04-07',
+      const matrix: ModelMatrix = createMockModelMatrix({
         models: [
           { model_id: 'gemini-2.5-pro', provider: 'google', enabled: true },
           { model_id: 'gpt-5', provider: 'openai', enabled: true },
         ],
-        harness: { harness_id: 'opencode', temperature: 0.0, max_tokens: 2048 },
-      };
+      });
 
       const result = await executePipeline(matrix, runEval);
 
@@ -137,14 +134,12 @@ describe('Pipeline Orchestrator', () => {
         .mockRejectedValueOnce(new Error('API error 1'))
         .mockRejectedValueOnce(new Error('API error 2'));
 
-      const matrix: ModelMatrix = {
-        dataset_version: '2026-04-07',
+      const matrix: ModelMatrix = createMockModelMatrix({
         models: [
           { model_id: 'gemini-2.5-pro', provider: 'google', enabled: true },
           { model_id: 'gpt-5', provider: 'openai', enabled: true },
         ],
-        harness: { harness_id: 'opencode', temperature: 0.0, max_tokens: 2048 },
-      };
+      });
 
       const result = await executePipeline(matrix, runEval);
 
@@ -158,7 +153,8 @@ describe('Pipeline Orchestrator', () => {
         dataset_version: '2026-04-07',
         models: [],
         harness: { harness_id: 'opencode', temperature: 0.0, max_tokens: 2048 },
-      };
+        track: 'fixed',
+      } as ModelMatrix;
 
       const result = await executePipeline(matrix, runEval);
 
@@ -178,14 +174,12 @@ describe('Pipeline Orchestrator', () => {
 
       const runEval = vi.fn().mockResolvedValue(mockRun);
 
-      const matrix: ModelMatrix = {
-        dataset_version: '2026-04-07',
+      const matrix: ModelMatrix = createMockModelMatrix({
         models: [
           { model_id: 'gemini-2.5-pro', provider: 'google', enabled: true },
           { model_id: 'gpt-5', provider: 'openai', enabled: false },
         ],
-        harness: { harness_id: 'opencode', temperature: 0.0, max_tokens: 2048 },
-      };
+      });
 
       const result = await executePipeline(matrix, runEval);
 
@@ -212,15 +206,13 @@ describe('Pipeline Orchestrator', () => {
         .mockRejectedValueOnce(new Error('Temporary error'))
         .mockResolvedValueOnce(mockRun);
 
-      const matrix: ModelMatrix = {
-        dataset_version: '2026-04-07',
+      const matrix: ModelMatrix = createMockModelMatrix({
         models: [
           { model_id: 'model-1', enabled: true },
           { model_id: 'model-2', enabled: true },
           { model_id: 'model-3', enabled: true },
         ],
-        harness: { harness_id: 'opencode', temperature: 0.0, max_tokens: 2048 },
-      };
+      });
 
       const result = await executePipeline(matrix, runEval);
 
@@ -233,11 +225,9 @@ describe('Pipeline Orchestrator', () => {
     it('should capture error messages for failed runs', async () => {
       const runEval = vi.fn().mockRejectedValue(new Error('Connection timeout'));
 
-      const matrix: ModelMatrix = {
-        dataset_version: '2026-04-07',
+      const matrix: ModelMatrix = createMockModelMatrix({
         models: [{ model_id: 'failing-model', enabled: true }],
-        harness: { harness_id: 'opencode', temperature: 0.0, max_tokens: 2048 },
-      };
+      });
 
       const result = await executePipeline(matrix, runEval);
 

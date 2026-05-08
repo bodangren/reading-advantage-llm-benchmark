@@ -1,19 +1,17 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { listCandidates, saveCandidateTasks, updateCandidateStatus } from '../../src/lib/candidate-storage';
 import { TaskSpec } from '../../src/lib/task-generator';
+import { createMockTaskSpec } from '../../test/factories';
 import fs from 'fs';
 
 describe('Review CLI', () => {
   const testDir = '/tmp/test-review-cli';
 
-  const createTask = (id: string, difficulty: string = 'medium'): TaskSpec => ({
+  const createTask = (id: string, difficulty: string = 'medium'): TaskSpec => createMockTaskSpec({
     id,
     title: `Task ${id}`,
     difficulty,
     description: `Description for ${id}`,
-    generatedBy: 'test-model',
-    generationPrompt: 'test prompt',
-    version: '1.0.0',
   });
 
   beforeEach(async () => {

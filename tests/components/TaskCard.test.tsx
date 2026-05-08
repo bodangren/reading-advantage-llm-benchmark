@@ -3,16 +3,15 @@ import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { TaskCard } from '@/components/TaskCard';
 import { Task } from '@/lib/schemas';
+import { createMockTask } from '../../test/factories';
 
 describe('TaskCard Component', () => {
-  const mockTask: Task = {
+  const mockTask: Task = createMockTask({
     id: '1',
     title: 'Task 1',
     difficulty: 'easy',
     description: 'Desc 1',
-    rubric: [],
-    version: '1.0',
-  };
+  });
 
   it('should render task title and description', () => {
     render(<TaskCard task={mockTask} />);

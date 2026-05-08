@@ -1,20 +1,18 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { saveCandidateTasks, loadCandidateTasks, listCandidates } from '../../src/lib/candidate-storage';
 import { TaskSpec } from '../../src/lib/task-generator';
+import { createMockTaskSpec } from '../../test/factories';
 import fs from 'fs';
 import path from 'path';
 
 describe('Candidate Storage', () => {
   const testDir = '/tmp/test-candidates';
-  const testTask: TaskSpec = {
+  const testTask: TaskSpec = createMockTaskSpec({
     id: 'candidate_task_1',
     title: 'Test Candidate Task',
     difficulty: 'medium',
     description: 'A candidate task for testing',
-    generatedBy: 'test-model',
-    generationPrompt: 'Generate a test task from the repo',
-    version: '1.0.0',
-  };
+  });
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -49,7 +47,7 @@ describe('Candidate Storage', () => {
     });
 
     it('should generate unique ID for each candidate', async () => {
-      const task2: TaskSpec = { ...testTask, id: 'candidate_task_2' };
+      const task2: TaskSpec = createMockTaskSpec({ ...testTask, id: 'candidate_task_2' });
       await saveCandidateTasks([testTask, task2], { candidatesDir: testDir });
 
       const files = fs.readdirSync(testDir);
@@ -75,7 +73,7 @@ describe('Candidate Storage', () => {
 
   describe('loadCandidateTasks', () => {
     it('should load all candidates from directory', async () => {
-      const task2: TaskSpec = { ...testTask, id: 'candidate_task_2' };
+      const task2: TaskSpec = createMockTaskSpec({ ...testTask, id: 'candidate_task_2' });
       await saveCandidateTasks([testTask, task2], { candidatesDir: testDir });
 
       const candidates = await loadCandidateTasks({ candidatesDir: testDir });
@@ -96,7 +94,7 @@ describe('Candidate Storage', () => {
 
   describe('listCandidates', () => {
     it('should list all candidates with status', async () => {
-      const task2: TaskSpec = { ...testTask, id: 'candidate_task_2' };
+      const task2: TaskSpec = createMockTaskSpec({ ...testTask, id: 'candidate_task_2' });
       await saveCandidateTasks([testTask, task2], { candidatesDir: testDir });
 
       const candidates = await listCandidates({ candidatesDir: testDir });
