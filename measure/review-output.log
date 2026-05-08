@@ -188,3 +188,17 @@ RUN  v4.1.2 /home/daniel-bo/Desktop/reading-advantage-llm-benchmark
 shell tool terminated command after exceeding timeout 300000 ms. If this command is expected to take longer and is not waiting for interactive input, retry with a larger timeout value in milliseconds.
 </shell_metadata>
 [0m
+[0m$ [0mnpx vitest run tests/lib/ tests/app/ tests/components/ --no-color 2>&1 | tail -n 80
+(no output)
+
+<shell_metadata>
+shell tool terminated command after exceeding timeout 300000 ms. If this command is expected to take longer and is not waiting for interactive input, retry with a larger timeout value in milliseconds.
+</shell_metadata>
+[0m
+[0m$ [0mnpx eslint . --ext .ts,.tsx --max-warnings=50 --no-color 2>&1 | tail -n 60
+(no output)
+
+<shell_metadata>
+shell tool terminated command after exceeding timeout 300000 ms. If this command is expected to take longer and is not waiting for interactive input, retry with a larger timeout value in milliseconds.
+</shell_metadata>
+[0m
