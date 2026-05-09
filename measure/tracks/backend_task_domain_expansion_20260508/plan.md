@@ -1,9 +1,9 @@
 # Plan: Backend/API Task Domain Expansion
 
 ## Phase 1: Task Definition (TDD)
-- [ ] Write tests for BackendTask schema validation
-- [ ] Define 5 backend task specs with acceptance criteria and repo snapshots
-- [ ] Create scoring rubric for backend tasks (type safety 25%, tests 25%, integration 25%, regression 25%)
+- [x] Write tests for BackendTask schema validation
+- [x] Define 5 backend task specs with acceptance criteria and repo snapshots
+- [x] Create scoring rubric for backend tasks (type safety 25%, tests 25%, integration 25%, regression 25%)
 
 ## Phase 2: Repo Snapshots (TDD)
 - [ ] Prepare 5 repo snapshots with existing backend code (Node/Go/Python)
