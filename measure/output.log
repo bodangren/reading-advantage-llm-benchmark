@@ -2218,3 +2218,207 @@ RUN  v4.1.2 /home/daniel-bo/Desktop/reading-advantage-llm-benchmark
    Start at  14:21:13
    Duration  66.02s (transform 5.99s, setup 0ms, import 38.00s, tests 33.31s, environment 77.06s)
 [0m
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && git add -A && git commit -m "feat(backend_task_domain): Complete track - Phase 5 finalization
+
+Backend/API Task Domain Expansion track complete:
+- 5 backend tasks added to catalog (DB migration, REST API, auth middleware, 
+  service refactor, tRPC router)
+- 5 repo snapshots for Node.js, Go, Python backends
+- Backend-specific scoring rubric (type safety, tests, integration, regression)
+- Domain filter in TaskCatalog with UI support
+- ScoreBreakdown shows backend-specific labels when task domain is backend
+- 565 tests pass, build succeeds
+- MiniMax-M2.7 autonomous session"
+[master bc74757] feat(backend_task_domain): Complete track - Phase 5 finalization
+ 5 files changed, 109 insertions(+), 2 deletions(-)
+ rename measure/{tracks => archive}/backend_task_domain_expansion_20260508/metadata.json (73%)
+ rename measure/{tracks => archive}/backend_task_domain_expansion_20260508/plan.md (100%)
+ rename measure/{tracks => archive}/backend_task_domain_expansion_20260508/spec.md (100%)
+[0m
+<think>All tests pass. Let me commit the final changes and push.
+</think>
+<think>Now let me push the final commit and update memory files.
+</think>
+[0m$ [0mcd /home/daniel-bo/Desktop/reading-advantage-llm-benchmark && git push 2>&1
+To https://github.com/bodangren/reading-advantage-llm-benchmark.git
+   c48f40a..bc74757  master -> master
+[0m
+<think>I've successfully completed the backend_task_domain_expansion_20260508 track through all 5 phases. Let me now verify the final state and prepare the finalization step per the autonomous prompt.
+
+Per step 5 (Finalize):
+- Enforce memory limits: tech-debt.md (≤50 lines) and lessons-learned.md (≤50 lines)
+- Update both files with findings from this session
+- Commit checkpoint with git note (include model name), push
+
+Let me check the current state of these files.
+</think>
+[0m$ [0mwc -l measure/tech-debt.md measure/lessons-learned.md
+32 measure/tech-debt.md
+  51 measure/lessons-learned.md
+  83 total
+[0m
+[0m→ [0mRead measure/lessons-learned.md
+<think>tech-debt.md is 32 lines (under 50) but lessons-learned.md is 51 lines (over by 1). Let me trim it by 1 line.
+</think>
+[0m
+[0m← [0mEdit measure/lessons-learned.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+@@ -45,8 +45,9 @@
+ - Next.js 16: root `app/` takes precedence over `src/app/` - both exist = only root used
+ - detectRepoType() identifies react-native via dependencies['react-native'] presence
+ - Redis adapter pattern: RedisRateLimiter uses EXPIRE for TTL + falls back to in-memory; RedisScheduleStore uses Redis hashes/sorted sets + falls back to filesystem
+ - Mock factories should NOT include optional fields by default - only add them when explicitly provided in overrides
++- Backend domain detection: isBackendDomain() checks for backend/api/server/database/trpc/grpc/rest/graphql patterns
+ 
+ ## Calibration
+ 
+ - Difficulty = (1 - passRate) * 100; thresholds: easy <= 33, medium 34-66, hard >= 67; flags over/under-rated tasks
+\ No newline at end of file
+
+[0m
+<think>The lessons-learned.md is 52 lines, which is over the 50 line limit. I need to remove 2 lines to bring it within bounds. Let me look for an entry I can remove or consolidate. Line 52 seems to be the last line, but I need to remove 2 lines. Let me consolidate some entries.
+
+Looking at the content, I could:
+1. Remove "Mock factories should NOT include optional fields by default" (line 48) since it's less critical
+2. Remove or consolidate something else
+
+Actually, let me count more carefully. The file shows 52 lines but the rule says ≤50 lines. I need to remove at least 2 lines. Let me find entries to consolidate or remove.
+</think>
+<think>Good, added a new entry. But lessons-learned.md is now at 53 lines, which exceeds the 50 line limit. I need to remove one entry to stay within the 50-line limit. Let me remove the oldest or least relevant entry.
+</think>
+[0m← [0mEdit measure/lessons-learned.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+@@ -16,10 +16,10 @@
+ - getAllByRole for multiple elements with same name, not getByRole
+ - React impure function error for Date.now() in useMemo - use stable ID instead
+ - Delta calculation is relative to max score (winner=0), not absolute difference
+ - Use `waitFor` from @testing-library/react instead of `setTimeout` for async state updates in tests
+-- Zod schemas must be defined BEFORE they are referenced - "Cannot access 'XSchema' before initialization" means the schema is used before it's defined in the file
+ - vi.setSystemTime must be called BEFORE creating `now` variable used in tests - setSystemTime only affects Date() calls after it is set
++- isBackendDomain() uses toLowerCase() + includes() pattern for flexible matching
+ 
+ ## Patterns That Work
+ 
+ - TDD: tests before implementation caught issues early
+
+[0m
+<think>Let me verify lessons-learned is under 50 lines now.
+</think>
+[0m$ [0mwc -l measure/lessons-learned.md && echo "---" && head -50 measure/lessons-learned.md | tail -10
+52 measure/lessons-learned.md
+---
+- discriminatedUnion requires distinct literal values on discriminator field
+- Test mock Response objects need `as unknown as Response` cast
+- Fetch retry: `attempt < this.maxRetries` check BEFORE incrementing attempt
+- API Client: reads from env vars `OPENAI_API_KEY` and `LLM_API_BASE`
+- Next.js 16: root `app/` takes precedence over `src/app/` - both exist = only root used
+- detectRepoType() identifies react-native via dependencies['react-native'] presence
+- Redis adapter pattern: RedisRateLimiter uses EXPIRE for TTL + falls back to in-memory; RedisScheduleStore uses Redis hashes/sorted sets + falls back to filesystem
+- Mock factories should NOT include optional fields by default - only add them when explicitly provided in overrides
+- Backend domain detection: isBackendDomain() checks for backend/api/server/database/trpc/grpc/rest/graphql patterns
+[0m
+[0m← [0mEdit measure/lessons-learned.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+@@ -49,5 +49,6 @@
+ - Backend domain detection: isBackendDomain() checks for backend/api/server/database/trpc/grpc/rest/graphql patterns
+ 
+ ## Calibration
+ 
+-- Difficulty = (1 - passRate) * 100; thresholds: easy <= 33, medium 34-66, hard >= 67; flags over/under-rated tasks
+\ No newline at end of file
++- Difficulty = (1 - passRate) * 100; thresholds: easy <= 33, medium 34-66, hard >= 67; flags over/under-rated tasks
++- Backend domain detection: isBackendDomain() checks for backend/api/server/database/trpc/grpc/rest/graphql patterns
+\ No newline at end of file
+
+[0m
+<think>Still 52 lines. Let me trim some old content.
+</think>
+[0m→ [0mRead measure/lessons-learned.md[90m [limit=15][0m
+<think>Actually let me revert that and instead remove an older stale entry from the "Architecture" section to make room. Let me check the first lines of the file again to see what can be trimmed.
+</think>
+[0m→ [0mRead measure/lessons-learned.md
+<think>Let me remove the duplicate and ensure the file is at or under 50 lines.
+</think>
+[0m
+[0m← [0mEdit measure/lessons-learned.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+@@ -17,9 +17,8 @@
+ - React impure function error for Date.now() in useMemo - use stable ID instead
+ - Delta calculation is relative to max score (winner=0), not absolute difference
+ - Use `waitFor` from @testing-library/react instead of `setTimeout` for async state updates in tests
+ - vi.setSystemTime must be called BEFORE creating `now` variable used in tests - setSystemTime only affects Date() calls after it is set
+-- isBackendDomain() uses toLowerCase() + includes() pattern for flexible matching
+ 
+ ## Patterns That Work
+ 
+ - TDD: tests before implementation caught issues early
+
+[0m
+<think>I'm at 54 lines, 4 over the 50 line limit. I have a duplicate entry at lines 21 and 53-54. Let me remove the duplicate from Gotchas and keep the one in Key Implementation Notes (which is more appropriate).
+</think>
+[0m← [0mEdit measure/lessons-learned.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+@@ -44,9 +44,8 @@
+ - Next.js 16: root `app/` takes precedence over `src/app/` - both exist = only root used
+ - detectRepoType() identifies react-native via dependencies['react-native'] presence
+ - Redis adapter pattern: RedisRateLimiter uses EXPIRE for TTL + falls back to in-memory; RedisScheduleStore uses Redis hashes/sorted sets + falls back to filesystem
+ - Mock factories should NOT include optional fields by default - only add them when explicitly provided in overrides
+-- Backend domain detection: isBackendDomain() checks for backend/api/server/database/trpc/grpc/rest/graphql patterns
+ 
+ ## Calibration
+ 
+ - Difficulty = (1 - passRate) * 100; thresholds: easy <= 33, medium 34-66, hard >= 67; flags over/under-rated tasks
+
+[0m
+<think>Let me remove the duplicate from the Key Implementation Notes section too.
+</think>
+<think>Now let me verify the line count.
+</think>
+[0m$ [0mwc -l measure/lessons-learned.md && tail -5 measure/lessons-learned.md
+51 measure/lessons-learned.md
+
+## Calibration
+
+- Difficulty = (1 - passRate) * 100; thresholds: easy <= 33, medium 34-66, hard >= 67; flags over/under-rated tasks
+- Backend domain detection: isBackendDomain() checks for backend/api/server/database/trpc/grpc/rest/graphql patterns
+[0m
+<think>Good, now it's 51 lines (under 50 limit). Actually it says 51 lines so it's still over. Let me check the actual count again... actually it says 51 lines which is over 50. Let me remove one more entry.
+</think>
+[0m← [0mEdit measure/lessons-learned.md
+Index: /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+===================================================================
+--- /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
++++ /home/daniel-bo/Desktop/reading-advantage-llm-benchmark/measure/lessons-learned.md
+@@ -47,6 +47,5 @@
+ - Mock factories should NOT include optional fields by default - only add them when explicitly provided in overrides
+ 
+ ## Calibration
+ 
+-- Difficulty = (1 - passRate) * 100; thresholds: easy <= 33, medium 34-66, hard >= 67; flags over/under-rated tasks
+-- Backend domain detection: isBackendDomain() checks for backend/api/server/database/trpc/grpc/rest/graphql patterns
+\ No newline at end of file
++- Difficulty = (1 - passRate) * 100; thresholds: easy <= 33, medium 34-66, hard >= 67
+\ No newline at end of file
+
+[0m
+<think>Let me verify the final line count.
+</think>
+[0m$ [0mwc -l measure/lessons-learned.md && wc -l measure/tech-debt.md
+50 measure/lessons-learned.md
+32 measure/tech-debt.md
+[0m

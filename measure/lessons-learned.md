@@ -17,7 +17,6 @@
 - React impure function error for Date.now() in useMemo - use stable ID instead
 - Delta calculation is relative to max score (winner=0), not absolute difference
 - Use `waitFor` from @testing-library/react instead of `setTimeout` for async state updates in tests
-- Zod schemas must be defined BEFORE they are referenced - "Cannot access 'XSchema' before initialization" means the schema is used before it's defined in the file
 - vi.setSystemTime must be called BEFORE creating `now` variable used in tests - setSystemTime only affects Date() calls after it is set
 
 ## Patterns That Work
@@ -49,4 +48,4 @@
 
 ## Calibration
 
-- Difficulty = (1 - passRate) * 100; thresholds: easy <= 33, medium 34-66, hard >= 67; flags over/under-rated tasks
+- Difficulty = (1 - passRate) * 100; thresholds: easy <= 33, medium 34-66, hard >= 67
