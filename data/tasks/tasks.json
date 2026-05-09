@@ -124,5 +124,150 @@
     ],
     "version": "1.0",
     "status": "published"
+  },
+  {
+    "id": "task_backend_db_migration_v1",
+    "title": "Database Schema Migration",
+    "difficulty": "hard",
+    "domain": "Backend & API",
+    "description": "Add a new orders table to an existing PostgreSQL database schema with proper indexes, foreign keys, and constraints. The migration should be reversible and handle concurrent access.",
+    "repo_context": "Node.js/Express project with Prisma ORM, PostgreSQL 14+. Uses TypeScript. Migration files in prisma/migrations/ directory. Schema defined in prisma/schema.prisma.",
+    "acceptance_criteria": [
+      "Orders table created with proper schema (id, user_id, total, status, created_at, updated_at)",
+      "Indexes added on user_id and status columns for query performance",
+      "Foreign key constraint enforced between orders.user_id and users.id",
+      "Migration script is reversible (up and down migrations)",
+      "All existing tests continue to pass"
+    ],
+    "structured_rubric": [
+      { "label": "Type safety", "weight": 25, "description": "TypeScript types match database schema; no type assertions" },
+      { "label": "Tests", "weight": 25, "description": "Unit and integration tests pass for migration" },
+      { "label": "Integration", "weight": 25, "description": "API endpoints work end-to-end with new schema" },
+      { "label": "Regression safety", "weight": 25, "description": "Existing tests still pass; no data loss" }
+    ],
+    "rubric": [
+      "Type safety (25)",
+      "Tests (25)",
+      "Integration (25)",
+      "Regression safety (25)"
+    ],
+    "version": "1.0",
+    "status": "published"
+  },
+  {
+    "id": "task_backend_rest_api_v1",
+    "title": "Implement GET /users/:id endpoint",
+    "difficulty": "medium",
+    "domain": "Backend & API",
+    "description": "Implement a REST endpoint to fetch a user by ID with proper error handling, input validation, and HTTP status codes.",
+    "repo_context": "Node.js/Express with TypeScript. Uses Zod for input validation. Routes defined in src/routes/ directory. User model defined in src/models/",
+    "acceptance_criteria": [
+      "Returns user data with 200 status when user exists",
+      "Returns 404 with error message when user not found",
+      "Returns 400 with validation error for invalid ID format",
+      "Response includes user data: id, email, name, created_at",
+      "All existing tests continue to pass"
+    ],
+    "structured_rubric": [
+      { "label": "Type safety", "weight": 25, "description": "TypeScript types correct; proper error types used" },
+      { "label": "Tests", "weight": 25, "description": "Unit tests for route handler; edge cases covered" },
+      { "label": "Integration", "weight": 25, "description": "Endpoint works end-to-end with real database" },
+      { "label": "Regression safety", "weight": 25, "description": "Existing routes unaffected; no breaking changes" }
+    ],
+    "rubric": [
+      "Type safety (25)",
+      "Tests (25)",
+      "Integration (25)",
+      "Regression safety (25)"
+    ],
+    "version": "1.0",
+    "status": "published"
+  },
+  {
+    "id": "task_backend_auth_middleware_v1",
+    "title": "JWT Authentication Middleware",
+    "difficulty": "hard",
+    "domain": "Backend & API",
+    "description": "Implement JWT verification middleware for protected routes. Extract user ID from token and attach to request object.",
+    "repo_context": "Express.js with TypeScript, jsonwebtoken package. Middleware in src/middleware/ directory. Protected routes in src/routes/",
+    "acceptance_criteria": [
+      "Valid JWT token accepted and user ID extracted to req.user",
+      "Invalid/expired JWT rejected with 401 status and error message",
+      "Missing auth header returns 401 with 'No token provided' message",
+      "Token payload includes userId claim",
+      "All existing tests continue to pass"
+    ],
+    "structured_rubric": [
+      { "label": "Type safety", "weight": 25, "description": "TypeScript types correct for req.user extension" },
+      { "label": "Tests", "weight": 25, "description": "Unit tests for valid/invalid/expired token cases" },
+      { "label": "Integration", "weight": 25, "description": "Protected routes work with real JWT verification" },
+      { "label": "Regression safety", "weight": 25, "description": "Public routes unaffected; no breaking changes" }
+    ],
+    "rubric": [
+      "Type safety (25)",
+      "Tests (25)",
+      "Integration (25)",
+      "Regression safety (25)"
+    ],
+    "version": "1.0",
+    "status": "published"
+  },
+  {
+    "id": "task_backend_service_refactor_v1",
+    "title": "Extract User Service",
+    "difficulty": "hard",
+    "domain": "Backend & API",
+    "description": "Extract user-related business logic from route handlers into a dedicated UserService class with proper dependency injection.",
+    "repo_context": "Node.js/Express monolith. User routes in src/routes/users.ts. Database access directly in route handlers. Goal: extract to src/services/UserService.ts",
+    "acceptance_criteria": [
+      "UserService class created with methods: findById, create, update, delete",
+      "All user logic moved to service; routes only handle HTTP",
+      "UserService is injectable for testability",
+      "Existing user routes still work after refactoring",
+      "All existing tests continue to pass"
+    ],
+    "structured_rubric": [
+      { "label": "Type safety", "weight": 25, "description": "TypeScript types correct; no 'any' in service interface" },
+      { "label": "Tests", "weight": 25, "description": "UserService testable in isolation; mocked dependencies" },
+      { "label": "Integration", "weight": 25, "description": "Full user CRUD works through extracted service" },
+      { "label": "Regression safety", "weight": 25, "description": "Existing routes unaffected; no breaking changes" }
+    ],
+    "rubric": [
+      "Type safety (25)",
+      "Tests (25)",
+      "Integration (25)",
+      "Regression safety (25)"
+    ],
+    "version": "1.0",
+    "status": "published"
+  },
+  {
+    "id": "task_backend_trpc_router_v1",
+    "title": "Add tRPC Router Procedure",
+    "difficulty": "medium",
+    "domain": "Backend & API",
+    "description": "Add a tRPC router procedure for user creation with input validation using Zod. Procedure should create user in database and return created user.",
+    "repo_context": "Next.js with tRPC v11, Zod validation, Prisma. tRPC router in src/server/routers/. Procedure: user.create(input: CreateUserInput)",
+    "acceptance_criteria": [
+      "Procedure accepts valid input with email and name fields",
+      "Invalid input rejected with Zod validation errors",
+      "User created in database with hashed password",
+      "Returns created user data (id, email, name, createdAt)",
+      "All existing tests continue to pass"
+    ],
+    "structured_rubric": [
+      { "label": "Type safety", "weight": 25, "description": "Input/output types correct; no 'any' in procedure" },
+      { "label": "Tests", "weight": 25, "description": "Unit tests for valid and invalid input cases" },
+      { "label": "Integration", "weight": 25, "description": "Procedure works end-to-end with database" },
+      { "label": "Regression safety", "weight": 25, "description": "Existing procedures unaffected" }
+    ],
+    "rubric": [
+      "Type safety (25)",
+      "Tests (25)",
+      "Integration (25)",
+      "Regression safety (25)"
+    ],
+    "version": "1.0",
+    "status": "published"
   }
 ]

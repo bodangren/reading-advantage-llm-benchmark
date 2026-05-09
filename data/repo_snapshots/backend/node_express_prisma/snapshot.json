@@ -1,0 +1,28 @@
+{
+  "id": "snapshot_node_express_prisma",
+  "name": "Node.js Express Prisma Backend",
+  "language": "typescript",
+  "framework": "node",
+  "description": "Express.js REST API with Prisma ORM and PostgreSQL",
+  "existing_structure": {
+    "src": {
+      "routes": ["users.ts", "orders.ts"],
+      "models": ["user.ts"],
+      "middleware": []
+    },
+    "prisma": {
+      "schema": "schema.prisma",
+      "migrations": []
+    },
+    "tests": ["users.test.ts"]
+  },
+  "task_id": "task_backend_db_migration_v1",
+  "baseline_files": {
+    "prisma/schema.prisma": "datasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id        Int      @id @default(autoincrement())\n  email     String   @unique\n  name      String\n  createdAt DateTime @default(now())\n}",
+    "src/models/user.ts": "export interface User {\n  id: number;\n  email: string;\n  name: string;\n  createdAt: Date;\n}",
+    "src/routes/users.ts": "import { Router } from 'express';\nconst router = Router();\n\nrouter.get('/', (req, res) => {\n  res.json([]);\n});\n\nexport default router;",
+    "tests/users.test.ts": "import { describe, it, expect } from 'vitest';\n\ndescribe('Users API', () => {\n  it('returns empty array initially', () => {\n    expect(true).toBe(true);\n  });\n});"
+  },
+  "test_command": "npx vitest run",
+  "build_command": "npm run build"
+}

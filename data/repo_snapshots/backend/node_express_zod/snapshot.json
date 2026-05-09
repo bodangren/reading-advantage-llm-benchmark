@@ -1,0 +1,23 @@
+{
+  "id": "snapshot_node_express_zod",
+  "name": "Node.js Express Zod Validation",
+  "language": "typescript",
+  "framework": "node",
+  "description": "Express.js REST API with Zod input validation",
+  "existing_structure": {
+    "src": {
+      "routes": ["users.ts"],
+      "validators": ["user.validator.ts"],
+      "middleware": []
+    },
+    "tests": ["routes/users.test.ts"]
+  },
+  "task_id": "task_backend_rest_api_v1",
+  "baseline_files": {
+    "src/routes/users.ts": "import { Router } from 'express';\nimport { z } from 'zod';\nconst router = Router();\n\nconst UserSchema = z.object({\n  id: z.number(),\n  email: z.string().email(),\n  name: z.string(),\n  createdAt: z.string(),\n});\n\nrouter.get('/', (req, res) => {\n  res.json([]);\n});\n\nexport default router;",
+    "src/validators/user.validator.ts": "import { z } from 'zod';\n\nexport const CreateUserSchema = z.object({\n  email: z.string().email(),\n  name: z.string().min(1),\n});\n\nexport const UserIdSchema = z.string().regex(/^\\d+$/);",
+    "tests/routes/users.test.ts": "import { describe, it, expect } from 'vitest';\n\ndescribe('Users Routes', () => {\n  it('placeholder test', () => {\n    expect(true).toBe(true);\n  });\n});"
+  },
+  "test_command": "npx vitest run",
+  "build_command": "npm run build"
+}

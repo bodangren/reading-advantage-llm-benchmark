@@ -1,0 +1,24 @@
+{
+  "id": "snapshot_nextjs_trpc",
+  "name": "Next.js tRPC Backend",
+  "language": "typescript",
+  "framework": "nextjs",
+  "description": "Next.js with tRPC router and Prisma",
+  "existing_structure": {
+    "src": {
+      "server": ["routers/_app.ts", "trpc.ts"],
+      "utils": []
+    },
+    "prisma": ["schema.prisma"],
+    "tests": ["src/server/__tests__/trpc.test.ts"]
+  },
+  "task_id": "task_backend_trpc_router_v1",
+  "baseline_files": {
+    "prisma/schema.prisma": "datasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\ngenerator client {\n  provider = \"prisma-client-js\"\n}\n\nmodel User {\n  id        Int      @id @default(autoincrement())\n  email     String   @unique\n  name      String\n  password  String\n  createdAt DateTime @default(now())\n}",
+    "src/server/trpc.ts": "import { initTRPC } from '@trpc/server';\n\nconst t = initTRPC.create();\n\nexport const router = t.router;\nexport const publicProcedure = t.procedure;",
+    "src/server/routers/_app.ts": "import { router, publicProcedure } from '../trpc';\n\nconst appRouter = router({\n  health: publicProcedure.query(() => 'ok'),\n});\n\nexport type AppRouter = typeof appRouter;",
+    "src/server/__tests__/trpc.test.ts": "import { describe, it, expect } from 'vitest';\n\ndescribe('tRPC', () => {\n  it('health check', () => {\n    expect(true).toBe(true);\n  });\n});"
+  },
+  "test_command": "npx vitest run",
+  "build_command": "npm run build"
+}

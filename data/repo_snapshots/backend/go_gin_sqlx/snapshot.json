@@ -1,0 +1,24 @@
+{
+  "id": "snapshot_go_gin_sqlx",
+  "name": "Go Gin SQLx Backend",
+  "language": "go",
+  "framework": "go",
+  "description": "Go HTTP server with Gin framework and sqlx database access",
+  "existing_structure": {
+    "internal": {
+      "handlers": ["user.go"],
+      "models": ["user.go"],
+      "middleware": []
+    },
+    "migrations": [],
+    "tests": ["internal/handlers/user_test.go"]
+  },
+  "task_id": "task_backend_service_refactor_v1",
+  "baseline_files": {
+    "internal/models/user.go": "package models\n\ntype User struct {\n\tID        int64  `db:\"id\"`\n\tEmail     string `db:\"email\"`\n\tName      string `db:\"name\"`\n\tCreatedAt string `db:\"created_at\"`\n}",
+    "internal/handlers/user.go": "package handlers\n\nimport (\n\t\"net/http\"\n\t\"github.com/gin-gonic/gin\"\n)\n\nfunc GetUsers(c *gin.Context) {\n\tc.JSON(http.StatusOK, []interface{}{})\n}\n\nfunc GetUser(c *gin.Context) {\n\tid := c.Param(\"id\")\n\tc.JSON(http.StatusOK, gin.H{\"id\": id})\n}",
+    "internal/handlers/user_test.go": "package handlers\n\nimport (\n\t\"testing\"\n)\n\nfunc TestGetUsers(t *testing.T) {\n\t// placeholder\n}"
+  },
+  "test_command": "go test ./...",
+  "build_command": "go build ./..."
+}
