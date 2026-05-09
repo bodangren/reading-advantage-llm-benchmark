@@ -173,4 +173,53 @@ describe('TaskListWithFilters', () => {
     fireEvent.change(searchInput, { target: { value: '' } });
     expect(screen.getByText('Medium Task')).toBeDefined();
   });
+
+  it('shows backend domain filter button when backend task exists', () => {
+    const backendTasks: Task[] = [
+      createMockTask({ id: 'b1', title: 'Backend Task', difficulty: 'hard', domain: 'Backend & API', description: 'Backend desc' }),
+    ];
+    render(<TaskListWithFilters tasks={backendTasks} runCounts={{}} />);
+    const domainBtns = getDomainButtons();
+    expect(domainBtns.some(b => b.textContent === 'Backend & API')).toBe(true);
+  });
+
+  it('shows multiple domain filters when tasks have different domains', () => {
+    const multiDomainTasks: Task[] = [
+      createMockTask({ id: 'm1', title: 'Web Task', difficulty: 'easy', domain: 'Web App', description: 'Web desc' }),
+      createMockTask({ id: 'm2', title: 'Backend Task', difficulty: 'hard', domain: 'Backend & API', description: 'Backend desc' }),
+      createMockTask({ id: 'm3', title: 'Mobile Task', difficulty: 'medium', domain: 'Mobile & React Native', description: 'Mobile desc' }),
+    ];
+    render(<TaskListWithFilters tasks={multiDomainTasks} runCounts={{}} />);
+    const domainBtns = getDomainButtons();
+    expect(domainBtns.some(b => b.textContent === 'Web App')).toBe(true);
+    expect(domainBtns.some(b => b.textContent === 'Backend & API')).toBe(true);
+    expect(domainBtns.some(b => b.textContent === 'Mobile & React Native')).toBe(true);
+  });
+
+  it('filters by Backend & API domain', () => {
+    const mixedTasks: Task[] = [
+      createMockTask({ id: 't1', title: 'Web Task', domain: 'Web App' }),
+      createMockTask({ id: 't2', title: 'Backend Task', domain: 'Backend & API' }),
+      createMockTask({ id: 't3', title: 'Another Web', domain: 'Web App' }),
+    ];
+    render(<TaskListWithFilters tasks={mixedTasks} runCounts={{}} />);
+    const domainBtns = getDomainButtons();
+    fireEvent.click(domainBtns.find(b => b.textContent === 'Backend & API')!);
+    expect(screen.getByText('Backend Task')).toBeDefined();
+    expect(screen.queryByText('Web Task')).toBeNull();
+    expect(screen.queryByText('Another Web')).toBeNull();
+  });
+
+  it('resets domain filter when clicking All', () => {
+    const mixedTasks: Task[] = [
+      createMockTask({ id: 't1', title: 'Web Task', domain: 'Web App' }),
+      createMockTask({ id: 't2', title: 'Backend Task', domain: 'Backend & API' }),
+    ];
+    render(<TaskListWithFilters tasks={mixedTasks} runCounts={{}} />);
+    const domainBtns = getDomainButtons();
+    fireEvent.click(domainBtns.find(b => b.textContent === 'Backend & API')!);
+    expect(screen.queryByText('Web Task')).toBeNull();
+    fireEvent.click(domainBtns.find(b => b.textContent === 'All')!);
+    expect(screen.getByText('Web Task')).toBeDefined();
+  });
 });

@@ -78,6 +78,7 @@ export const RunDetailSchema = z.object({
   benchmark_version: z.string(),
   dataset_version: z.string().optional(),
   task_id: z.string().optional(),
+  task_domain: z.string().optional(),
   run_date: z.string(),
   wall_time_seconds: z.number(),
   total_score: z.number().min(0).max(1),

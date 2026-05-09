@@ -16,8 +16,8 @@
 - [x] Update scoring logic to use backend rubric when task.domain === 'backend'
 
 ## Phase 4: UI Updates (TDD)
-- [ ] Write tests for domain badge and filter in TaskCatalog
-- [ ] Add domain filter to task list
+- [x] Write tests for domain badge and filter in TaskCatalog
+- [x] Add domain filter to task list
 - [ ] Update run detail page to show backend-specific score breakdown
 
 ## Phase 5: Integration & Verification

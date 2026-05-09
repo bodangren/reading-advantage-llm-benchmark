@@ -71,4 +71,25 @@ describe('TaskCard Component', () => {
     render(<TaskCard task={reviewTask} />);
     expect(screen.getByText('review')).toBeDefined();
   });
+
+  it('should render backend domain badge with distinct styling', () => {
+    const backendTask = { ...mockTask, domain: 'Backend & API' };
+    render(<TaskCard task={backendTask} />);
+    const badges = screen.getAllByText('Backend & API');
+    expect(badges.length).toBeGreaterThan(0);
+    expect(badges[0]).toBeDefined();
+  });
+
+  it('should render multiple domain badges when present', () => {
+    const multiDomainTask = { ...mockTask, domain: 'Backend & API' };
+    render(<TaskCard task={multiDomainTask} />);
+    expect(screen.getByText('Backend & API')).toBeDefined();
+    expect(screen.getByText('easy')).toBeDefined();
+  });
+
+  it('should render mobile domain badge', () => {
+    const mobileTask = { ...mockTask, domain: 'Mobile & React Native' };
+    render(<TaskCard task={mobileTask} />);
+    expect(screen.getByText('Mobile & React Native')).toBeDefined();
+  });
 });

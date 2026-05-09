@@ -6,21 +6,40 @@ import { RunScores } from "@/lib/schemas";
 interface ScoreBreakdownProps {
   scores: RunScores;
   totalScore: number;
+  domain?: string;
 }
 
-const SCORE_LABELS: Record<keyof RunScores, { label: string; max: number }> = {
+const WEB_APP_SCORING = {
   functional_correctness: { label: "Functional Correctness", max: 40 },
   integration_quality: { label: "Integration Quality", max: 25 },
   regression_safety: { label: "Regression Safety", max: 20 },
   minimality: { label: "Minimality", max: 10 },
   process_quality: { label: "Process Quality", max: 5 },
-};
+} as const;
 
-export function ScoreBreakdown({ scores, totalScore }: ScoreBreakdownProps) {
+const BACKEND_SCORING = {
+  functional_correctness: { label: "Type Safety", max: 25 },
+  integration_quality: { label: "Tests", max: 25 },
+  regression_safety: { label: "Integration", max: 25 },
+  minimality: { label: "Regression Safety", max: 25 },
+  process_quality: { label: "Documentation", max: 0 },
+} as const;
+
+function isBackendDomain(domain?: string): boolean {
+  if (!domain) return false;
+  const backendPatterns = ['backend', 'api', 'server', 'database', 'trpc', 'grpc', 'rest', 'graphql'];
+  const lowerDomain = domain.toLowerCase();
+  return backendPatterns.some(pattern => lowerDomain.includes(pattern));
+}
+
+export function ScoreBreakdown({ scores, totalScore, domain }: ScoreBreakdownProps) {
+  const scoring = isBackendDomain(domain) ? BACKEND_SCORING : WEB_APP_SCORING;
+  const isBackend = isBackendDomain(domain);
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Score Breakdown</CardTitle>
+        <CardTitle>{isBackend ? 'Backend Task Score Breakdown' : 'Score Breakdown'}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex justify-between items-center">
@@ -29,9 +48,10 @@ export function ScoreBreakdown({ scores, totalScore }: ScoreBreakdownProps) {
         </div>
 
         <div className="space-y-4">
-          {(Object.keys(SCORE_LABELS) as Array<keyof RunScores>).map((key) => {
-            const { label, max } = SCORE_LABELS[key];
+          {(Object.keys(scoring) as Array<keyof typeof scoring>).map((key) => {
+            const { label, max } = scoring[key];
             const value = scores[key];
+            if (max === 0) return null;
             const percentage = (value / max) * 100;
 
             return (
@@ -44,7 +64,7 @@ export function ScoreBreakdown({ scores, totalScore }: ScoreBreakdownProps) {
                 </div>
                 <div className="w-full bg-secondary rounded-full h-3">
                   <div
-                    className="bg-primary h-3 rounded-full transition-all duration-500"
+                    className={`h-3 rounded-full transition-all duration-500 ${isBackend ? 'bg-emerald-500' : 'bg-primary'}`}
                     style={{ width: `${percentage}%` }}
                   />
                 </div>
