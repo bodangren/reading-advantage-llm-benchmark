@@ -19,6 +19,14 @@ This file tracks all major tracks for the project. Each track has its own detail
   *Link: [./tracks/serverless_persistence_layer_20260508/](./tracks/serverless_persistence_layer_20260508/)*
   Replace in-memory rate limiting and filesystem-based scheduler persistence with Redis-backed adapters for serverless deployments, with local-dev fallback.
 
+- [ ] **Track: Frontend/UI Task Domain Expansion**
+  *Link: [./tracks/frontend_task_domain_expansion_20260514/](./tracks/frontend_task_domain_expansion_20260514/)*
+  Extend benchmark catalog with React, CSS, and accessibility tasks for brownfield frontend engineering.
+
+- [ ] **Track: Benchmark Harness Docker Containerization**
+  *Link: [./tracks/harness_docker_containerization_20260514/](./tracks/harness_docker_containerization_20260514/)*
+  Containerize the OpenCode harness for reproducible benchmark runs across environments.
+
 ## Completed Tracks
 
 - [x] **Track: Redis Serverless Adapter for Rate Limiting and Scheduling**
