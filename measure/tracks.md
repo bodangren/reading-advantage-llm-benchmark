@@ -7,7 +7,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## Active/Planned Tracks
 
 - [x] **Track: Backend/API Task Domain Expansion**
-  *Link: [./tracks/backend_task_domain_expansion_20260508/](./tracks/backend_task_domain_expansion_20260508/)*
+  *Link: [./archive/backend_task_domain_expansion_20260508/](./archive/backend_task_domain_expansion_20260508/)*
   *Status: Complete*
   Add backend tasks (DB, API, auth, service refactor) to the benchmark catalog with adapted scoring rubric.
 
