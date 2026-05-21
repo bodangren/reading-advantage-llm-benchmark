@@ -12,7 +12,7 @@ This file tracks all major tracks for the project. Each track has its own detail
   Add backend tasks (DB, API, auth, service refactor) to the benchmark catalog with adapted scoring rubric.
 
 - [ ] **Track: Benchmark Version Migration**
-  *Link: [./tracks/benchmark_version_migration_20260507/](./tracks/benchmark_version_migration_20260507/)*
+  *Link: [./archive/benchmark_version_migration_20260507/](./archive/benchmark_version_migration_20260507/)*
   Version-aware leaderboard filtering, cross-version score normalization, and version history page for fair comparison across benchmark iterations.
 
 - [ ] **Track: Serverless-Compatible Persistence Layer**
