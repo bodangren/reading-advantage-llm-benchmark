@@ -11,8 +11,9 @@ This file tracks all major tracks for the project. Each track has its own detail
   *Status: Complete*
   Add backend tasks (DB, API, auth, service refactor) to the benchmark catalog with adapted scoring rubric.
 
-- [ ] **Track: Benchmark Version Migration**
+- [x] **Track: Benchmark Version Migration**
   *Link: [./archive/benchmark_version_migration_20260507/](./archive/benchmark_version_migration_20260507/)*
+  *Status: Complete*
   Version-aware leaderboard filtering, cross-version score normalization, and version history page for fair comparison across benchmark iterations.
 
 - [ ] **Track: Serverless-Compatible Persistence Layer**
@@ -26,6 +27,22 @@ This file tracks all major tracks for the project. Each track has its own detail
 - [ ] **Track: Benchmark Harness Docker Containerization**
   *Link: [./tracks/harness_docker_containerization_20260514/](./tracks/harness_docker_containerization_20260514/)*
   Containerize the OpenCode harness for reproducible benchmark runs across environments.
+
+- [ ] **Track: DevOps & Infrastructure Task Domain Expansion**
+  *Link: [./tracks/devops_infrastructure_task_domain_20260523/](./tracks/devops_infrastructure_task_domain_20260523/)*
+  Add CI/CD, Docker, and Terraform brownfield tasks to the benchmark catalog.
+
+- [ ] **Track: Security Audit & Hardening Task Domain**
+  *Link: [./tracks/security_audit_task_domain_20260523/](./tracks/security_audit_task_domain_20260523/)*
+  Add vulnerability fixing, auth hardening, and dependency upgrade tasks.
+
+- [ ] **Track: Performance Optimization Task Domain**
+  *Link: [./tracks/performance_optimization_task_domain_20260523/](./tracks/performance_optimization_task_domain_20260523/)*
+  Add query optimization, caching, and bundle-size reduction tasks.
+
+- [ ] **Track: Benchmark Harness Result Caching**
+  *Link: [./tracks/benchmark_harness_caching_20260523/](./tracks/benchmark_harness_caching_20260523/)*
+  Add deterministic result caching to skip redundant benchmark runs.
 
 ## Completed Tracks
 
