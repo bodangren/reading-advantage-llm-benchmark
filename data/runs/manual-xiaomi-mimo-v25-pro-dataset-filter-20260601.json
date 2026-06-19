@@ -1,0 +1,60 @@
+{
+  "id": "manual-xiaomi-mimo-v25-pro-dataset-filter-20260601",
+  "model": "MiMo-V2.5-Pro",
+  "provider": "Xiaomi",
+  "harness": "opencode",
+  "harness_version": "manual-opencode-cli",
+  "benchmark_version": "manual-2026-06-01",
+  "dataset_version": "2026-06-01",
+  "task_id": "manual_dataset_version_filter_v1",
+  "task_domain": "Web App",
+  "run_date": "2026-06-01T18:32:00+08:00",
+  "wall_time_seconds": 213.4,
+  "total_score": 0.96,
+  "scores": {
+    "functional_correctness": 40,
+    "integration_quality": 24,
+    "regression_safety": 20,
+    "minimality": 10,
+    "process_quality": 2
+  },
+  "diff": "diff --git a/app/api/runs/route.ts b/app/api/runs/route.ts\nindex abc8d7a..3c8af0a 100644\n--- a/app/api/runs/route.ts\n+++ b/app/api/runs/route.ts\n@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {\n     const filters: QueryFilters = {};\n     if (searchParams.has('model')) filters.model = searchParams.get('model')!;\n     if (searchParams.has('task')) filters.task = searchParams.get('task')!;\n+    if (searchParams.has('datasetVersion')) filters.datasetVersion = searchParams.get('datasetVersion')!;\n     if (searchParams.has('startDate')) filters.startDate = searchParams.get('startDate')!;\n     if (searchParams.has('endDate')) filters.endDate = searchParams.get('endDate')!;\n     if (searchParams.has('minScore')) filters.minScore = parseFloat(searchParams.get('minScore')!);\ndiff --git a/src/lib/export.ts b/src/lib/export.ts\nindex abf1026..7656b7b 100644\n--- a/src/lib/export.ts\n+++ b/src/lib/export.ts\n@@ -3,6 +3,7 @@ import type { RunDetail } from './schemas';\n export interface QueryFilters {\n   model?: string;\n   task?: string;\n+  datasetVersion?: string;\n   startDate?: string;\n   endDate?: string;\n   minScore?: number;\n@@ -23,6 +24,9 @@ export function filterRuns(runs: RunDetail[], filters: QueryFilters): RunDetail[\n     if (filters.task && run.task_id !== filters.task) {\n       return false;\n     }\n+    if (filters.datasetVersion && run.dataset_version !== filters.datasetVersion) {\n+      return false;\n+    }\n     if (filters.startDate && run.run_date < filters.startDate) {\n       return false;\n     }\ndiff --git a/tests/lib/export.test.ts b/tests/lib/export.test.ts\nindex 5cfe1cc..d8c4124 100644\n--- a/tests/lib/export.test.ts\n+++ b/tests/lib/export.test.ts\n@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';\n import type { RunDetail } from '../../src/lib/schemas';\n import { filterRuns, computeStats, exportToCSV, type QueryFilters } from '../../src/lib/export';\n \n-function createMockRun(id: string, model: string, runDate: string, totalScore: number, taskId?: string): RunDetail {\n+function createMockRun(id: string, model: string, runDate: string, totalScore: number, taskId?: string, datasetVersion?: string): RunDetail {\n   return {\n     id,\n     model,\n@@ -22,16 +22,17 @@ function createMockRun(id: string, model: string, runDate: string, totalScore: n\n     test_results: [],\n     artifacts: [],\n     task_id: taskId,\n+    dataset_version: datasetVersion,\n   };\n }\n \n describe('Query Filtering', () => {\n   const runs: RunDetail[] = [\n-    createMockRun('run-1', 'gpt-4o', '2026-04-01', 0.85, 'task-1'),\n-    createMockRun('run-2', 'gpt-4o', '2026-04-05', 0.75, 'task-2'),\n-    createMockRun('run-3', 'claude-3', '2026-04-01', 0.90, 'task-1'),\n-    createMockRun('run-4', 'claude-3', '2026-04-10', 0.88, 'task-3'),\n-    createMockRun('run-5', 'gpt-4o', '2026-03-01', 0.70, 'task-1'),\n+    createMockRun('run-1', 'gpt-4o', '2026-04-01', 0.85, 'task-1', '2026-01-01'),\n+    createMockRun('run-2', 'gpt-4o', '2026-04-05', 0.75, 'task-2', '2026-01-01'),\n+    createMockRun('run-3', 'claude-3', '2026-04-01', 0.90, 'task-1', '2026-02-01'),\n+    createMockRun('run-4', 'claude-3', '2026-04-10', 0.88, 'task-3', '2026-02-01'),\n+    createMockRun('run-5', 'gpt-4o', '2026-03-01', 0.70, 'task-1', '2026-01-01'),\n   ];\n \n   it('should filter by model', () => {\n@@ -77,6 +78,23 @@ describe('Query Filtering', () => {\n     expect(filtered.every(r => r.model === 'gpt-4o' && r.total_score >= 0.75)).toBe(true);\n   });\n \n+  it('should filter by datasetVersion', () => {\n+    const filters: QueryFilters = { datasetVersion: '2026-02-01' };\n+    const filtered = filterRuns(runs, filters);\n+    expect(filtered).toHaveLength(2);\n+    expect(filtered.every(r => r.dataset_version === '2026-02-01')).toBe(true);\n+  });\n+\n+  it('should combine datasetVersion with model filter', () => {\n+    const filters: QueryFilters = {\n+      datasetVersion: '2026-01-01',\n+      model: 'gpt-4o',\n+    };\n+    const filtered = filterRuns(runs, filters);\n+    expect(filtered).toHaveLength(3);\n+    expect(filtered.every(r => r.dataset_version === '2026-01-01' && r.model === 'gpt-4o')).toBe(true);\n+  });\n+\n   it('should return all runs when no filters provided', () => {\n     const filtered = filterRuns(runs, {});\n     expect(filtered).toHaveLength(runs.length);\n",
+  "test_results": [
+    {
+      "suite": "unit",
+      "name": "CI=true npx vitest run tests/lib/export.test.ts",
+      "status": "pass",
+      "duration_ms": 1930
+    },
+    {
+      "suite": "lint",
+      "name": "npm run lint -- app/api/runs/route.ts src/lib/export.ts tests/lib/export.test.ts",
+      "status": "pass"
+    },
+    {
+      "suite": "build",
+      "name": "npm run build",
+      "status": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "opencode-events.jsonl",
+      "type": "log",
+      "url": "/artifacts/manual-xiaomi-mimo-v25-pro-dataset-filter-20260601/opencode-events.jsonl",
+      "size_bytes": 107620
+    },
+    {
+      "name": "diff.patch",
+      "type": "report",
+      "url": "/artifacts/manual-xiaomi-mimo-v25-pro-dataset-filter-20260601/diff.patch",
+      "size_bytes": 4292
+    },
+    {
+      "name": "verification.txt",
+      "type": "report",
+      "url": "/artifacts/manual-xiaomi-mimo-v25-pro-dataset-filter-20260601/verification.txt",
+      "size_bytes": 808
+    }
+  ]
+}

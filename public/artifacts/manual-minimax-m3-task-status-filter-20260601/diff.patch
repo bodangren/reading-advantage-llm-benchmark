@@ -1,0 +1,138 @@
+diff --git a/app/api/tasks/route.ts b/app/api/tasks/route.ts
+index d15c003..85e73ec 100644
+--- a/app/api/tasks/route.ts
++++ b/app/api/tasks/route.ts
+@@ -11,12 +11,16 @@ export async function GET(request: NextRequest) {
+   try {
+     const { searchParams } = new URL(request.url);
+     const difficulty = searchParams.get('difficulty');
++    const status = searchParams.get('status');
+ 
+     const tasks = await getTasks();
+ 
+     let filtered = tasks;
+     if (difficulty && ['easy', 'medium', 'hard'].includes(difficulty)) {
+-      filtered = tasks.filter(t => t.difficulty === difficulty);
++      filtered = filtered.filter(t => t.difficulty === difficulty);
++    }
++    if (status && ['draft', 'review', 'published'].includes(status)) {
++      filtered = filtered.filter(t => t.status === status);
+     }
+ 
+     return NextResponse.json({
+diff --git a/measure/tracks.md b/measure/tracks.md
+index 82807f3..2043719 100644
+--- a/measure/tracks.md
++++ b/measure/tracks.md
+@@ -6,6 +6,11 @@ This file tracks all major tracks for the project. Each track has its own detail
+ 
+ ## Active/Planned Tracks
+ 
++- [x] **Track: Tasks API Status Filter**
++  *Link: [./tracks/tasks_api_status_filter_20260601/](./tracks/tasks_api_status_filter_20260601/)*
++  Add a `status` query parameter to `GET /api/tasks` that mirrors the existing
++  `difficulty` filter semantics, and combine the two filters.
++
+ - [x] **Track: Backend/API Task Domain Expansion**
+   *Link: [./archive/backend_task_domain_expansion_20260508/](./archive/backend_task_domain_expansion_20260508/)*
+   *Status: Complete*
+diff --git a/tests/app/api/routes.test.ts b/tests/app/api/routes.test.ts
+index 74bd3bb..1da9291 100644
+--- a/tests/app/api/routes.test.ts
++++ b/tests/app/api/routes.test.ts
+@@ -250,6 +250,95 @@ describe('API Routes', () => {
+       expect(data.count).toBe(1);
+       expect(data.tasks[0].id).toBe('task-2');
+     });
++
++    describe('status filter', () => {
++      const mixedStatusTasks = [
++        { id: 'task-1', title: 'Task 1', difficulty: 'easy', description: 'Desc 1', version: '1.0', status: 'published' as const },
++        { id: 'task-2', title: 'Task 2', difficulty: 'medium', description: 'Desc 2', version: '1.0', status: 'published' as const },
++        { id: 'task-3', title: 'Task 3', difficulty: 'hard', description: 'Desc 3', version: '1.0', status: 'published' as const },
++        { id: 'task-4', title: 'Task 4', difficulty: 'easy', description: 'Desc 4', version: '1.0', status: 'draft' as const },
++        { id: 'task-5', title: 'Task 5', difficulty: 'medium', description: 'Desc 5', version: '1.0', status: 'review' as const },
++        { id: 'task-6', title: 'Task 6', difficulty: 'hard', description: 'Desc 6', version: '1.0', status: 'draft' as const },
++      ];
++
++      it('should filter tasks by status=draft', async () => {
++        // eslint-disable-next-line @typescript-eslint/no-explicit-any
++        vi.mocked(getTasks).mockResolvedValue(mixedStatusTasks as any);
++
++        const request = new NextRequest('http://localhost/api/tasks?status=draft');
++        const response = await tasksHandler(request);
++        const data = await response.json();
++
++        expect(response.status).toBe(200);
++        expect(data.count).toBe(2);
++        expect(data.tasks.map((t: { id: string }) => t.id).sort()).toEqual(['task-4', 'task-6']);
++      });
++
++      it('should filter tasks by status=review', async () => {
++        // eslint-disable-next-line @typescript-eslint/no-explicit-any
++        vi.mocked(getTasks).mockResolvedValue(mixedStatusTasks as any);
++
++        const request = new NextRequest('http://localhost/api/tasks?status=review');
++        const response = await tasksHandler(request);
++        const data = await response.json();
++
++        expect(response.status).toBe(200);
++        expect(data.count).toBe(1);
++        expect(data.tasks[0].id).toBe('task-5');
++      });
++
++      it('should filter tasks by status=published', async () => {
++        // eslint-disable-next-line @typescript-eslint/no-explicit-any
++        vi.mocked(getTasks).mockResolvedValue(mixedStatusTasks as any);
++
++        const request = new NextRequest('http://localhost/api/tasks?status=published');
++        const response = await tasksHandler(request);
++        const data = await response.json();
++
++        expect(response.status).toBe(200);
++        expect(data.count).toBe(3);
++        expect(data.tasks.every((t: { status: string }) => t.status === 'published')).toBe(true);
++      });
++
++      it('should ignore invalid status values and return all tasks', async () => {
++        // eslint-disable-next-line @typescript-eslint/no-explicit-any
++        vi.mocked(getTasks).mockResolvedValue(mixedStatusTasks as any);
++
++        const request = new NextRequest('http://localhost/api/tasks?status=archived');
++        const response = await tasksHandler(request);
++        const data = await response.json();
++
++        expect(response.status).toBe(200);
++        expect(data.count).toBe(6);
++        expect(data.tasks).toHaveLength(6);
++      });
++
++      it('should combine difficulty and status filters', async () => {
++        // eslint-disable-next-line @typescript-eslint/no-explicit-any
++        vi.mocked(getTasks).mockResolvedValue(mixedStatusTasks as any);
++
++        const request = new NextRequest('http://localhost/api/tasks?difficulty=easy&status=draft');
++        const response = await tasksHandler(request);
++        const data = await response.json();
++
++        expect(response.status).toBe(200);
++        expect(data.count).toBe(1);
++        expect(data.tasks[0].id).toBe('task-4');
++      });
++
++      it('should return empty list when difficulty and status filters do not match any task', async () => {
++        // eslint-disable-next-line @typescript-eslint/no-explicit-any
++        vi.mocked(getTasks).mockResolvedValue(mixedStatusTasks as any);
++
++        const request = new NextRequest('http://localhost/api/tasks?difficulty=hard&status=review');
++        const response = await tasksHandler(request);
++        const data = await response.json();
++
++        expect(response.status).toBe(200);
++        expect(data.count).toBe(0);
++        expect(data.tasks).toHaveLength(0);
++      });
++    });
+   });
+ 
+   describe('GET /api/tasks/[id]', () => {

@@ -1,0 +1,23 @@
+Manual benchmark verification for minimax-cn-coding-plan/MiniMax-M3
+
+Task: Add datasetVersion filtering to GET /api/runs through the shared filter utility.
+
+Independent verification commands:
+- CI=true npx vitest run tests/lib/export.test.ts
+  Result: pass, 1 file passed, 17 tests passed.
+- npm run lint -- app/api/runs/route.ts src/lib/export.ts tests/lib/export.test.ts
+  Result: pass.
+- npm run build
+  Result: pass after replacing the benchmark worktree node_modules symlink with a local hardlinked copy; the first build attempt failed because Turbopack rejects node_modules symlinks pointing outside the project root.
+
+Scoring:
+- Functional correctness: 40/40
+- Integration quality: 24/25
+- Regression safety: 20/20
+- Minimality: 10/10
+- Process quality: 3/5
+- Total: 97/100
+
+Notes:
+- The model id requested as minimax-cn-conding/MiniMax-M3 was not available in OpenCode.
+- The routable OpenCode model id used was minimax-cn-coding-plan/MiniMax-M3.

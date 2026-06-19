@@ -1,0 +1,18 @@
+Manual OpenCode verification: DeepSeek V4 Pro / Tasks status filter
+Model id: opencode-go/deepseek-v4-pro
+Score: 96
+Wall time: 572s
+
+Independent targeted tests: pass
+Command: CI=true npx vitest run tests/app/api/routes.test.ts
+Observed result: targeted task tests passed.
+
+Changed-file lint: pass
+Command: npm run lint -- app/api/tasks/route.ts tests/app/api/routes.test.ts
+
+Production build: pass
+Command: npm run build
+
+Base-relative patch bytes: 4031
+
+Notes: Correct status behavior with focused route coverage. Verification passed; patch is modest but slightly less polished than Qwen3.6 Plus.

@@ -1,0 +1,18 @@
+Manual OpenCode verification: Qwen3.6 Plus / Tasks status filter
+Model id: opencode-go/qwen3.6-plus
+Score: 98
+Wall time: 554s
+
+Independent targeted tests: pass
+Command: CI=true npx vitest run tests/app/api/routes.test.ts
+Observed result: targeted task tests passed.
+
+Changed-file lint: pass
+Command: npm run lint -- app/api/tasks/route.ts tests/app/api/routes.test.ts
+
+Production build: pass
+Command: npm run build
+
+Base-relative patch bytes: 6402
+
+Notes: Correct status filter with focused route coverage. The agent committed inside the disposable worktree; artifacts use a base-relative diff so the patch is preserved.

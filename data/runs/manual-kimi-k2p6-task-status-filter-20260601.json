@@ -1,0 +1,60 @@
+{
+  "id": "manual-kimi-k2p6-task-status-filter-20260601",
+  "model": "K2P6",
+  "provider": "Kimi For Coding",
+  "harness": "opencode",
+  "harness_version": "manual-opencode-cli",
+  "benchmark_version": "manual-2026-06-01",
+  "dataset_version": "2026-06-01",
+  "task_id": "manual_task_status_filter_v1",
+  "task_domain": "Web App",
+  "run_date": "2026-06-01T18:55:00+08:00",
+  "wall_time_seconds": 433.4,
+  "total_score": 0.94,
+  "scores": {
+    "functional_correctness": 40,
+    "integration_quality": 24,
+    "regression_safety": 20,
+    "minimality": 6,
+    "process_quality": 4
+  },
+  "diff": "diff --git a/app/api/tasks/route.ts b/app/api/tasks/route.ts\nindex d15c003..85e73ec 100644\n--- a/app/api/tasks/route.ts\n+++ b/app/api/tasks/route.ts\n@@ -11,12 +11,16 @@ export async function GET(request: NextRequest) {\n   try {\n     const { searchParams } = new URL(request.url);\n     const difficulty = searchParams.get('difficulty');\n+    const status = searchParams.get('status');\n \n     const tasks = await getTasks();\n \n     let filtered = tasks;\n     if (difficulty && ['easy', 'medium', 'hard'].includes(difficulty)) {\n-      filtered = tasks.filter(t => t.difficulty === difficulty);\n+      filtered = filtered.filter(t => t.difficulty === difficulty);\n+    }\n+    if (status && ['draft', 'review', 'published'].includes(status)) {\n+      filtered = filtered.filter(t => t.status === status);\n     }\n \n     return NextResponse.json({\ndiff --git a/measure/tracks.md b/measure/tracks.md\nindex 82807f3..ffca984 100644\n--- a/measure/tracks.md\n+++ b/measure/tracks.md\n@@ -6,6 +6,11 @@ This file tracks all major tracks for the project. Each track has its own detail\n \n ## Active/Planned Tracks\n \n+- [ ] **Track: Add status filtering to public tasks API**\n+  *Link: [./tracks/api_status_filtering_20260601/](./tracks/api_status_filtering_20260601/)*\n+  *Status: In Progress*\n+  Add status query parameter support to GET /api/tasks with combined difficulty filtering.\n+\n - [x] **Track: Backend/API Task Domain Expansion**\n   *Link: [./archive/backend_task_domain_expansion_20260508/](./archive/backend_task_domain_expansion_20260508/)*\n   *Status: Complete*\ndiff --git a/tests/app/api/routes.test.ts b/tests/app/api/routes.test.ts\nindex 74bd3bb..7528285 100644\n--- a/tests/app/api/routes.test.ts\n+++ b/tests/app/api/routes.test.ts\n@@ -221,8 +221,9 @@ describe('API Routes', () => {\n   describe('GET /api/tasks', () => {\n     const mockTasks = [\n       { id: 'task-1', title: 'Task 1', difficulty: 'easy', description: 'Desc 1', version: '1.0', status: 'published' as const },\n-      { id: 'task-2', title: 'Task 2', difficulty: 'medium', description: 'Desc 2', version: '1.0', status: 'published' as const },\n-      { id: 'task-3', title: 'Task 3', difficulty: 'hard', description: 'Desc 3', version: '1.0', status: 'published' as const },\n+      { id: 'task-2', title: 'Task 2', difficulty: 'medium', description: 'Desc 2', version: '1.0', status: 'draft' as const },\n+      { id: 'task-3', title: 'Task 3', difficulty: 'hard', description: 'Desc 3', version: '1.0', status: 'review' as const },\n+      { id: 'task-4', title: 'Task 4', difficulty: 'easy', description: 'Desc 4', version: '1.0', status: 'draft' as const },\n     ];\n \n     it('should return all tasks when no filters provided', async () => {\n@@ -234,8 +235,8 @@ describe('API Routes', () => {\n       const data = await response.json();\n \n       expect(response.status).toBe(200);\n-      expect(data.count).toBe(3);\n-      expect(data.tasks).toHaveLength(3);\n+      expect(data.count).toBe(4);\n+      expect(data.tasks).toHaveLength(4);\n     });\n \n     it('should filter tasks by difficulty', async () => {\n@@ -250,6 +251,83 @@ describe('API Routes', () => {\n       expect(data.count).toBe(1);\n       expect(data.tasks[0].id).toBe('task-2');\n     });\n+\n+    it('should filter tasks by status', async () => {\n+      // eslint-disable-next-line @typescript-eslint/no-explicit-any\n+      vi.mocked(getTasks).mockResolvedValue(mockTasks as any);\n+\n+      const request = new NextRequest('http://localhost/api/tasks?status=draft');\n+      const response = await tasksHandler(request);\n+      const data = await response.json();\n+\n+      expect(response.status).toBe(200);\n+      expect(data.count).toBe(2);\n+      expect(data.tasks.every((t: { status: string }) => t.status === 'draft')).toBe(true);\n+    });\n+\n+    it('should filter tasks by status review', async () => {\n+      // eslint-disable-next-line @typescript-eslint/no-explicit-any\n+      vi.mocked(getTasks).mockResolvedValue(mockTasks as any);\n+\n+      const request = new NextRequest('http://localhost/api/tasks?status=review');\n+      const response = await tasksHandler(request);\n+      const data = await response.json();\n+\n+      expect(response.status).toBe(200);\n+      expect(data.count).toBe(1);\n+      expect(data.tasks[0].status).toBe('review');\n+    });\n+\n+    it('should filter tasks by status published', async () => {\n+      // eslint-disable-next-line @typescript-eslint/no-explicit-any\n+      vi.mocked(getTasks).mockResolvedValue(mockTasks as any);\n+\n+      const request = new NextRequest('http://localhost/api/tasks?status=published');\n+      const response = await tasksHandler(request);\n+      const data = await response.json();\n+\n+      expect(response.status).toBe(200);\n+      expect(data.count).toBe(1);\n+      expect(data.tasks[0].status).toBe('published');\n+    });\n+\n+    it('should ignore invalid status values', async () => {\n+      // eslint-disable-next-line @typescript-eslint/no-explicit-any\n+      vi.mocked(getTasks).mockResolvedValue(mockTasks as any);\n+\n+      const request = new NextRequest('http://localhost/api/tasks?status=invalid');\n+      const response = await tasksHandler(request);\n+      const data = await response.json();\n+\n+      expect(response.status).toBe(200);\n+      expect(data.count).toBe(4);\n+    });\n+\n+    it('should combine difficulty and status filters', async () => {\n+      // eslint-disable-next-line @typescript-eslint/no-explicit-any\n+      vi.mocked(getTasks).mockResolvedValue(mockTasks as any);\n+\n+      const request = new NextRequest('http://localhost/api/tasks?difficulty=easy&status=draft');\n+      const response = await tasksHandler(request);\n+      const data = await response.json();\n+\n+      expect(response.status).toBe(200);\n+      expect(data.count).toBe(1);\n+      expect(data.tasks[0].id).toBe('task-4');\n+    });\n+\n+    it('should return empty array when combined filters match nothing', async () => {\n+      // eslint-disable-next-line @typescript-eslint/no-explicit-any\n+      vi.mocked(getTasks).mockResolvedValue(mockTasks as any);\n+\n+      const request = new NextRequest('http://localhost/api/tasks?difficulty=hard&status=published');\n+      const response = await tasksHandler(request);\n+      const data = await response.json();\n+\n+      expect(response.status).toBe(200);\n+      expect(data.count).toBe(0);\n+      expect(data.tasks).toHaveLength(0);\n+    });\n   });\n \n   describe('GET /api/tasks/[id]', () => {\n",
+  "test_results": [
+    {
+      "suite": "unit",
+      "name": "CI=true npx vitest run tests/app/api/routes.test.ts",
+      "status": "pass",
+      "duration_ms": 5480
+    },
+    {
+      "suite": "lint",
+      "name": "npm run lint -- app/api/tasks/route.ts tests/app/api/routes.test.ts",
+      "status": "pass"
+    },
+    {
+      "suite": "build",
+      "name": "npm run build",
+      "status": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "opencode-events.jsonl",
+      "type": "log",
+      "url": "/artifacts/manual-kimi-k2p6-task-status-filter-20260601/opencode-events.jsonl",
+      "size_bytes": 188878
+    },
+    {
+      "name": "diff.patch",
+      "type": "report",
+      "url": "/artifacts/manual-kimi-k2p6-task-status-filter-20260601/diff.patch",
+      "size_bytes": 6433
+    },
+    {
+      "name": "verification.txt",
+      "type": "report",
+      "url": "/artifacts/manual-kimi-k2p6-task-status-filter-20260601/verification.txt",
+      "size_bytes": 895
+    }
+  ]
+}

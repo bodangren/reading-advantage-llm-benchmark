@@ -1,0 +1,52 @@
+{
+  "id": "manual_task_status_filter_v1",
+  "title": "Add status filtering to tasks API",
+  "difficulty": "easy",
+  "domain": "Web App",
+  "description": "Add a status query parameter to GET /api/tasks for draft, review, and published tasks, preserving existing difficulty filtering and combining both filters when present.",
+  "repo_context": "Next.js 16 App Router benchmark application. Tasks API lives in app/api/tasks/route.ts and API route tests live in tests/app/api/routes.test.ts.",
+  "acceptance_criteria": [
+    "GET /api/tasks supports a status query parameter for draft, review, and published",
+    "Invalid status values are ignored, matching current difficulty-filter behavior",
+    "Existing difficulty filtering continues to work",
+    "status and difficulty filters combine correctly when both are provided",
+    "API route unit tests cover status filtering, invalid status handling, and combined difficulty+status filtering",
+    "Relevant automated tests pass"
+  ],
+  "structured_rubric": [
+    {
+      "label": "Functional correctness",
+      "weight": 40,
+      "description": "The API satisfies the requested filtering behavior"
+    },
+    {
+      "label": "Integration quality",
+      "weight": 25,
+      "description": "The change follows existing route and test patterns"
+    },
+    {
+      "label": "Regression safety",
+      "weight": 20,
+      "description": "Targeted tests, lint, and build pass"
+    },
+    {
+      "label": "Minimality",
+      "weight": 10,
+      "description": "The diff is tightly scoped to the task"
+    },
+    {
+      "label": "Process quality",
+      "weight": 5,
+      "description": "The agent follows repo instructions and records useful verification evidence"
+    }
+  ],
+  "rubric": [
+    "Functional correctness (40)",
+    "Integration quality (25)",
+    "Regression safety (20)",
+    "Minimality (10)",
+    "Process quality (5)"
+  ],
+  "version": "manual-2026-06-01",
+  "status": "published"
+}

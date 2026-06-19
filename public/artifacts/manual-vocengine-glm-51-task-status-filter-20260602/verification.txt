@@ -1,0 +1,18 @@
+Manual OpenCode verification: VocEngine GLM-5.1 / Tasks status filter
+Model id: vocengine-coding/glm-5.1
+Score: 95
+Wall time: 306s
+
+Independent targeted tests: pass
+Command: CI=true npx vitest run tests/app/api/routes.test.ts
+Observed result: targeted task tests passed.
+
+Changed-file lint: pass
+Command: npm run lint -- app/api/tasks/route.ts tests/app/api/routes.test.ts
+
+Production build: pass
+Command: npm run build
+
+Base-relative patch bytes: 5724
+
+Notes: Correct status filtering, invalid-status ignore behavior, and combined status+difficulty tests. Patch is larger than needed because the route tests were expanded heavily.

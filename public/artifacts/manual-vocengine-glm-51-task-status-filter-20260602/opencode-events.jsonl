@@ -1,0 +1,21 @@
+I'll start by reading the project context and understanding the codebase.
+Now let me check the Task schema and verify the status field values:
+Confirmed: valid statuses are `draft`, `review`, `published`. Now let me update the route and tests.
+Now add tests for the new behavior:
+I need to replace the old describe block with the expanded one:
+Now run the tests:
+All 21 tests pass. Here's a summary of the changes:
+
+**`app/api/tasks/route.ts`** — Added `status` query parameter support:
+- Reads `status` from search params
+- Valid values: `draft`, `review`, `published` (matches `TaskStatusSchema`)
+- Invalid values are ignored (no filter applied)
+- Chains with existing `difficulty` filter, so both can be combined
+
+**`tests/app/api/routes.test.ts`** — Added 6 new test cases:
+- Filter by `status=draft`, `status=review`, `status=published`
+- Invalid status value is ignored (returns all tasks)
+- Combined `status` + `difficulty` filters work
+- Combined filters returning empty results works
+
+**Test command/results:** `npx vitest run tests/app/api/routes.test.ts` — 21 passed, 0 failed.

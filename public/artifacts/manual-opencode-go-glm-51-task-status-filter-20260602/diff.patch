@@ -1,0 +1,156 @@
+diff --git a/app/api/tasks/route.ts b/app/api/tasks/route.ts
+index d15c003..bca9564 100644
+--- a/app/api/tasks/route.ts
++++ b/app/api/tasks/route.ts
+@@ -11,12 +11,19 @@ export async function GET(request: NextRequest) {
+   try {
+     const { searchParams } = new URL(request.url);
+     const difficulty = searchParams.get('difficulty');
++    const status = searchParams.get('status');
+ 
+     const tasks = await getTasks();
+ 
++    const validDifficulties = ['easy', 'medium', 'hard'];
++    const validStatuses = ['draft', 'review', 'published'];
++
+     let filtered = tasks;
+-    if (difficulty && ['easy', 'medium', 'hard'].includes(difficulty)) {
+-      filtered = tasks.filter(t => t.difficulty === difficulty);
++    if (difficulty && validDifficulties.includes(difficulty)) {
++      filtered = filtered.filter(t => t.difficulty === difficulty);
++    }
++    if (status && validStatuses.includes(status)) {
++      filtered = filtered.filter(t => t.status === status);
+     }
+ 
+     return NextResponse.json({
+diff --git a/tests/app/api/routes.test.ts b/tests/app/api/routes.test.ts
+index 74bd3bb..e4ffcaa 100644
+--- a/tests/app/api/routes.test.ts
++++ b/tests/app/api/routes.test.ts
+@@ -221,8 +221,9 @@ describe('API Routes', () => {
+   describe('GET /api/tasks', () => {
+     const mockTasks = [
+       { id: 'task-1', title: 'Task 1', difficulty: 'easy', description: 'Desc 1', version: '1.0', status: 'published' as const },
+-      { id: 'task-2', title: 'Task 2', difficulty: 'medium', description: 'Desc 2', version: '1.0', status: 'published' as const },
+-      { id: 'task-3', title: 'Task 3', difficulty: 'hard', description: 'Desc 3', version: '1.0', status: 'published' as const },
++      { id: 'task-2', title: 'Task 2', difficulty: 'medium', description: 'Desc 2', version: '1.0', status: 'review' as const },
++      { id: 'task-3', title: 'Task 3', difficulty: 'hard', description: 'Desc 3', version: '1.0', status: 'draft' as const },
++      { id: 'task-4', title: 'Task 4', difficulty: 'medium', description: 'Desc 4', version: '1.0', status: 'published' as const },
+     ];
+ 
+     it('should return all tasks when no filters provided', async () => {
+@@ -234,8 +235,8 @@ describe('API Routes', () => {
+       const data = await response.json();
+ 
+       expect(response.status).toBe(200);
+-      expect(data.count).toBe(3);
+-      expect(data.tasks).toHaveLength(3);
++      expect(data.count).toBe(4);
++      expect(data.tasks).toHaveLength(4);
+     });
+ 
+     it('should filter tasks by difficulty', async () => {
+@@ -246,10 +247,102 @@ describe('API Routes', () => {
+       const response = await tasksHandler(request);
+       const data = await response.json();
+ 
++      expect(response.status).toBe(200);
++      expect(data.count).toBe(2);
++      expect(data.tasks.every((t: { difficulty: string }) => t.difficulty === 'medium')).toBe(true);
++    });
++
++    it('should filter tasks by status', async () => {
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      vi.mocked(getTasks).mockResolvedValue(mockTasks as any);
++
++      const request = new NextRequest('http://localhost/api/tasks?status=published');
++      const response = await tasksHandler(request);
++      const data = await response.json();
++
++      expect(response.status).toBe(200);
++      expect(data.count).toBe(2);
++      expect(data.tasks.every((t: { status: string }) => t.status === 'published')).toBe(true);
++    });
++
++    it('should filter tasks by draft status', async () => {
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      vi.mocked(getTasks).mockResolvedValue(mockTasks as any);
++
++      const request = new NextRequest('http://localhost/api/tasks?status=draft');
++      const response = await tasksHandler(request);
++      const data = await response.json();
++
++      expect(response.status).toBe(200);
++      expect(data.count).toBe(1);
++      expect(data.tasks[0].id).toBe('task-3');
++    });
++
++    it('should filter tasks by review status', async () => {
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      vi.mocked(getTasks).mockResolvedValue(mockTasks as any);
++
++      const request = new NextRequest('http://localhost/api/tasks?status=review');
++      const response = await tasksHandler(request);
++      const data = await response.json();
++
+       expect(response.status).toBe(200);
+       expect(data.count).toBe(1);
+       expect(data.tasks[0].id).toBe('task-2');
+     });
++
++    it('should ignore invalid status values', async () => {
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      vi.mocked(getTasks).mockResolvedValue(mockTasks as any);
++
++      const request = new NextRequest('http://localhost/api/tasks?status=invalid');
++      const response = await tasksHandler(request);
++      const data = await response.json();
++
++      expect(response.status).toBe(200);
++      expect(data.count).toBe(4);
++      expect(data.tasks).toHaveLength(4);
++    });
++
++    it('should combine status and difficulty filters', async () => {
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      vi.mocked(getTasks).mockResolvedValue(mockTasks as any);
++
++      const request = new NextRequest('http://localhost/api/tasks?status=published&difficulty=medium');
++      const response = await tasksHandler(request);
++      const data = await response.json();
++
++      expect(response.status).toBe(200);
++      expect(data.count).toBe(1);
++      expect(data.tasks[0].id).toBe('task-4');
++      expect(data.tasks[0].status).toBe('published');
++      expect(data.tasks[0].difficulty).toBe('medium');
++    });
++
++    it('should return empty result when combined filters match nothing', async () => {
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      vi.mocked(getTasks).mockResolvedValue(mockTasks as any);
++
++      const request = new NextRequest('http://localhost/api/tasks?status=draft&difficulty=medium');
++      const response = await tasksHandler(request);
++      const data = await response.json();
++
++      expect(response.status).toBe(200);
++      expect(data.count).toBe(0);
++      expect(data.tasks).toHaveLength(0);
++    });
++
++    it('should return empty result when valid status and difficulty have no overlap', async () => {
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      vi.mocked(getTasks).mockResolvedValue(mockTasks as any);
++
++      const request = new NextRequest('http://localhost/api/tasks?status=review&difficulty=hard');
++      const response = await tasksHandler(request);
++      const data = await response.json();
++
++      expect(response.status).toBe(200);
++      expect(data.count).toBe(0);
++    });
+   });
+ 
+   describe('GET /api/tasks/[id]', () => {

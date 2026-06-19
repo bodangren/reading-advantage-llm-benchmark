@@ -1,0 +1,65 @@
+{
+  "id": "manual-opencode-go-deepseek-v4-pro-task-status-filter-20260602",
+  "model": "DeepSeek V4 Pro",
+  "provider": "OpenCode Go",
+  "harness": "opencode",
+  "harness_version": "manual-opencode-cli",
+  "benchmark_version": "manual-2026-06-02",
+  "dataset_version": "2026-06-02",
+  "task_id": "manual_task_status_filter_v1",
+  "task_domain": "Web App",
+  "run_date": "2026-06-02T10:50:00+08:00",
+  "wall_time_seconds": 572,
+  "total_score": 0.96,
+  "scores": {
+    "functional_correctness": 40,
+    "integration_quality": 25,
+    "regression_safety": 20,
+    "minimality": 8,
+    "process_quality": 3
+  },
+  "diff": "diff --git a/app/api/tasks/route.ts b/app/api/tasks/route.ts\nindex d15c003..ef259d5 100644\n--- a/app/api/tasks/route.ts\n+++ b/app/api/tasks/route.ts\n@@ -11,12 +11,18 @@ export async function GET(request: NextRequest) {\n   try {\n     const { searchParams } = new URL(request.url);\n     const difficulty = searchParams.get('difficulty');\n+    const status = searchParams.get('status');\n \n     const tasks = await getTasks();\n \n     let filtered = tasks;\n+\n     if (difficulty && ['easy', 'medium', 'hard'].includes(difficulty)) {\n-      filtered = tasks.filter(t => t.difficulty === difficulty);\n+      filtered = filtered.filter(t => t.difficulty === difficulty);\n+    }\n+\n+    if (status && ['draft', 'review', 'published'].includes(status)) {\n+      filtered = filtered.filter(t => t.status === status);\n     }\n \n     return NextResponse.json({\ndiff --git a/tests/app/api/routes.test.ts b/tests/app/api/routes.test.ts\nindex 74bd3bb..692a66c 100644\n--- a/tests/app/api/routes.test.ts\n+++ b/tests/app/api/routes.test.ts\n@@ -221,8 +221,8 @@ describe('API Routes', () => {\n   describe('GET /api/tasks', () => {\n     const mockTasks = [\n       { id: 'task-1', title: 'Task 1', difficulty: 'easy', description: 'Desc 1', version: '1.0', status: 'published' as const },\n-      { id: 'task-2', title: 'Task 2', difficulty: 'medium', description: 'Desc 2', version: '1.0', status: 'published' as const },\n-      { id: 'task-3', title: 'Task 3', difficulty: 'hard', description: 'Desc 3', version: '1.0', status: 'published' as const },\n+      { id: 'task-2', title: 'Task 2', difficulty: 'medium', description: 'Desc 2', version: '1.0', status: 'draft' as const },\n+      { id: 'task-3', title: 'Task 3', difficulty: 'hard', description: 'Desc 3', version: '1.0', status: 'review' as const },\n     ];\n \n     it('should return all tasks when no filters provided', async () => {\n@@ -250,6 +250,50 @@ describe('API Routes', () => {\n       expect(data.count).toBe(1);\n       expect(data.tasks[0].id).toBe('task-2');\n     });\n+\n+    it('should filter tasks by status', async () => {\n+      // eslint-disable-next-line @typescript-eslint/no-explicit-any\n+      vi.mocked(getTasks).mockResolvedValue(mockTasks as any);\n+\n+      const request = new NextRequest('http://localhost/api/tasks?status=published');\n+      const response = await tasksHandler(request);\n+      const data = await response.json();\n+\n+      expect(response.status).toBe(200);\n+      expect(data.count).toBe(1);\n+      expect(data.tasks[0].id).toBe('task-1');\n+    });\n+\n+    it('should ignore invalid status values', async () => {\n+      // eslint-disable-next-line @typescript-eslint/no-explicit-any\n+      vi.mocked(getTasks).mockResolvedValue(mockTasks as any);\n+\n+      const request = new NextRequest('http://localhost/api/tasks?status=archived');\n+      const response = await tasksHandler(request);\n+      const data = await response.json();\n+\n+      expect(response.status).toBe(200);\n+      expect(data.count).toBe(3);\n+    });\n+\n+    it('should combine status and difficulty filters', async () => {\n+      const combinedTasks = [\n+        { id: 'task-1', title: 'Task 1', difficulty: 'easy', description: 'Desc 1', version: '1.0', status: 'published' as const },\n+        { id: 'task-2', title: 'Task 2', difficulty: 'easy', description: 'Desc 2', version: '1.0', status: 'draft' as const },\n+        { id: 'task-3', title: 'Task 3', difficulty: 'hard', description: 'Desc 3', version: '1.0', status: 'published' as const },\n+      ];\n+\n+      // eslint-disable-next-line @typescript-eslint/no-explicit-any\n+      vi.mocked(getTasks).mockResolvedValue(combinedTasks as any);\n+\n+      const request = new NextRequest('http://localhost/api/tasks?status=published&difficulty=easy');\n+      const response = await tasksHandler(request);\n+      const data = await response.json();\n+\n+      expect(response.status).toBe(200);\n+      expect(data.count).toBe(1);\n+      expect(data.tasks[0].id).toBe('task-1');\n+    });\n   });\n \n   describe('GET /api/tasks/[id]', () => {\n",
+  "test_results": [
+    {
+      "suite": "targeted",
+      "name": "CI=true npx vitest run tests/app/api/routes.test.ts",
+      "status": "pass"
+    },
+    {
+      "suite": "lint",
+      "name": "npm run lint -- app/api/tasks/route.ts tests/app/api/routes.test.ts",
+      "status": "pass"
+    },
+    {
+      "suite": "build",
+      "name": "npm run build",
+      "status": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "opencode-events.jsonl",
+      "type": "log",
+      "url": "/artifacts/manual-opencode-go-deepseek-v4-pro-task-status-filter-20260602/opencode-events.jsonl",
+      "size_bytes": 1867
+    },
+    {
+      "name": "opencode-stderr.log",
+      "type": "log",
+      "url": "/artifacts/manual-opencode-go-deepseek-v4-pro-task-status-filter-20260602/opencode-stderr.log",
+      "size_bytes": 658883
+    },
+    {
+      "name": "diff.patch",
+      "type": "report",
+      "url": "/artifacts/manual-opencode-go-deepseek-v4-pro-task-status-filter-20260602/diff.patch",
+      "size_bytes": 4031
+    },
+    {
+      "name": "verification.txt",
+      "type": "report",
+      "url": "/artifacts/manual-opencode-go-deepseek-v4-pro-task-status-filter-20260602/verification.txt",
+      "size_bytes": 598
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+Manual OpenCode verification: VocEngine GLM-5.1 / Runs datasetVersion filter
+Model id: vocengine-coding/glm-5.1
+Score: 96
+Wall time: 798.2s
+
+Independent targeted tests: pass
+Command: CI=true npx vitest run tests/lib/export.test.ts tests/app/api/routes.test.ts
+Observed result: targeted task tests passed.
+
+Changed-file lint: pass
+Command: npm run lint -- app/api/runs/route.ts src/lib/export.ts tests/lib/export.test.ts tests/app/api/routes.test.ts
+
+Production build: pass
+Command: npm run build
+
+Base-relative patch bytes: 4597
+
+Notes: Correct shared datasetVersion filter and route wiring. Independent utility/route suite, changed-file lint, and build passed. Lacked a new API route assertion for datasetVersion, so integration score is capped.

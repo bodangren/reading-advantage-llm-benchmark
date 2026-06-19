@@ -1,0 +1,18 @@
+Manual OpenCode verification: DeepSeek V4 Pro / Runs datasetVersion filter
+Model id: opencode-go/deepseek-v4-pro
+Score: 97
+Wall time: 707.4s
+
+Independent targeted tests: pass
+Command: CI=true npx vitest run tests/lib/export.test.ts tests/app/api/routes.test.ts
+Observed result: targeted task tests passed.
+
+Changed-file lint: pass
+Command: npm run lint -- app/api/runs/route.ts src/lib/export.ts tests/lib/export.test.ts tests/app/api/routes.test.ts
+
+Production build: pass
+Command: npm run build
+
+Base-relative patch bytes: 5588
+
+Notes: Correct route and shared utility implementation with API and utility coverage. Independent tests, lint, and build passed.

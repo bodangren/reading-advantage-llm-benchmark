@@ -1,0 +1,9 @@
+Now let me add tests for the new status filtering behavior:
+All 21 tests pass. Let me also run lint:
+Done. The 2 type errors are pre-existing in `tests/lib/pipeline/harness-backend.test.ts` — unrelated to this change.
+
+**Changes:**
+- `app/api/tasks/route.ts` — Added `status` query param support (`draft`, `review`, `published`); invalid values are ignored; composes with existing `difficulty` filter.
+- `tests/app/api/routes.test.ts` — Added 6 new tests: filter by each valid status, invalid status ignored, combined filters, combined with invalid status ignored. Updated mock data to include varied statuses.
+
+**Test results:** `npx vitest run tests/app/api/routes.test.ts` — 21/21 passed. Lint clean.

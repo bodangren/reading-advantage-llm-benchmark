@@ -1,0 +1,60 @@
+{
+  "id": "manual-minimax-m3-dataset-filter-20260601",
+  "model": "MiniMax-M3",
+  "provider": "MiniMax",
+  "harness": "opencode",
+  "harness_version": "manual-opencode-cli",
+  "benchmark_version": "manual-2026-06-01",
+  "dataset_version": "2026-06-01",
+  "task_id": "manual_dataset_version_filter_v1",
+  "task_domain": "Web App",
+  "run_date": "2026-06-01T18:15:08+08:00",
+  "wall_time_seconds": 264.7,
+  "total_score": 0.97,
+  "scores": {
+    "functional_correctness": 40,
+    "integration_quality": 24,
+    "regression_safety": 20,
+    "minimality": 10,
+    "process_quality": 3
+  },
+  "diff": "diff --git a/app/api/runs/route.ts b/app/api/runs/route.ts\nindex abc8d7a..38fa967 100644\n--- a/app/api/runs/route.ts\n+++ b/app/api/runs/route.ts\n@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {\n     if (searchParams.has('endDate')) filters.endDate = searchParams.get('endDate')!;\n     if (searchParams.has('minScore')) filters.minScore = parseFloat(searchParams.get('minScore')!);\n     if (searchParams.has('maxScore')) filters.maxScore = parseFloat(searchParams.get('maxScore')!);\n+    if (searchParams.has('datasetVersion')) filters.datasetVersion = searchParams.get('datasetVersion')!;\n \n     const limit = searchParams.has('limit') ? parseInt(searchParams.get('limit')!, 10) : 100;\n     const offset = searchParams.has('offset') ? parseInt(searchParams.get('offset')!, 10) : 0;\ndiff --git a/src/lib/export.ts b/src/lib/export.ts\nindex abf1026..1d6c810 100644\n--- a/src/lib/export.ts\n+++ b/src/lib/export.ts\n@@ -7,6 +7,7 @@ export interface QueryFilters {\n   endDate?: string;\n   minScore?: number;\n   maxScore?: number;\n+  datasetVersion?: string;\n }\n \n export interface SummaryStats {\n@@ -35,6 +36,9 @@ export function filterRuns(runs: RunDetail[], filters: QueryFilters): RunDetail[\n     if (filters.maxScore !== undefined && run.total_score > filters.maxScore) {\n       return false;\n     }\n+    if (filters.datasetVersion && run.dataset_version !== filters.datasetVersion) {\n+      return false;\n+    }\n     return true;\n   });\n }\ndiff --git a/tests/lib/export.test.ts b/tests/lib/export.test.ts\nindex 5cfe1cc..fcd9e71 100644\n--- a/tests/lib/export.test.ts\n+++ b/tests/lib/export.test.ts\n@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';\n import type { RunDetail } from '../../src/lib/schemas';\n import { filterRuns, computeStats, exportToCSV, type QueryFilters } from '../../src/lib/export';\n \n-function createMockRun(id: string, model: string, runDate: string, totalScore: number, taskId?: string): RunDetail {\n+function createMockRun(id: string, model: string, runDate: string, totalScore: number, taskId?: string, datasetVersion?: string): RunDetail {\n   return {\n     id,\n     model,\n@@ -22,6 +22,7 @@ function createMockRun(id: string, model: string, runDate: string, totalScore: n\n     test_results: [],\n     artifacts: [],\n     task_id: taskId,\n+    dataset_version: datasetVersion,\n   };\n }\n \n@@ -81,6 +82,37 @@ describe('Query Filtering', () => {\n     const filtered = filterRuns(runs, {});\n     expect(filtered).toHaveLength(runs.length);\n   });\n+\n+  it('should filter by datasetVersion', () => {\n+    const runsWithVersions: RunDetail[] = [\n+      createMockRun('run-1', 'gpt-4o', '2026-04-01', 0.85, 'task-1', '2026-04-07'),\n+      createMockRun('run-2', 'gpt-4o', '2026-04-05', 0.75, 'task-2', '2026-04-07'),\n+      createMockRun('run-3', 'claude-3', '2026-04-01', 0.90, 'task-1', '2026-04-14'),\n+      createMockRun('run-4', 'claude-3', '2026-04-10', 0.88, 'task-3', '2026-04-14'),\n+      createMockRun('run-5', 'gpt-4o', '2026-03-01', 0.70, 'task-1'),\n+    ];\n+\n+    const filtered = filterRuns(runsWithVersions, { datasetVersion: '2026-04-07' });\n+    expect(filtered).toHaveLength(2);\n+    expect(filtered.every(r => r.dataset_version === '2026-04-07')).toBe(true);\n+  });\n+\n+  it('should filter by datasetVersion combined with model', () => {\n+    const runsWithVersions: RunDetail[] = [\n+      createMockRun('run-1', 'gpt-4o', '2026-04-01', 0.85, 'task-1', '2026-04-07'),\n+      createMockRun('run-2', 'gpt-4o', '2026-04-05', 0.75, 'task-2', '2026-04-07'),\n+      createMockRun('run-3', 'claude-3', '2026-04-01', 0.90, 'task-1', '2026-04-07'),\n+      createMockRun('run-4', 'claude-3', '2026-04-10', 0.88, 'task-3', '2026-04-14'),\n+      createMockRun('run-5', 'gpt-4o', '2026-03-01', 0.70, 'task-1', '2026-04-14'),\n+    ];\n+\n+    const filtered = filterRuns(runsWithVersions, {\n+      datasetVersion: '2026-04-07',\n+      model: 'gpt-4o',\n+    });\n+    expect(filtered).toHaveLength(2);\n+    expect(filtered.every(r => r.dataset_version === '2026-04-07' && r.model === 'gpt-4o')).toBe(true);\n+  });\n });\n \n describe('Summary Statistics', () => {\n",
+  "test_results": [
+    {
+      "suite": "unit",
+      "name": "CI=true npx vitest run tests/lib/export.test.ts",
+      "status": "pass",
+      "duration_ms": 1700
+    },
+    {
+      "suite": "lint",
+      "name": "npm run lint -- app/api/runs/route.ts src/lib/export.ts tests/lib/export.test.ts",
+      "status": "pass"
+    },
+    {
+      "suite": "build",
+      "name": "npm run build",
+      "status": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "opencode-events.jsonl",
+      "type": "log",
+      "url": "/artifacts/manual-minimax-m3-dataset-filter-20260601/opencode-events.jsonl",
+      "size_bytes": 162997
+    },
+    {
+      "name": "diff.patch",
+      "type": "report",
+      "url": "/artifacts/manual-minimax-m3-dataset-filter-20260601/diff.patch",
+      "size_bytes": 4107
+    },
+    {
+      "name": "verification.txt",
+      "type": "report",
+      "url": "/artifacts/manual-minimax-m3-dataset-filter-20260601/verification.txt",
+      "size_bytes": 955
+    }
+  ]
+}

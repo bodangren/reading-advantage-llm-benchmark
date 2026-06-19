@@ -1,0 +1,51 @@
+{
+  "id": "manual_dataset_version_filter_v1",
+  "title": "Add datasetVersion filtering to runs API",
+  "difficulty": "easy",
+  "domain": "Web App",
+  "description": "Add a datasetVersion query parameter to GET /api/runs, implemented through the shared run filtering utility with tests for the new filter and interaction with an existing filter.",
+  "repo_context": "Next.js 16 App Router benchmark application. Runs API lives in app/api/runs/route.ts; shared filtering logic lives in src/lib/export.ts; tests use Vitest.",
+  "acceptance_criteria": [
+    "GET /api/runs supports a datasetVersion query parameter",
+    "Filtering is implemented in the shared run filtering utility, not only inline in the route",
+    "Existing filters continue to work",
+    "Unit tests cover datasetVersion filtering and interaction with at least one existing filter",
+    "Relevant automated tests pass"
+  ],
+  "structured_rubric": [
+    {
+      "label": "Functional correctness",
+      "weight": 40,
+      "description": "The API and shared filtering utility satisfy the requested behavior"
+    },
+    {
+      "label": "Integration quality",
+      "weight": 25,
+      "description": "The change follows existing route and utility patterns"
+    },
+    {
+      "label": "Regression safety",
+      "weight": 20,
+      "description": "Targeted tests, lint, and build pass"
+    },
+    {
+      "label": "Minimality",
+      "weight": 10,
+      "description": "The diff is tightly scoped to the task"
+    },
+    {
+      "label": "Process quality",
+      "weight": 5,
+      "description": "The agent follows repo instructions and records useful verification evidence"
+    }
+  ],
+  "rubric": [
+    "Functional correctness (40)",
+    "Integration quality (25)",
+    "Regression safety (20)",
+    "Minimality (10)",
+    "Process quality (5)"
+  ],
+  "version": "manual-2026-06-01",
+  "status": "published"
+}

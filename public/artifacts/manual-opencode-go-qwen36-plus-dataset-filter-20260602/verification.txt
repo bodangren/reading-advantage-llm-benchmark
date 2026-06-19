@@ -1,0 +1,18 @@
+Manual OpenCode verification: Qwen3.6 Plus / Runs datasetVersion filter
+Model id: opencode-go/qwen3.6-plus
+Score: 98
+Wall time: 558.1s
+
+Independent targeted tests: pass
+Command: CI=true npx vitest run tests/lib/export.test.ts tests/app/api/routes.test.ts
+Observed result: targeted task tests passed.
+
+Changed-file lint: pass
+Command: npm run lint -- app/api/runs/route.ts src/lib/export.ts tests/lib/export.test.ts tests/app/api/routes.test.ts
+
+Production build: pass
+Command: npm run build
+
+Base-relative patch bytes: 5893
+
+Notes: Correct route and shared utility implementation with focused API and utility coverage. Independent tests, lint, and build passed.

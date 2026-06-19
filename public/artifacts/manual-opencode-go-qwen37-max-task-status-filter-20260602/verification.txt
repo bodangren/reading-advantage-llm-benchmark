@@ -1,0 +1,18 @@
+Manual OpenCode verification: Qwen3.7 Max / Tasks status filter
+Model id: opencode-go/qwen3.7-max
+Score: 96
+Wall time: 313s
+
+Independent targeted tests: pass
+Command: CI=true npx vitest run tests/app/api/routes.test.ts
+Observed result: targeted task tests passed.
+
+Changed-file lint: pass
+Command: npm run lint -- app/api/tasks/route.ts tests/app/api/routes.test.ts
+
+Production build: pass
+Command: npm run build
+
+Base-relative patch bytes: 5938
+
+Notes: Correct implementation and route coverage. The test expansion is broader than the task required, but verification passed.

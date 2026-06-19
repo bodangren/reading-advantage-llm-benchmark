@@ -1,0 +1,15 @@
+Now I have full context. Let me update the route handler and tests.
+Now update the test file — expand mock tasks to cover different statuses and add status filtertests:
+All 22 tests pass. Here's a summary of the changes:
+
+**`app/api/tasks/route.ts`** — Added `status` query parameter filtering alongside existing `difficulty` filtering. Valid values: `draft`, `review`, `published`. Invalid values are ignored (no filter applied). Both filters compose independently.
+
+**`tests/app/api/routes.test.ts`** — Expanded mock tasks to include all three statuses (`draft`, `review`, `published`). Added 6 new test cases:
+- Filter by `status=published` (returns 2 matching)
+- Filter by `status=draft` (returns 1)
+- Filter by `status=review` (returns 1)
+- Invalid status value ignored (returns all)
+- Combined `status` + `difficulty` filter
+- Combined filter with no matches returns empty
+
+**Test command**: `npx vitest run tests/app/api/routes.test.ts` — **22 passed, 0 failed**

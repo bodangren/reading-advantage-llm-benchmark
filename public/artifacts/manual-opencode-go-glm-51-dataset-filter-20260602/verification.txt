@@ -1,0 +1,18 @@
+Manual OpenCode verification: OpenCode-Go GLM-5.1 / Runs datasetVersion filter
+Model id: opencode-go/glm-5.1
+Score: 42
+Wall time: 817s
+
+Independent targeted tests: fail
+Command: CI=true npx vitest run tests/lib/export.test.ts tests/app/api/routes.test.ts
+Observed failure: GET /api/runs did not apply datasetVersion because root app/api/runs/route.ts was not wired; tests expected filtered counts and received unfiltered counts.
+
+Changed-file lint: pass
+Command: npm run lint -- app/api/runs/route.ts src/lib/export.ts tests/lib/export.test.ts tests/app/api/routes.test.ts
+
+Production build: pass
+Command: npm run build
+
+Base-relative patch bytes: 5356
+
+Notes: Failed the datasetVersion route acceptance check: it updated the shared utility and tests but did not wire the root app/api/runs route. It also created unrelated src/app/api route files. Independent targeted tests failed, though lint and build passed.

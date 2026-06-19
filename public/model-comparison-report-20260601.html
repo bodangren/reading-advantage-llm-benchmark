@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenCode Benchmark Comparison</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0d1117;
+      --panel: #161b22;
+      --panel-2: #11161f;
+      --border: #30363d;
+      --grid: rgba(139, 148, 158, 0.24);
+      --text: #f0f6fc;
+      --muted: #8b949e;
+      --blue: #58a6ff;
+      --green: #2ea043;
+      --red: #ff7b72;
+      --violet: #a371f7;
+      --cyan: #39c5cf;
+      --gold: #d29922;
+      --pink: #ff6b9d;
+      --mint: #56d4a2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 30% 0%, rgba(88, 166, 255, 0.12), transparent 28rem),
+        radial-gradient(circle at 80% 10%, rgba(163, 113, 247, 0.10), transparent 24rem),
+        var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    header {
+      padding: 56px 24px 38px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      background: rgba(22, 27, 34, 0.58);
+    }
+
+    h1 {
+      margin: 0 0 18px;
+      font-size: clamp(2rem, 5vw, 3.35rem);
+      line-height: 1.05;
+      color: #83a6ff;
+      text-shadow: 0 0 28px rgba(88, 166, 255, 0.22);
+    }
+
+    header p {
+      max-width: 820px;
+      margin: 0 auto;
+      color: #a7b5c8;
+      font-size: 1.05rem;
+      line-height: 1.55;
+    }
+
+    main {
+      width: min(1280px, calc(100vw - 34px));
+      margin: 0 auto;
+      padding: 30px 0 56px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .leader-card,
+    .chart-card,
+    .note-card {
+      background: linear-gradient(180deg, rgba(22, 27, 34, 0.96), rgba(18, 23, 31, 0.96));
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+    }
+
+    .leader-card {
+      min-height: 162px;
+      padding: 20px 22px;
+    }
+
+    .model-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 18px;
+      font-size: 1.05rem;
+      font-weight: 750;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: currentColor;
+      box-shadow: 0 0 18px currentColor;
+      flex: 0 0 auto;
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stat-box {
+      min-height: 84px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      background: #0d1117;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 10px 8px;
+    }
+
+    .stat-box span {
+      color: var(--muted);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      text-align: center;
+    }
+
+    .stat-box strong {
+      margin-top: 8px;
+      color: currentColor;
+      font-size: 1.45rem;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-top: 22px;
+    }
+
+    .chart-card {
+      padding: 22px 24px 26px;
+      min-height: 390px;
+    }
+
+    .chart-card.wide {
+      grid-column: 1 / -1;
+      min-height: 430px;
+    }
+
+    .chart-card h2,
+    .note-card h2 {
+      margin: 0 0 18px;
+      font-size: 1.12rem;
+      color: var(--text);
+    }
+
+    .chart-frame {
+      height: 330px;
+      position: relative;
+    }
+
+    .chart-card.wide .chart-frame { height: 356px; }
+
+    .note-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .note-card {
+      padding: 20px 22px;
+    }
+
+    .note-card p {
+      margin: 0;
+      color: #b7c3d1;
+      line-height: 1.5;
+      font-size: 0.94rem;
+    }
+
+    .table-card {
+      margin-top: 22px;
+      overflow: hidden;
+    }
+
+    .table-scroll {
+      overflow: auto;
+      border-radius: 0 0 8px 8px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 1080px;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    th,
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #0d1117;
+      color: #a7b5c8;
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    td {
+      color: #dce7f5;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+    code { color: #a7b5c8; font-size: 0.78rem; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 23px;
+      border-radius: 999px;
+      padding: 2px 8px;
+      background: rgba(46, 160, 67, 0.16);
+      color: #74d98d;
+      font-weight: 700;
+      font-size: 0.76rem;
+    }
+
+    .badge.fail {
+      background: rgba(255, 123, 114, 0.16);
+      color: var(--red);
+    }
+
+    footer {
+      width: min(1280px, calc(100vw - 34px));
+      margin: 0 auto;
+      padding: 0 0 34px;
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 1050px) {
+      .summary-grid,
+      .chart-grid,
+      .note-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      header { padding-top: 38px; }
+      .stat-row { grid-template-columns: 1fr; }
+      .chart-card { padding: 18px 16px 22px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>OpenCode Benchmark Comparison</h1>
+    <p>Manual benchmark of eight coding models on two real-world API tasks, scored on correctness, integration, regression safety, minimality, and process. Updated June 2, 2026.</p>
+  </header>
+
+  <main>
+    <section class="summary-grid" aria-label="Top model summary">
+      <article class="leader-card" style="color: var(--mint)">
+        <h2 class="model-name"><span class="dot"></span>Qwen3.6 Plus</h2>
+        <div class="stat-row">
+          <div class="stat-box"><span>Avg Score</span><strong>98.0</strong></div>
+          <div class="stat-box"><span>Total Time</span><strong>18.5m</strong></div>
+          <div class="stat-box"><span>Rank</span><strong>#1</strong></div>
+        </div>
+      </article>
+      <article class="leader-card" style="color: var(--violet)">
+        <h2 class="model-name"><span class="dot"></span>Qwen3.7 Max</h2>
+        <div class="stat-row">
+          <div class="stat-box"><span>Avg Score</span><strong>97.0</strong></div>
+          <div class="stat-box"><span>Total Time</span><strong>12.9m</strong></div>
+          <div class="stat-box"><span>Rank</span><strong>#2</strong></div>
+        </div>
+      </article>
+      <article class="leader-card" style="color: var(--green)">
+        <h2 class="model-name"><span class="dot"></span>MiMo-V2.5-Pro</h2>
+        <div class="stat-row">
+          <div class="stat-box"><span>Avg Score</span><strong>96.5</strong></div>
+          <div class="stat-box"><span>Total Time</span><strong>5.4m</strong></div>
+          <div class="stat-box"><span>Orig Set</span><strong>#1</strong></div>
+        </div>
+      </article>
+      <article class="leader-card" style="color: var(--red)">
+        <h2 class="model-name"><span class="dot"></span>OpenCode-Go GLM-5.1</h2>
+        <div class="stat-row">
+          <div class="stat-box"><span>Avg Score</span><strong>68.5</strong></div>
+          <div class="stat-box"><span>Failed</span><strong>1</strong></div>
+          <div class="stat-box"><span>Recovered</span><strong>Yes</strong></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="chart-card wide">
+      <h2>Score Breakdown by Task</h2>
+      <div class="chart-frame"><canvas id="scoreChart"></canvas></div>
+    </section>
+
+    <section class="chart-grid">
+      <article class="chart-card">
+        <h2>Average Dimension Scores (Radar)</h2>
+        <div class="chart-frame"><canvas id="radarChart"></canvas></div>
+      </article>
+      <article class="chart-card">
+        <h2>Wall Clock Time per Task</h2>
+        <div class="chart-frame"><canvas id="timeChart"></canvas></div>
+      </article>
+      <article class="chart-card">
+        <h2>Token Usage per Model</h2>
+        <div class="chart-frame"><canvas id="tokenChart"></canvas></div>
+      </article>
+      <article class="chart-card">
+        <h2>Cost Breakdown per Model</h2>
+        <div class="chart-frame"><canvas id="costChart"></canvas></div>
+      </article>
+      <article class="chart-card wide">
+        <h2>Cost vs Time Quadrant</h2>
+        <div class="chart-frame"><canvas id="quadrantChart"></canvas></div>
+      </article>
+    </section>
+
+    <section class="note-grid">
+      <article class="note-card">
+        <h2>Best Overall</h2>
+        <p>Qwen3.6 Plus leads the expanded set with a 98.0 average and passing targeted verification on both API tasks.</p>
+      </article>
+      <article class="note-card">
+        <h2>Fastest Strong Run</h2>
+        <p>MiMo-V2.5-Pro remains the fastest high-scoring model overall, finishing both original runs in 5.4 minutes total.</p>
+      </article>
+      <article class="note-card">
+        <h2>Important Failure</h2>
+        <p>OpenCode-Go GLM-5.1 missed root route wiring on the datasetVersion task. It passed lint/build, but targeted tests failed.</p>
+      </article>
+    </section>
+
+    <section class="chart-card table-card">
+      <h2>Detailed Results</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>Model ID</th>
+              <th>Avg</th>
+              <th>Task 1</th>
+              <th>Task 2</th>
+              <th>Total Time</th>
+              <th>Result</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody id="resultsBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Costs use the daily automation method: token totals from OpenCode session data multiplied by per-1M-token pricing. MiniMax-M3 uses the current ≤512k-token discounted tier supplied for this report: $0.30 input, $1.20 output, and $0.06 cache-read per 1M tokens. For other models missing from the local pricing table, the chart falls back to OpenCode session-reported cost when available.
+  </footer>
+
+  <script>
+    const colors = {
+      qwen36: "#56d4a2",
+      qwen37: "#a371f7",
+      mimo: "#2ea043",
+      deepseek: "#39c5cf",
+      minimax: "#ff7b72",
+      voc: "#d29922",
+      k2p6: "#58a6ff",
+      glm: "#ff6b9d",
+    };
+
+    const models = [
+      { name: "Qwen3.6 Plus", id: "opencode-go/qwen3.6-plus", provider: "OpenCode Go", color: colors.qwen36, avg: 98, t1: 98, t2: 98, time: 1112.1, dims: [40, 25, 20, 9, 4], result: "Passed", note: "Best overall average; both tasks passed with focused route coverage.", tokens: { input: 198, output: 9816, reasoning: 0, cacheRead: 1159898, cacheWrite: 87401 }, cost: { input: 0, output: 0.142167525, cacheRead: 0, cacheWrite: 0, total: 0.142167525, source: "session-reported" } },
+      { name: "Qwen3.7 Max", id: "opencode-go/qwen3.7-max", provider: "OpenCode Go", color: colors.qwen37, avg: 97, t1: 98, t2: 96, time: 772.1, dims: [40, 25, 20, 8.5, 3.5], result: "Passed", note: "Second overall and faster than Qwen3.6 Plus.", tokens: { input: 174, output: 9205, reasoning: 0, cacheRead: 808261, cacheWrite: 68346 }, cost: { input: 0, output: 0.68718425, cacheRead: 0, cacheWrite: 0, total: 0.68718425, source: "session-reported" } },
+      { name: "MiMo-V2.5-Pro", id: "xiaomi/mimo-v2.5-pro", provider: "Xiaomi", color: colors.mimo, avg: 96.5, t1: 96, t2: 97, time: 323.9, dims: [39.5, 24, 20, 10, 3], result: "Passed", note: "Best original-model result and still competitive.", tokens: { input: 74784, output: 6897, reasoning: 1070, cacheRead: 1097344, cacheWrite: 0 }, cost: { input: 0.0074784, output: 0.0020691, cacheRead: 0.02194688, cacheWrite: 0, total: 0.03149438, source: "automation-pricing" } },
+      { name: "DeepSeek V4 Pro", id: "opencode-go/deepseek-v4-pro", provider: "OpenCode Go", color: colors.deepseek, avg: 96.5, t1: 97, t2: 96, time: 1279.4, dims: [40, 24.5, 20, 8.5, 3.5], result: "Passed", note: "Strong correctness with slower completion times.", tokens: { input: 96171, output: 9947, reasoning: 3305, cacheRead: 1413120, cacheWrite: 0 }, cost: { input: 0.04135353, output: 0.00865389, cacheRead: 0, cacheWrite: 0, total: 0.05000742, source: "automation-pricing" } },
+      { name: "MiniMax-M3", id: "minimax-cn-coding-plan/MiniMax-M3", provider: "MiniMax", color: colors.minimax, avg: 95.5, t1: 97, t2: 94, time: 777.7, dims: [40, 24, 20, 8, 3.5], result: "Passed", note: "Strong original run; second task was less minimal. Cost uses the supplied MiniMax-M3 ≤512k discounted tier.", tokens: { input: 228597, output: 14325, reasoning: 0, cacheRead: 1866696, cacheWrite: 0 }, cost: { input: 0.0685791, output: 0.01719, cacheRead: 0.11200176, cacheWrite: 0, total: 0.19777086, source: "supplied-minimax-pricing" } },
+      { name: "VocEngine GLM-5.1", id: "vocengine-coding/glm-5.1", provider: "VocEngine Coding", color: colors.voc, avg: 95.5, t1: 96, t2: 95, time: 1104.2, dims: [40, 24, 20, 8.5, 3], result: "Passed", note: "Good status result; dataset score capped for coverage gap.", tokens: { input: 1119000, output: 9014, reasoning: 2, cacheRead: 0, cacheWrite: 0 }, cost: { input: 1.5666, output: 0.0396616, cacheRead: 0, cacheWrite: 0, total: 1.6062616, source: "automation-pricing" } },
+      { name: "K2P6", id: "kimi-for-coding/k2p6", provider: "Kimi For Coding", color: colors.k2p6, avg: 95, t1: 96, t2: 94, time: 744.7, dims: [40, 24.5, 20, 7.5, 3], result: "Passed", note: "Useful coverage but less minimal on the status task.", tokens: { input: 87583, output: 11686, reasoning: 0, cacheRead: 1676032, cacheWrite: 0 }, cost: { input: 0.08320385, output: 0.046744, cacheRead: 0.26816512, cacheWrite: 0, total: 0.39811297, source: "automation-pricing" } },
+      { name: "OpenCode-Go GLM-5.1", id: "opencode-go/glm-5.1", provider: "OpenCode Go", color: colors.glm, avg: 68.5, t1: 42, t2: 95, time: 1057.0, dims: [29, 16.5, 15, 4.5, 3.5], result: "Failed Task 1", note: "Failed dataset route wiring, then recovered on status filter.", tokens: { input: 136149, output: 12323, reasoning: 0, cacheRead: 1869504, cacheWrite: 0 }, cost: { input: 0.1906086, output: 0.0542212, cacheRead: 0.48607104, cacheWrite: 0, total: 0.73090084, source: "automation-pricing" } },
+    ];
+
+    Chart.defaults.color = "#8b949e";
+    Chart.defaults.borderColor = "rgba(139, 148, 158, 0.24)";
+    Chart.defaults.font.family = 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+
+    const barOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { boxWidth: 28, boxHeight: 10 } },
+        tooltip: { backgroundColor: "#0d1117", borderColor: "#30363d", borderWidth: 1 },
+      },
+      scales: {
+        x: { grid: { color: "rgba(139, 148, 158, 0.16)" } },
+        y: { beginAtZero: true, grid: { color: "rgba(139, 148, 158, 0.20)" } },
+      },
+    };
+
+    new Chart(document.getElementById("scoreChart"), {
+      type: "bar",
+      data: {
+        labels: ["Task 1: datasetVersion", "Task 2: status filter"],
+        datasets: models.map(model => ({
+          label: model.name,
+          data: [model.t1, model.t2],
+          borderColor: model.color,
+          backgroundColor: model.color + "35",
+          borderWidth: 2,
+        })),
+      },
+      options: { ...barOptions, scales: { ...barOptions.scales, y: { ...barOptions.scales.y, min: 0, max: 100 } } },
+    });
+
+    new Chart(document.getElementById("radarChart"), {
+      type: "radar",
+      data: {
+        labels: ["Functional", "Integration", "Regression", "Minimality", "Process"],
+        datasets: models.slice(0, 5).map(model => ({
+          label: model.name,
+          data: model.dims,
+          borderColor: model.color,
+          backgroundColor: model.color + "24",
+          pointBackgroundColor: model.color,
+          borderWidth: 2,
+        })),
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { labels: { boxWidth: 26, boxHeight: 10 } } },
+        scales: {
+          r: {
+            min: 0,
+            max: 42,
+            angleLines: { color: "rgba(139, 148, 158, 0.20)" },
+            grid: { color: "rgba(139, 148, 158, 0.22)" },
+            pointLabels: { color: "#dce7f5" },
+          },
+        },
+      },
+    });
+
+    new Chart(document.getElementById("timeChart"), {
+      type: "bar",
+      data: {
+        labels: models.map(model => model.name),
+        datasets: [{
+          label: "Total wall time (seconds)",
+          data: models.map(model => model.time),
+          backgroundColor: models.map(model => model.color + "42"),
+          borderColor: models.map(model => model.color),
+          borderWidth: 2,
+        }],
+      },
+      options: barOptions,
+    });
+
+    new Chart(document.getElementById("tokenChart"), {
+      type: "bar",
+      data: {
+        labels: models.map(model => model.name),
+        datasets: [
+          { label: "Input", data: models.map(model => model.tokens.input), backgroundColor: "#c084fc", borderColor: "#c084fc", borderWidth: 1 },
+          { label: "Output", data: models.map(model => model.tokens.output), backgroundColor: "#39c5cf", borderColor: "#39c5cf", borderWidth: 1 },
+          { label: "Cache Read", data: models.map(model => model.tokens.cacheRead), backgroundColor: "#d29922", borderColor: "#d29922", borderWidth: 1 },
+          { label: "Cache Write", data: models.map(model => model.tokens.cacheWrite), backgroundColor: "#56d4a2", borderColor: "#56d4a2", borderWidth: 1 },
+        ],
+      },
+      options: barOptions,
+    });
+
+    new Chart(document.getElementById("costChart"), {
+      type: "bar",
+      data: {
+        labels: models.map(model => model.name),
+        datasets: [
+          { label: "Input", data: models.map(model => model.cost.input), backgroundColor: "#c084fc", borderColor: "#c084fc", borderWidth: 1 },
+          { label: "Output / reported fallback", data: models.map(model => model.cost.output), backgroundColor: "#39c5cf", borderColor: "#39c5cf", borderWidth: 1 },
+          { label: "Cache Read", data: models.map(model => model.cost.cacheRead), backgroundColor: "#d29922", borderColor: "#d29922", borderWidth: 1 },
+          { label: "Cache Write", data: models.map(model => model.cost.cacheWrite), backgroundColor: "#56d4a2", borderColor: "#56d4a2", borderWidth: 1 },
+        ],
+      },
+      options: barOptions,
+    });
+
+    new Chart(document.getElementById("quadrantChart"), {
+      type: "scatter",
+      data: {
+        datasets: models.map(model => ({
+          label: `${model.name} (${model.cost.source})`,
+          data: [{ x: model.time / 60, y: model.cost.total, score: model.avg }],
+          pointRadius: Math.max(7, model.avg / 8),
+          pointHoverRadius: Math.max(9, model.avg / 7),
+          backgroundColor: model.color + "cc",
+          borderColor: model.color,
+          borderWidth: 2,
+        })),
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { boxWidth: 14, boxHeight: 10 } },
+          tooltip: {
+            backgroundColor: "#0d1117",
+            borderColor: "#30363d",
+            borderWidth: 1,
+            callbacks: {
+              label(context) {
+                const point = context.raw;
+                return `${context.dataset.label}: ${point.x.toFixed(1)}m, $${point.y.toFixed(4)}, avg ${point.score}`;
+              },
+            },
+          },
+        },
+        scales: {
+          x: { title: { display: true, text: "Total wall time (minutes)" }, beginAtZero: true, grid: { color: "rgba(139, 148, 158, 0.20)" } },
+          y: { title: { display: true, text: "Cost (USD)" }, beginAtZero: true, grid: { color: "rgba(139, 148, 158, 0.20)" } },
+        },
+      },
+      plugins: [{
+        id: "quadrants",
+        beforeDraw(chart) {
+          const { ctx, chartArea, scales } = chart;
+          if (!chartArea) return;
+          const midX = scales.x.getPixelForValue(12);
+          const midY = scales.y.getPixelForValue(0.5);
+          ctx.save();
+          ctx.fillStyle = "rgba(46, 160, 67, 0.06)";
+          ctx.fillRect(chartArea.left, chartArea.top, midX - chartArea.left, midY - chartArea.top);
+          ctx.fillStyle = "rgba(210, 153, 34, 0.06)";
+          ctx.fillRect(midX, chartArea.top, chartArea.right - midX, midY - chartArea.top);
+          ctx.fillStyle = "rgba(88, 166, 255, 0.05)";
+          ctx.fillRect(chartArea.left, midY, midX - chartArea.left, chartArea.bottom - midY);
+          ctx.fillStyle = "rgba(255, 123, 114, 0.05)";
+          ctx.fillRect(midX, midY, chartArea.right - midX, chartArea.bottom - midY);
+          ctx.strokeStyle = "rgba(139, 148, 158, 0.34)";
+          ctx.setLineDash([6, 6]);
+          ctx.beginPath();
+          ctx.moveTo(midX, chartArea.top);
+          ctx.lineTo(midX, chartArea.bottom);
+          ctx.moveTo(chartArea.left, midY);
+          ctx.lineTo(chartArea.right, midY);
+          ctx.stroke();
+          ctx.restore();
+        },
+      }],
+    });
+
+    document.getElementById("resultsBody").innerHTML = models
+      .map(model => `
+        <tr>
+          <td><strong style="color:${model.color}">${model.name}</strong><br><span style="color:#8b949e">${model.provider}</span></td>
+          <td><code>${model.id}</code></td>
+          <td class="num">${model.avg.toFixed(1)}</td>
+          <td class="num">${model.t1}</td>
+          <td class="num">${model.t2}</td>
+          <td class="num">${model.time.toFixed(1)}s</td>
+          <td><span class="badge ${model.result.includes("Failed") ? "fail" : ""}">${model.result}</span></td>
+          <td>${model.note}<br><code>$${model.cost.total.toFixed(4)} · ${model.cost.source}</code></td>
+        </tr>
+      `)
+      .join("");
+  </script>
+</body>
+</html>

@@ -1,0 +1,274 @@
+[
+  {
+    "model": "Qwen3.6 Plus",
+    "provider": "OpenCode Go",
+    "harness": "opencode",
+    "score": 98,
+    "subscores": {
+      "functional": 40,
+      "integration": 25,
+      "regression": 20,
+      "minimality": 9,
+      "process": 4
+    },
+    "date": "2026-06-02",
+    "dataset_version": "2026-06-02",
+    "track": "fixed",
+    "task_id": "manual_dataset_version_filter_v1"
+  },
+  {
+    "model": "Qwen3.7 Max",
+    "provider": "OpenCode Go",
+    "harness": "opencode",
+    "score": 98,
+    "subscores": {
+      "functional": 40,
+      "integration": 25,
+      "regression": 20,
+      "minimality": 9,
+      "process": 4
+    },
+    "date": "2026-06-02",
+    "dataset_version": "2026-06-02",
+    "track": "fixed",
+    "task_id": "manual_dataset_version_filter_v1"
+  },
+  {
+    "model": "DeepSeek V4 Pro",
+    "provider": "OpenCode Go",
+    "harness": "opencode",
+    "score": 97,
+    "subscores": {
+      "functional": 40,
+      "integration": 24,
+      "regression": 20,
+      "minimality": 9,
+      "process": 4
+    },
+    "date": "2026-06-02",
+    "dataset_version": "2026-06-02",
+    "track": "fixed",
+    "task_id": "manual_dataset_version_filter_v1"
+  },
+  {
+    "model": "MiniMax-M3",
+    "provider": "MiniMax",
+    "harness": "opencode",
+    "score": 97,
+    "subscores": {
+      "functional": 40,
+      "integration": 24,
+      "regression": 20,
+      "minimality": 10,
+      "process": 3
+    },
+    "date": "2026-06-01",
+    "dataset_version": "2026-06-01",
+    "track": "fixed",
+    "task_id": "manual_dataset_version_filter_v1"
+  },
+  {
+    "model": "K2P6",
+    "provider": "Kimi For Coding",
+    "harness": "opencode",
+    "score": 96,
+    "subscores": {
+      "functional": 40,
+      "integration": 25,
+      "regression": 20,
+      "minimality": 9,
+      "process": 2
+    },
+    "date": "2026-06-01",
+    "dataset_version": "2026-06-01",
+    "track": "fixed",
+    "task_id": "manual_dataset_version_filter_v1"
+  },
+  {
+    "model": "MiMo-V2.5-Pro",
+    "provider": "Xiaomi",
+    "harness": "opencode",
+    "score": 96,
+    "subscores": {
+      "functional": 40,
+      "integration": 24,
+      "regression": 20,
+      "minimality": 10,
+      "process": 2
+    },
+    "date": "2026-06-01",
+    "dataset_version": "2026-06-01",
+    "track": "fixed",
+    "task_id": "manual_dataset_version_filter_v1"
+  },
+  {
+    "model": "VocEngine GLM-5.1",
+    "provider": "VocEngine Coding",
+    "harness": "opencode",
+    "score": 96,
+    "subscores": {
+      "functional": 40,
+      "integration": 23,
+      "regression": 20,
+      "minimality": 10,
+      "process": 3
+    },
+    "date": "2026-06-02",
+    "dataset_version": "2026-06-02",
+    "track": "fixed",
+    "task_id": "manual_dataset_version_filter_v1"
+  },
+  {
+    "model": "OpenCode-Go GLM-5.1",
+    "provider": "OpenCode Go",
+    "harness": "opencode",
+    "score": 42,
+    "subscores": {
+      "functional": 18,
+      "integration": 8,
+      "regression": 10,
+      "minimality": 3,
+      "process": 3
+    },
+    "date": "2026-06-02",
+    "dataset_version": "2026-06-02",
+    "track": "fixed",
+    "task_id": "manual_dataset_version_filter_v1"
+  },
+  {
+    "model": "Qwen3.6 Plus",
+    "provider": "OpenCode Go",
+    "harness": "opencode",
+    "score": 98,
+    "subscores": {
+      "functional": 40,
+      "integration": 25,
+      "regression": 20,
+      "minimality": 9,
+      "process": 4
+    },
+    "date": "2026-06-02",
+    "dataset_version": "2026-06-02",
+    "track": "fixed",
+    "task_id": "manual_task_status_filter_v1"
+  },
+  {
+    "model": "MiMo-V2.5-Pro",
+    "provider": "Xiaomi",
+    "harness": "opencode",
+    "score": 97,
+    "subscores": {
+      "functional": 39,
+      "integration": 24,
+      "regression": 20,
+      "minimality": 10,
+      "process": 4
+    },
+    "date": "2026-06-01",
+    "dataset_version": "2026-06-01",
+    "track": "fixed",
+    "task_id": "manual_task_status_filter_v1"
+  },
+  {
+    "model": "DeepSeek V4 Pro",
+    "provider": "OpenCode Go",
+    "harness": "opencode",
+    "score": 96,
+    "subscores": {
+      "functional": 40,
+      "integration": 25,
+      "regression": 20,
+      "minimality": 8,
+      "process": 3
+    },
+    "date": "2026-06-02",
+    "dataset_version": "2026-06-02",
+    "track": "fixed",
+    "task_id": "manual_task_status_filter_v1"
+  },
+  {
+    "model": "Qwen3.7 Max",
+    "provider": "OpenCode Go",
+    "harness": "opencode",
+    "score": 96,
+    "subscores": {
+      "functional": 40,
+      "integration": 25,
+      "regression": 20,
+      "minimality": 8,
+      "process": 3
+    },
+    "date": "2026-06-02",
+    "dataset_version": "2026-06-02",
+    "track": "fixed",
+    "task_id": "manual_task_status_filter_v1"
+  },
+  {
+    "model": "OpenCode-Go GLM-5.1",
+    "provider": "OpenCode Go",
+    "harness": "opencode",
+    "score": 95,
+    "subscores": {
+      "functional": 40,
+      "integration": 25,
+      "regression": 20,
+      "minimality": 6,
+      "process": 4
+    },
+    "date": "2026-06-02",
+    "dataset_version": "2026-06-02",
+    "track": "fixed",
+    "task_id": "manual_task_status_filter_v1"
+  },
+  {
+    "model": "VocEngine GLM-5.1",
+    "provider": "VocEngine Coding",
+    "harness": "opencode",
+    "score": 95,
+    "subscores": {
+      "functional": 40,
+      "integration": 25,
+      "regression": 20,
+      "minimality": 7,
+      "process": 3
+    },
+    "date": "2026-06-02",
+    "dataset_version": "2026-06-02",
+    "track": "fixed",
+    "task_id": "manual_task_status_filter_v1"
+  },
+  {
+    "model": "K2P6",
+    "provider": "Kimi For Coding",
+    "harness": "opencode",
+    "score": 94,
+    "subscores": {
+      "functional": 40,
+      "integration": 24,
+      "regression": 20,
+      "minimality": 6,
+      "process": 4
+    },
+    "date": "2026-06-01",
+    "dataset_version": "2026-06-01",
+    "track": "fixed",
+    "task_id": "manual_task_status_filter_v1"
+  },
+  {
+    "model": "MiniMax-M3",
+    "provider": "MiniMax",
+    "harness": "opencode",
+    "score": 94,
+    "subscores": {
+      "functional": 40,
+      "integration": 24,
+      "regression": 20,
+      "minimality": 6,
+      "process": 4
+    },
+    "date": "2026-06-01",
+    "dataset_version": "2026-06-01",
+    "track": "fixed",
+    "task_id": "manual_task_status_filter_v1"
+  }
+]

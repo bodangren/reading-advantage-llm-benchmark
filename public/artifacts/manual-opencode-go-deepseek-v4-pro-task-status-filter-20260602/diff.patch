@@ -1,0 +1,90 @@
+diff --git a/app/api/tasks/route.ts b/app/api/tasks/route.ts
+index d15c003..ef259d5 100644
+--- a/app/api/tasks/route.ts
++++ b/app/api/tasks/route.ts
+@@ -11,12 +11,18 @@ export async function GET(request: NextRequest) {
+   try {
+     const { searchParams } = new URL(request.url);
+     const difficulty = searchParams.get('difficulty');
++    const status = searchParams.get('status');
+ 
+     const tasks = await getTasks();
+ 
+     let filtered = tasks;
++
+     if (difficulty && ['easy', 'medium', 'hard'].includes(difficulty)) {
+-      filtered = tasks.filter(t => t.difficulty === difficulty);
++      filtered = filtered.filter(t => t.difficulty === difficulty);
++    }
++
++    if (status && ['draft', 'review', 'published'].includes(status)) {
++      filtered = filtered.filter(t => t.status === status);
+     }
+ 
+     return NextResponse.json({
+diff --git a/tests/app/api/routes.test.ts b/tests/app/api/routes.test.ts
+index 74bd3bb..692a66c 100644
+--- a/tests/app/api/routes.test.ts
++++ b/tests/app/api/routes.test.ts
+@@ -221,8 +221,8 @@ describe('API Routes', () => {
+   describe('GET /api/tasks', () => {
+     const mockTasks = [
+       { id: 'task-1', title: 'Task 1', difficulty: 'easy', description: 'Desc 1', version: '1.0', status: 'published' as const },
+-      { id: 'task-2', title: 'Task 2', difficulty: 'medium', description: 'Desc 2', version: '1.0', status: 'published' as const },
+-      { id: 'task-3', title: 'Task 3', difficulty: 'hard', description: 'Desc 3', version: '1.0', status: 'published' as const },
++      { id: 'task-2', title: 'Task 2', difficulty: 'medium', description: 'Desc 2', version: '1.0', status: 'draft' as const },
++      { id: 'task-3', title: 'Task 3', difficulty: 'hard', description: 'Desc 3', version: '1.0', status: 'review' as const },
+     ];
+ 
+     it('should return all tasks when no filters provided', async () => {
+@@ -250,6 +250,50 @@ describe('API Routes', () => {
+       expect(data.count).toBe(1);
+       expect(data.tasks[0].id).toBe('task-2');
+     });
++
++    it('should filter tasks by status', async () => {
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      vi.mocked(getTasks).mockResolvedValue(mockTasks as any);
++
++      const request = new NextRequest('http://localhost/api/tasks?status=published');
++      const response = await tasksHandler(request);
++      const data = await response.json();
++
++      expect(response.status).toBe(200);
++      expect(data.count).toBe(1);
++      expect(data.tasks[0].id).toBe('task-1');
++    });
++
++    it('should ignore invalid status values', async () => {
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      vi.mocked(getTasks).mockResolvedValue(mockTasks as any);
++
++      const request = new NextRequest('http://localhost/api/tasks?status=archived');
++      const response = await tasksHandler(request);
++      const data = await response.json();
++
++      expect(response.status).toBe(200);
++      expect(data.count).toBe(3);
++    });
++
++    it('should combine status and difficulty filters', async () => {
++      const combinedTasks = [
++        { id: 'task-1', title: 'Task 1', difficulty: 'easy', description: 'Desc 1', version: '1.0', status: 'published' as const },
++        { id: 'task-2', title: 'Task 2', difficulty: 'easy', description: 'Desc 2', version: '1.0', status: 'draft' as const },
++        { id: 'task-3', title: 'Task 3', difficulty: 'hard', description: 'Desc 3', version: '1.0', status: 'published' as const },
++      ];
++
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      vi.mocked(getTasks).mockResolvedValue(combinedTasks as any);
++
++      const request = new NextRequest('http://localhost/api/tasks?status=published&difficulty=easy');
++      const response = await tasksHandler(request);
++      const data = await response.json();
++
++      expect(response.status).toBe(200);
++      expect(data.count).toBe(1);
++      expect(data.tasks[0].id).toBe('task-1');
++    });
+   });
+ 
+   describe('GET /api/tasks/[id]', () => {

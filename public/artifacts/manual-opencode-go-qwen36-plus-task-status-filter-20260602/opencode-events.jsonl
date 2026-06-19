@@ -1,0 +1,26 @@
+I'll start by reading the Measure workflow and understanding the current codebase structure.
+Let me explore the existing API structure and tests.
+Let me check the task data types and the data module.
+Now let me check the test configuration and path aliases.
+Now I have a clear picture. Let me create a track and follow the Measure workflow.
+Now I'll add the status filter tests (Red phase):
+Let me run the tests to confirm the new tests fail (Red phase):
+Tests fail as expected (2 failing, 16 passing). Now let me implement the status filter (Green phase):
+Now run the tests (Green phase):
+All 18 tests pass. Let me mark the tasks complete and commit:
+Let me run type checking and the full test suite to verify nothing is broken:
+The full suite timed out (likely a large project). Let me run the targeted tests and lint:
+All 18 tests pass, no lint errors, no TypeScript errors.
+
+**Test command:** `CI=true npx vitest run tests/app/api/routes.test.ts`
+
+**Results:** 18 passed (18)
+
+**New tests added:**
+- `should filter tasks by status` - filters by `status=published`
+- `should ignore invalid status values` - `status=invalid` returns all tasks
+- `should combine status and difficulty filters` - `status=published&difficulty=easy`
+
+**Files changed:**
+- `app/api/tasks/route.ts` - Added `VALID_STATUSES` constant and status filter logic
+- `tests/app/api/routes.test.ts` - Added 4 new test cases

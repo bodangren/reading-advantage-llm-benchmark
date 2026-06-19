@@ -1,0 +1,132 @@
+diff --git a/src/lib/export.ts b/src/lib/export.ts
+index abf1026..1d6c810 100644
+--- a/src/lib/export.ts
++++ b/src/lib/export.ts
+@@ -7,6 +7,7 @@ export interface QueryFilters {
+   endDate?: string;
+   minScore?: number;
+   maxScore?: number;
++  datasetVersion?: string;
+ }
+ 
+ export interface SummaryStats {
+@@ -35,6 +36,9 @@ export function filterRuns(runs: RunDetail[], filters: QueryFilters): RunDetail[
+     if (filters.maxScore !== undefined && run.total_score > filters.maxScore) {
+       return false;
+     }
++    if (filters.datasetVersion && run.dataset_version !== filters.datasetVersion) {
++      return false;
++    }
+     return true;
+   });
+ }
+diff --git a/tests/app/api/routes.test.ts b/tests/app/api/routes.test.ts
+index 74bd3bb..9004bb7 100644
+--- a/tests/app/api/routes.test.ts
++++ b/tests/app/api/routes.test.ts
+@@ -133,6 +133,43 @@ describe('API Routes', () => {
+       expect(response.status).toBe(200);
+       expect(data.count).toBe(2);
+     });
++
++    it('should filter runs by datasetVersion', async () => {
++      const versionedRuns = [
++        { ...mockRuns[0], dataset_version: '2.0' },
++        { ...mockRuns[1], dataset_version: '1.0' },
++        { ...mockRuns[2], dataset_version: '2.0' },
++      ];
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      vi.mocked(getAllRuns).mockResolvedValue(versionedRuns as any);
++
++      const request = new NextRequest('http://localhost/api/runs?datasetVersion=2.0');
++      const response = await runsHandler(request);
++      const data = await response.json();
++
++      expect(response.status).toBe(200);
++      expect(data.count).toBe(2);
++      expect(data.runs.every((r: { dataset_version: string }) => r.dataset_version === '2.0')).toBe(true);
++    });
++
++    it('should filter by datasetVersion combined with model', async () => {
++      const versionedRuns = [
++        { ...mockRuns[0], dataset_version: '2.0' },
++        { ...mockRuns[1], dataset_version: '1.0' },
++        { ...mockRuns[2], dataset_version: '2.0' },
++      ];
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      vi.mocked(getAllRuns).mockResolvedValue(versionedRuns as any);
++
++      const request = new NextRequest('http://localhost/api/runs?datasetVersion=2.0&model=gpt-4o');
++      const response = await runsHandler(request);
++      const data = await response.json();
++
++      expect(response.status).toBe(200);
++      expect(data.count).toBe(1);
++      expect(data.runs[0].model).toBe('gpt-4o');
++      expect(data.runs[0].dataset_version).toBe('2.0');
++    });
+   });
+ 
+   describe('GET /api/leaderboard', () => {
+diff --git a/tests/lib/export.test.ts b/tests/lib/export.test.ts
+index 5cfe1cc..601aeae 100644
+--- a/tests/lib/export.test.ts
++++ b/tests/lib/export.test.ts
+@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
+ import type { RunDetail } from '../../src/lib/schemas';
+ import { filterRuns, computeStats, exportToCSV, type QueryFilters } from '../../src/lib/export';
+ 
+-function createMockRun(id: string, model: string, runDate: string, totalScore: number, taskId?: string): RunDetail {
++function createMockRun(id: string, model: string, runDate: string, totalScore: number, taskId?: string, datasetVersion?: string): RunDetail {
+   return {
+     id,
+     model,
+@@ -22,6 +22,7 @@ function createMockRun(id: string, model: string, runDate: string, totalScore: n
+     test_results: [],
+     artifacts: [],
+     task_id: taskId,
++    dataset_version: datasetVersion,
+   };
+ }
+ 
+@@ -81,6 +82,40 @@ describe('Query Filtering', () => {
+     const filtered = filterRuns(runs, {});
+     expect(filtered).toHaveLength(runs.length);
+   });
++
++  it('should filter by datasetVersion', () => {
++    const versionedRuns: RunDetail[] = [
++      createMockRun('run-1', 'gpt-4o', '2026-04-01', 0.85, 'task-1', '2.0'),
++      createMockRun('run-2', 'gpt-4o', '2026-04-05', 0.75, 'task-2', '1.0'),
++      createMockRun('run-3', 'claude-3', '2026-04-01', 0.90, 'task-1', '2.0'),
++      createMockRun('run-4', 'claude-3', '2026-04-10', 0.88, 'task-3'),
++    ];
++    const filters: QueryFilters = { datasetVersion: '2.0' };
++    const filtered = filterRuns(versionedRuns, filters);
++    expect(filtered).toHaveLength(2);
++    expect(filtered.every(r => r.dataset_version === '2.0')).toBe(true);
++  });
++
++  it('should filter by datasetVersion combined with model', () => {
++    const versionedRuns: RunDetail[] = [
++      createMockRun('run-1', 'gpt-4o', '2026-04-01', 0.85, 'task-1', '2.0'),
++      createMockRun('run-2', 'gpt-4o', '2026-04-05', 0.75, 'task-2', '1.0'),
++      createMockRun('run-3', 'claude-3', '2026-04-01', 0.90, 'task-1', '2.0'),
++      createMockRun('run-4', 'claude-3', '2026-04-10', 0.88, 'task-3', '1.0'),
++    ];
++    const filters: QueryFilters = { datasetVersion: '2.0', model: 'gpt-4o' };
++    const filtered = filterRuns(versionedRuns, filters);
++    expect(filtered).toHaveLength(1);
++    expect(filtered[0].id).toBe('run-1');
++    expect(filtered[0].model).toBe('gpt-4o');
++    expect(filtered[0].dataset_version).toBe('2.0');
++  });
++
++  it('should return empty array when datasetVersion has no matches', () => {
++    const filters: QueryFilters = { datasetVersion: '99.0' };
++    const filtered = filterRuns(runs, filters);
++    expect(filtered).toHaveLength(0);
++  });
+ });
+ 
+ describe('Summary Statistics', () => {

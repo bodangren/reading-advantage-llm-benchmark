@@ -1,0 +1,65 @@
+{
+  "id": "manual-opencode-go-glm-51-dataset-filter-20260602",
+  "model": "OpenCode-Go GLM-5.1",
+  "provider": "OpenCode Go",
+  "harness": "opencode",
+  "harness_version": "manual-opencode-cli",
+  "benchmark_version": "manual-2026-06-02",
+  "dataset_version": "2026-06-02",
+  "task_id": "manual_dataset_version_filter_v1",
+  "task_domain": "Web App",
+  "run_date": "2026-06-02T10:50:00+08:00",
+  "wall_time_seconds": 817,
+  "total_score": 0.42,
+  "scores": {
+    "functional_correctness": 18,
+    "integration_quality": 8,
+    "regression_safety": 10,
+    "minimality": 3,
+    "process_quality": 3
+  },
+  "diff": "diff --git a/src/lib/export.ts b/src/lib/export.ts\nindex abf1026..1d6c810 100644\n--- a/src/lib/export.ts\n+++ b/src/lib/export.ts\n@@ -7,6 +7,7 @@ export interface QueryFilters {\n   endDate?: string;\n   minScore?: number;\n   maxScore?: number;\n+  datasetVersion?: string;\n }\n \n export interface SummaryStats {\n@@ -35,6 +36,9 @@ export function filterRuns(runs: RunDetail[], filters: QueryFilters): RunDetail[\n     if (filters.maxScore !== undefined && run.total_score > filters.maxScore) {\n       return false;\n     }\n+    if (filters.datasetVersion && run.dataset_version !== filters.datasetVersion) {\n+      return false;\n+    }\n     return true;\n   });\n }\ndiff --git a/tests/app/api/routes.test.ts b/tests/app/api/routes.test.ts\nindex 74bd3bb..9004bb7 100644\n--- a/tests/app/api/routes.test.ts\n+++ b/tests/app/api/routes.test.ts\n@@ -133,6 +133,43 @@ describe('API Routes', () => {\n       expect(response.status).toBe(200);\n       expect(data.count).toBe(2);\n     });\n+\n+    it('should filter runs by datasetVersion', async () => {\n+      const versionedRuns = [\n+        { ...mockRuns[0], dataset_version: '2.0' },\n+        { ...mockRuns[1], dataset_version: '1.0' },\n+        { ...mockRuns[2], dataset_version: '2.0' },\n+      ];\n+      // eslint-disable-next-line @typescript-eslint/no-explicit-any\n+      vi.mocked(getAllRuns).mockResolvedValue(versionedRuns as any);\n+\n+      const request = new NextRequest('http://localhost/api/runs?datasetVersion=2.0');\n+      const response = await runsHandler(request);\n+      const data = await response.json();\n+\n+      expect(response.status).toBe(200);\n+      expect(data.count).toBe(2);\n+      expect(data.runs.every((r: { dataset_version: string }) => r.dataset_version === '2.0')).toBe(true);\n+    });\n+\n+    it('should filter by datasetVersion combined with model', async () => {\n+      const versionedRuns = [\n+        { ...mockRuns[0], dataset_version: '2.0' },\n+        { ...mockRuns[1], dataset_version: '1.0' },\n+        { ...mockRuns[2], dataset_version: '2.0' },\n+      ];\n+      // eslint-disable-next-line @typescript-eslint/no-explicit-any\n+      vi.mocked(getAllRuns).mockResolvedValue(versionedRuns as any);\n+\n+      const request = new NextRequest('http://localhost/api/runs?datasetVersion=2.0&model=gpt-4o');\n+      const response = await runsHandler(request);\n+      const data = await response.json();\n+\n+      expect(response.status).toBe(200);\n+      expect(data.count).toBe(1);\n+      expect(data.runs[0].model).toBe('gpt-4o');\n+      expect(data.runs[0].dataset_version).toBe('2.0');\n+    });\n   });\n \n   describe('GET /api/leaderboard', () => {\ndiff --git a/tests/lib/export.test.ts b/tests/lib/export.test.ts\nindex 5cfe1cc..601aeae 100644\n--- a/tests/lib/export.test.ts\n+++ b/tests/lib/export.test.ts\n@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';\n import type { RunDetail } from '../../src/lib/schemas';\n import { filterRuns, computeStats, exportToCSV, type QueryFilters } from '../../src/lib/export';\n \n-function createMockRun(id: string, model: string, runDate: string, totalScore: number, taskId?: string): RunDetail {\n+function createMockRun(id: string, model: string, runDate: string, totalScore: number, taskId?: string, datasetVersion?: string): RunDetail {\n   return {\n     id,\n     model,\n@@ -22,6 +22,7 @@ function createMockRun(id: string, model: string, runDate: string, totalScore: n\n     test_results: [],\n     artifacts: [],\n     task_id: taskId,\n+    dataset_version: datasetVersion,\n   };\n }\n \n@@ -81,6 +82,40 @@ describe('Query Filtering', () => {\n     const filtered = filterRuns(runs, {});\n     expect(filtered).toHaveLength(runs.length);\n   });\n+\n+  it('should filter by datasetVersion', () => {\n+    const versionedRuns: RunDetail[] = [\n+      createMockRun('run-1', 'gpt-4o', '2026-04-01', 0.85, 'task-1', '2.0'),\n+      createMockRun('run-2', 'gpt-4o', '2026-04-05', 0.75, 'task-2', '1.0'),\n+      createMockRun('run-3', 'claude-3', '2026-04-01', 0.90, 'task-1', '2.0'),\n+      createMockRun('run-4', 'claude-3', '2026-04-10', 0.88, 'task-3'),\n+    ];\n+    const filters: QueryFilters = { datasetVersion: '2.0' };\n+    const filtered = filterRuns(versionedRuns, filters);\n+    expect(filtered).toHaveLength(2);\n+    expect(filtered.every(r => r.dataset_version === '2.0')).toBe(true);\n+  });\n+\n+  it('should filter by datasetVersion combined with model', () => {\n+    const versionedRuns: RunDetail[] = [\n+      createMockRun('run-1', 'gpt-4o', '2026-04-01', 0.85, 'task-1', '2.0'),\n+      createMockRun('run-2', 'gpt-4o', '2026-04-05', 0.75, 'task-2', '1.0'),\n+      createMockRun('run-3', 'claude-3', '2026-04-01', 0.90, 'task-1', '2.0'),\n+      createMockRun('run-4', 'claude-3', '2026-04-10', 0.88, 'task-3', '1.0'),\n+    ];\n+    const filters: QueryFilters = { datasetVersion: '2.0', model: 'gpt-4o' };\n+    const filtered = filterRuns(versionedRuns, filters);\n+    expect(filtered).toHaveLength(1);\n+    expect(filtered[0].id).toBe('run-1');\n+    expect(filtered[0].model).toBe('gpt-4o');\n+    expect(filtered[0].dataset_version).toBe('2.0');\n+  });\n+\n+  it('should return empty array when datasetVersion has no matches', () => {\n+    const filters: QueryFilters = { datasetVersion: '99.0' };\n+    const filtered = filterRuns(runs, filters);\n+    expect(filtered).toHaveLength(0);\n+  });\n });\n \n describe('Summary Statistics', () => {\n",
+  "test_results": [
+    {
+      "suite": "targeted",
+      "name": "CI=true npx vitest run tests/lib/export.test.ts tests/app/api/routes.test.ts",
+      "status": "fail"
+    },
+    {
+      "suite": "lint",
+      "name": "npm run lint -- app/api/runs/route.ts src/lib/export.ts tests/lib/export.test.ts tests/app/api/routes.test.ts",
+      "status": "pass"
+    },
+    {
+      "suite": "build",
+      "name": "npm run build",
+      "status": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "opencode-events.jsonl",
+      "type": "log",
+      "url": "/artifacts/manual-opencode-go-glm-51-dataset-filter-20260602/opencode-events.jsonl",
+      "size_bytes": 214303
+    },
+    {
+      "name": "opencode-stderr.log",
+      "type": "log",
+      "url": "/artifacts/manual-opencode-go-glm-51-dataset-filter-20260602/opencode-stderr.log",
+      "size_bytes": 0
+    },
+    {
+      "name": "diff.patch",
+      "type": "report",
+      "url": "/artifacts/manual-opencode-go-glm-51-dataset-filter-20260602/diff.patch",
+      "size_bytes": 5356
+    },
+    {
+      "name": "verification.txt",
+      "type": "report",
+      "url": "/artifacts/manual-opencode-go-glm-51-dataset-filter-20260602/verification.txt",
+      "size_bytes": 913
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+Now I have a clear picture of the codebase. Let me read the exact files I need to modify.
+First, let me confirm existing tests pass:
+All 15 tests pass. Now let me write the failing tests first (Red phase). I'll add status filtering tests to the existing test suite:
+Now let me confirm the new tests fail (Red phase):
+Two tests fail as expected — the status filter isn't implemented yet. Now let me implement the feature (Green phase):
+Now let me run the tests to verify all pass:
+All 18 tests pass (including the 3 new ones). Let me also run the full test suite and type-check:
+All 18 tests pass and no TypeScript errors. The full suite was timing out on slow component tests but all route tests are confirmed green. Let me run just the relevant subset one more time with the `--reporter=dot`:
+All 72 tests pass across 3 relevant test files.
+Here's a summary of the changes:
+
+### `app/api/tasks/route.ts`
+- Added `status` query parameter extraction
+- When `status` is `draft`, `review`, or `published`, filters tasks to matching status
+- Invalid status values are silently ignored (no filtering applied)
+- Status filter chains with existing difficulty filter — both can be combined
+
+### `tests/app/api/routes.test.ts`
+Added 3 new test cases:
+1. **`should filter tasks by status`** — `?status=published` returns only published tasks
+2. **`should ignore invalid status values`** — `?status=archived` returns all tasks (no filter)
+3. **`should combine status and difficulty filters`** — `?status=published&difficulty=easy` returns intersection of both
+
+### Test results
+```
+tests/app/api/routes.test.ts — 18 passed (18)
+tests/lib/data.test.ts      — 16 passed (16)
+tests/lib/schemas.test.ts   — 38 passed (38)
+Total: 72 passed (72)
+```
+
+### Run command
+```
+npx vitest run tests/app/api/routes.test.ts tests/lib/data.test.ts tests/lib/schemas.test.ts
+```

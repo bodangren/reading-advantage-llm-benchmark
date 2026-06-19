@@ -1,0 +1,25 @@
+Manual benchmark verification for kimi-for-coding/k2p6
+
+Task: Add status filtering to GET /api/tasks.
+
+Independent verification commands:
+- CI=true npx vitest run tests/app/api/routes.test.ts
+  Result: pass, 1 file passed, 21 tests passed.
+- npm run lint -- app/api/tasks/route.ts tests/app/api/routes.test.ts
+  Result: pass.
+- npm run build
+  Result: pass.
+
+Scoring:
+- Functional correctness: 40/40
+- Integration quality: 24/25
+- Regression safety: 20/20
+- Minimality: 6/10
+- Process quality: 4/5
+- Total: 94/100
+
+Notes:
+- Functional implementation and broad API route tests passed.
+- Created a Measure track and changed measure/tracks.md, leaving the track in progress, which is outside the minimal benchmark task scope.
+- Tests cover draft, review, published, invalid status, combined filters, and empty combined results.
+- OpenCode event stream showed AGENTS, Measure, and Next docs access.
