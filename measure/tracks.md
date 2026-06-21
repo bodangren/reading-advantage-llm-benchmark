@@ -16,9 +16,12 @@ This file tracks all major tracks for the project. Each track has its own detail
   *Status: Complete*
   Version-aware leaderboard filtering, cross-version score normalization, and version history page for fair comparison across benchmark iterations.
 
-- [ ] **Track: Serverless-Compatible Persistence Layer**
-  *Link: [./tracks/serverless_persistence_layer_20260508/](./tracks/serverless_persistence_layer_20260508/)*
+- [x] **Track: Serverless-Compatible Persistence Layer** *(SUPERSEDED — duplicate of completed Redis Serverless Adapter track; archived 2026-06-22)*
+  *Link: [./archive/serverless_persistence_layer_20260508/](./archive/serverless_persistence_layer_20260508/)*
   Replace in-memory rate limiting and filesystem-based scheduler persistence with Redis-backed adapters for serverless deployments, with local-dev fallback.
+  *Status (archived 2026-06-22): work already shipped by the completed **Redis Serverless Adapter for Rate Limiting and Scheduling** track (`redis_serverless_adapter_20260509`, commit `f20e747`). The two specs are duplicates (same problem statement, same acceptance criteria). Deliverables verified in source: `src/lib/redis-client.ts` (REDIS_URL + Upstash `@upstash/redis` with fallback), `src/lib/adapters/redis-rate-limiter.ts`, `src/lib/adapters/redis-schedule-store.ts`, `src/lib/adapters/legacy-wrappers.ts` (memory/fs local-dev fallback). Track directory moved to archive.*
+
+_Status (verified 2026-06-21): the six tracks below are genuinely not started — 0 plan tasks each, metadata `pending`. Catalog (`data/tasks/tasks.json`) holds only 9 tasks across the already-completed domains (Backend & API ×5, Mobile & React Native ×3, Web App ×1); no frontend/devops/security/performance task domains exist yet. No `Dockerfile`/`docker-compose` and no result-caching code present. Registry is accurate for these._
 
 - [ ] **Track: Frontend/UI Task Domain Expansion**
   *Link: [./tracks/frontend_task_domain_expansion_20260514/](./tracks/frontend_task_domain_expansion_20260514/)*
