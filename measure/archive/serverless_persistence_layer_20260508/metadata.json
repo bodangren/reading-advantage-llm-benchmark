@@ -1,1 +1,1 @@
-{"id": "serverless_persistence_layer_20260508", "status": "pending", "created": "2026-05-08"}
+{"id": "serverless_persistence_layer_20260508", "status": "superseded", "created": "2026-05-08", "archived": "2026-06-22", "superseded_by": "redis_serverless_adapter_20260509"}
